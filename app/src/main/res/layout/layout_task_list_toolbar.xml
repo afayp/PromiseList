@@ -5,39 +5,65 @@
     android:orientation="horizontal"
     android:background="@color/ivory"
     android:gravity="center_vertical"
-    android:translationZ="@dimen/dp_4">
+    android:elevation="5dp">
 
-    <ImageView
-        android:id="@+id/iv_menu"
+    <FrameLayout
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_menu"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp">
 
-    <View
+        <ImageView
+            android:id="@+id/iv_projects"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_menu"
+            android:background="@drawable/icon_default_selector"/>
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_blue_left_arrow"
+            android:background="@drawable/icon_default_selector"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
 
-    <ImageView
-        android:id="@+id/iv_sort"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:src="@drawable/ic_sort"
-        android:layout_marginLeft="20dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="搜索任务"
+            android:visibility="gone"/>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_search"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_search"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/icon_default_selector"/>
+    <ImageView
+        android:id="@+id/iv_sort"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_sort"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/icon_default_selector"/>
+
 
     <ImageView
         android:id="@+id/iv_more"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_more"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/icon_default_selector"/>
 
 </LinearLayout>

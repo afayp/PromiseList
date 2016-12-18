@@ -1,7 +1,10 @@
 package com.pfh.promiselist.adapter;
 
+import android.app.Service;
 import android.content.Context;
+import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +14,6 @@ import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.MultiItemModel;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.utils.Constant;
-import com.pfh.promiselist.utils.L;
 import com.pfh.promiselist.widget.TaskItemView;
 
 import java.util.List;
@@ -26,11 +28,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<MultiItemModel> mData;
     private int mOrderMode;
 
+    private onItemClickListener onItemClickListener;
+    private ItemTouchHelper itemTouchHelper;
+
     public TaskListAdapter(Context mContext, List<MultiItemModel> mData, int mOrderMode) {
         this.mContext = mContext;
         this.mData = mData;
         this.mOrderMode = mOrderMode;
-        L.e("data size: "+mData.size());
+    }
+
+    public void refreshData(List<MultiItemModel> list,int orderMode){
+        mData = list;
+        this.mOrderMode = orderMode;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -42,10 +52,39 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == Constant.ITEM_TYPE_TASK){
             View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type, parent, false);
-            return new TaskViewHolder(taskItem);
+            final TaskViewHolder taskViewHolder = new TaskViewHolder(taskItem);
+            // 长按开启拖动
+            taskItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    taskViewHolder.task_item.toggleView();
+                }
+            });
+            taskItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (itemTouchHelper != null){
+                        itemTouchHelper.startDrag(taskViewHolder);
+                        Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
+                        vibrator.vibrate(70);
+                    }
+                    return true;
+                }
+            });
+            return taskViewHolder;
         }else {
-            View textItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_text_type, parent, false);
-            return new TextViewHolder(textItem);
+            View textItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
+            final TextViewHolder textViewHolder = new TextViewHolder(textItem);
+            // 点击title收起task
+            textItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null){
+                        onItemClickListener.onItemClick(v,mData.get(textViewHolder.getLayoutPosition()),textViewHolder.getLayoutPosition());
+                    }
+                }
+            });
+            return textViewHolder;
         }
     }
 
@@ -83,4 +122,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tv_text = (TextView) itemView.findViewById(R.id.tv_text);
         }
     }
+
+    public interface onItemClickListener{
+        void onItemClick(View view ,MultiItemModel model,int position);
+//        void onItemLongClick(View view ,MultiItemModel model,int position);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener){
+        this.onItemClickListener = listener;
+    }
+
+    public void setItemTouchHelper(ItemTouchHelper helper){
+        this.itemTouchHelper = helper;
+
+    }
+
 }

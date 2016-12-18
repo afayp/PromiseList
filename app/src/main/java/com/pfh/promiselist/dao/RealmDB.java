@@ -368,6 +368,18 @@ public class RealmDB {
         }
     }
 
+    /**
+     * 刷新某条task
+     * @param realm
+     * @param newTask
+     */
+    public static void refreshTask(Realm realm,Task newTask){
+        Task oldTask = realm.where(Task.class).equalTo("taskId", newTask.getTaskId()).findFirst();
+        realm.beginTransaction();
+        oldTask = newTask;
+        realm.commitTransaction();
+    }
+
     //********************Tag相关********************//
 
     /**
@@ -414,6 +426,19 @@ public class RealmDB {
         return temp;
     }
 
+
+    //********************搜索********************//
+
+    public static List<Task> searchTaskByKeyword(Realm realm,String keyword){
+        List<Task> tempList = new ArrayList<>();
+        List<Task> allTasks = getAllTasksByUserId(realm, getCurrentUserId());//todo 搜索有待改进
+        for (int i = 0; i < allTasks.size(); i++) {
+            if (allTasks.get(i).getName().contains(keyword)){
+                tempList.add(allTasks.get(i));
+            }
+        }
+        return tempList;
+    }
 
 
 }

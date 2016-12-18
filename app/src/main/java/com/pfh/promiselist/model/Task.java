@@ -19,7 +19,7 @@ public class Task extends RealmObject {
     private Project project; // 所属的project
     private boolean remindMode;// 是否开启提醒
     private long remindTime;// 结束前几分钟提醒
-    private int importance; // 低0、正常1、高2
+    private int importance; // 低1、正常2、高3
     private RealmList<Tag> tags;
     private String iconUrl;
     private String desc;

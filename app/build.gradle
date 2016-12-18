@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
-apply plugin: 'com.jakewharton.butterknife'
 
 android {
     compileSdkVersion 24
@@ -41,8 +40,9 @@ dependencies {
     compile dependencies.looger
     compile dependencies.eventBus
     compile dependencies.baseRecyclerViewAdapterHelper
-    compile dependencies.butterknife
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile dependencies.materialDialogs
+    compile dependencies.materialedittext
+
 
     testCompile dependencies.jUnit
     testCompile dependencies.mockito

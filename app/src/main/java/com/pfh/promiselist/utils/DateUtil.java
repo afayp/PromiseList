@@ -487,7 +487,67 @@ public class DateUtil {
         }else {
             return false;
         }
+    }
 
+    /**
+     * 大于等于今天（包括今天）
+     * @param time
+     * @return
+     */
+    public static boolean isMoreThanToday(long time){
+
+        Calendar current = Calendar.getInstance();
+        current.setTime(new Date());
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.YEAR,current.get(Calendar.YEAR));
+        start.set(Calendar.MONTH,current.get(Calendar.MONTH));
+        start.set(Calendar.DAY_OF_MONTH,current.get(Calendar.DAY_OF_MONTH)+1);//+1
+        start.set(Calendar.HOUR_OF_DAY,0);
+        start.set( Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        long startTime = start.getTimeInMillis(); // 今天0点时间
+        if (time >= startTime){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * 改变月和日到今天，时、分不变
+     * @param time
+     * @return
+     */
+    public static long changeDateToToday(long time){
+        return changeDateToSomeday(time,0);
+    }
+
+    /**
+     * 改变月和日到明天，时、分不变
+     * @param time
+     * @return
+     */
+    public static long changeDateToTomorrow(long time){
+        return changeDateToSomeday(time,1);
+    }
+
+    /**
+     * 改变月和日到某天(在日上面加几天)，时、分不变
+     * @param time
+     * @return
+     */
+    public static long changeDateToSomeday(long time,int plusDay){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(time);
+        Calendar today = Calendar.getInstance();
+        today.setTime(new Date());
+        c.set(Calendar.YEAR,today.get(Calendar.YEAR));
+        c.set(Calendar.MONTH,today.get(Calendar.MONTH));
+        c.set(Calendar.DAY_OF_MONTH,today.get(Calendar.DAY_OF_MONTH) + plusDay);// todo 加到31以后会怎么样。。
+        c.set(Calendar.HOUR_OF_DAY,c.get(Calendar.HOUR_OF_DAY));
+        c.set( Calendar.MINUTE, c.get(Calendar.MINUTE));
+        c.set(Calendar.SECOND, c.get(Calendar.SECOND));
+        return c.getTimeInMillis();
     }
 
 }
