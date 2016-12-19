@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -20,6 +21,7 @@ import com.pfh.promiselist.dao.SimulatedData;
 import com.pfh.promiselist.model.MultiItemModel;
 import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Task;
+import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.Constant;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
@@ -53,9 +55,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        setStatusBarColor(ColorsUtil.TRANSPARENT);
+        setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
-        initSimulatedData();
+        initSimulatedData();// todo 自动把早于今天 但是未完成的任务提到今天 避免出现未完成又过期的任务
         initSymbol();
         loadData();
         initViews();
@@ -160,6 +162,7 @@ public class MainActivity extends BaseActivity {
         toolbar = (TaskListToolbar) findViewById(R.id.toolbar);
         fb_add = (FloatingActionButton) findViewById(R.id.fb_add);
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+        recyclerview.setItemAnimator(new DefaultItemAnimator());
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -195,13 +198,12 @@ public class MainActivity extends BaseActivity {
         mTaskListAdapter.setItemTouchHelper(itemTouchHelper);
         recyclerview.setAdapter(mTaskListAdapter);
 
-
         toolbar.setProjectsClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,ProjectListActivity.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"fb").toBundle());
+                    startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                 }else {
                     startActivity(intent);
                 }

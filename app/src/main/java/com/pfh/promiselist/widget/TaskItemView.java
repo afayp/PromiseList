@@ -22,7 +22,7 @@ import com.pfh.promiselist.utils.Constant;
 import com.pfh.promiselist.utils.DateUtil;
 
 /**
- * Created by Administrator on 2016/12/11.
+ * 任务列表中的单条任务
  */
 
 public class TaskItemView extends LinearLayout {

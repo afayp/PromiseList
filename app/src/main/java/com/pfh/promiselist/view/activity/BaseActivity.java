@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.pfh.promiselist.event.MsgEvent;
+import com.pfh.promiselist.model.MsgEvent;
 import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.ScreenUtil;
 

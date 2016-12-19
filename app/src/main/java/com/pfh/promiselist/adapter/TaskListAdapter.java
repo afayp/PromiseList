@@ -8,12 +8,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.MultiItemModel;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.utils.Constant;
+import com.pfh.promiselist.widget.TaskItemTitle;
 import com.pfh.promiselist.widget.TaskItemView;
 
 import java.util.List;
@@ -73,18 +73,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
             return taskViewHolder;
         }else {
-            View textItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
-            final TextViewHolder textViewHolder = new TextViewHolder(textItem);
+            final View titleItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
+            final TitleViewHolder titleViewHolder = new TitleViewHolder(titleItem);
             // 点击title收起task
-            textItem.setOnClickListener(new View.OnClickListener() {
+            titleItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    titleViewHolder.task_title.toggle();//隐藏或显示数字
+                    //todo 收起或展开子任务
                     if (onItemClickListener != null){
-                        onItemClickListener.onItemClick(v,mData.get(textViewHolder.getLayoutPosition()),textViewHolder.getLayoutPosition());
+                        onItemClickListener.onItemClick(v,mData.get(titleViewHolder.getLayoutPosition()), titleViewHolder.getLayoutPosition());
                     }
                 }
             });
-            return textViewHolder;
+            return titleViewHolder;
         }
     }
 
@@ -95,8 +97,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Task task = (Task) mData.get(position).getData();
             ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
         }else {
-            String text = (String) mData.get(position).getData();
-            ((TextViewHolder)holder).tv_text.setText(text);
+            ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getData());
+            ((TitleViewHolder)holder).task_title.setNum("8");
         }
     }
 
@@ -115,11 +117,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    static class TextViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_text;
-        public TextViewHolder(View itemView) {
+    static class TitleViewHolder extends RecyclerView.ViewHolder {
+        TaskItemTitle task_title;
+        public TitleViewHolder(View itemView) {
             super(itemView);
-            tv_text = (TextView) itemView.findViewById(R.id.tv_text);
+            task_title = (TaskItemTitle) itemView.findViewById(R.id.task_title);
         }
     }
 

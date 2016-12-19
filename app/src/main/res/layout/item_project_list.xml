@@ -3,14 +3,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="20dp"
-    android:paddingBottom="20dp">
+    android:padding="5dp">
 
-    <com.pfh.promiselist.widget.TaskItemTitle
-        android:id="@+id/task_title"
+    <com.pfh.promiselist.widget.ProjectItemView
+        android:id="@+id/item_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-
 
 </LinearLayout>
