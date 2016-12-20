@@ -111,8 +111,10 @@ public class MainActivity extends BaseActivity {
         }else if (orderMode == Constant.ORDER_BY_PROJECT){
             //按清单排序
             for (int i = 0; i < selectedProjects.size(); i++) {
-                modelList.add(new MultiItemModel(Constant.ITEM_TYPE_PROJECT,selectedProjects.get(i).getName()));
                 List<Task> tasksByProjectId = RealmDB.getAllUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId());
+                MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
+                projectModel.setData(selectedProjects.get(i));
+                modelList.add(projectModel);
                 for (int j = 0; j < tasksByProjectId.size(); j++) {
                     modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasksByProjectId.get(j),selectedProjects.get(i).getName()));
                 }
@@ -167,13 +169,6 @@ public class MainActivity extends BaseActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
         mTaskListAdapter = new TaskListAdapter(mContext, modelList, orderMode);
-        mTaskListAdapter.setOnItemClickListener(new TaskListAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(View view, MultiItemModel model, int position) {
-                L.e("click" + position);
-
-            }
-        });
         CustomItemTouchHelpCallback callback = new CustomItemTouchHelpCallback(new CustomItemTouchHelpCallback.OnItemTouchCallbackListener() {
             @Override
             public void onSwiped(int adapterPosition) {
@@ -183,13 +178,11 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onMove(int srcPosition, int targetPosition) {
-                Log.e("TAG","srcPosition: "+srcPosition);
-                Log.e("TAG","targetPosition: "+targetPosition);
-//                if (modelList.get(srcPosition).getItemType() == Constant.ITEM_TYPE_TASK
-//                        && modelList.get(targetPosition).getItemType() == Constant.ITEM_TYPE_TASK){
-////                    mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
-//                    return true;
-//                }
+                if (modelList.get(targetPosition).getItemType() != Constant.ITEM_TYPE_TASK && !modelList.get(targetPosition).isExpand()){
+//                    modelList.get(targetPosition).setExpand(true);
+                    mTaskListAdapter.expandOrFoldTitle(targetPosition);
+                }
+                // 如果targetPosition 处于屏幕上下边界，为了方便，屏幕要向上或向下滚动 TODO
                 return changeDataByMode(srcPosition,targetPosition);
             }
         });
@@ -276,21 +269,16 @@ public class MainActivity extends BaseActivity {
         boolean success = false;
         MultiItemModel srcModel = modelList.get(srcPosition);
         MultiItemModel targetModel = modelList.get(targetPosition);
-        Task srctTask = (Task) srcModel.getData();//src肯定是task
+        Task srctTask = (Task) srcModel.getContent();//src肯定是task
         if (orderMode == Constant.ORDER_BY_DATE) {
             //交换时间 如果同在一个时间类别下，不修改数据，直接return true 意味着下次进来还是按原来的顺序排
             // 如果不在同一时间类别下，该变src的月和日，小时分钟保持不变。拖到以后加3天
             if (srcModel.getLabel().equals(targetModel.getLabel())
                     && srcModel.getItemType() == Constant.ITEM_TYPE_TASK
                     && targetModel.getItemType() == Constant.ITEM_TYPE_TASK){// 同类别下的task交换位置
-//                Collections.swap(modelList, srcPosition, targetPosition);
-//                mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
                 success = true;
-                Log.e("TAG","same label: "+srcModel.getLabel());
             }else {
-                String targetLabel = (String) targetModel.getData();//如果跨类别，第一个target一定是string
-                Log.e("TAG","0---srcLabel: "+srcModel.getLabel());
-                Log.e("TAG","0---targetLabel: "+targetLabel);
+                String targetLabel = (String) targetModel.getContent();//如果跨类别，第一个target一定是 date string 如果target在折叠状态下就不是了。。
                 if (targetLabel.equals("今天")){ // 今天下面的task向上移 显然不能移成功
                     success = false;
                 }else if (targetLabel.equals("明天")){
@@ -317,6 +305,31 @@ public class MainActivity extends BaseActivity {
             }
         }else if (orderMode == Constant.ORDER_BY_PROJECT) {
             //交换所属清单
+            if (srcModel.getLabel().equals(targetModel.getLabel()) && srcModel.getItemType() == Constant.ITEM_TYPE_TASK
+                    && targetModel.getItemType() == Constant.ITEM_TYPE_TASK){// 同类别下的task交换位置
+                success = true;
+            }else {
+                String targetLabel = (String) targetModel.getContent();//如果跨类别，第一个target一定是project string
+                if (targetPosition == 0){// 第一个清单不能移出去
+                    success = false;
+                }else {
+                    success = true;
+                    if (srcPosition < targetPosition){// 下移 要变成的label即是targetd的label
+                        srctTask.setProject((Project) targetModel.getData());
+                        srcModel.setLabel(targetModel.getLabel());
+                    }else {//上移，要变成的label是 target 上面的label
+                        if (modelList.get(targetPosition -1).getItemType() == Constant.ITEM_TYPE_TASK){
+//                            Task task = (Task) modelList.get(targetPosition-1).getContent();
+                            srctTask.setProject(((Task) modelList.get(targetPosition-1).getContent()).getProject());
+                            srcModel.setLabel(modelList.get(targetPosition -1).getLabel());
+                        }else {
+                            srctTask.setProject((Project) modelList.get(targetPosition-1).getData());
+                            srcModel.setLabel(modelList.get(targetPosition-1).getLabel());
+                        }
+                    }
+                }
+            }
+
         }else if (orderMode == Constant.ORDER_BY_IMPORTANCE) {
             //交换优先级
         }
@@ -325,9 +338,12 @@ public class MainActivity extends BaseActivity {
         if (success){
             RealmDB.refreshTask(mRealm,srctTask);
             mTaskListAdapter.notifyItemChanged(srcPosition);
+//            mTaskListAdapter.notifyItemChanged(targetPosition);
             Collections.swap(modelList, srcPosition, targetPosition);
             mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
-//            mTaskListAdapter.notifyItemChanged(targetPosition);
+            mTaskListAdapter.notifyTitleChanged(srcModel.getLabel());
+            mTaskListAdapter.notifyTitleChanged(targetModel.getLabel());
+//            mTaskListAdapter.notifyAllTitleChanged();
         }
 
         return success;

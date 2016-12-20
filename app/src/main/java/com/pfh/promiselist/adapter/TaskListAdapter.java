@@ -28,7 +28,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<MultiItemModel> mData;
     private int mOrderMode;
 
-    private onItemClickListener onItemClickListener;
     private ItemTouchHelper itemTouchHelper;
 
     public TaskListAdapter(Context mContext, List<MultiItemModel> mData, int mOrderMode) {
@@ -75,36 +74,81 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }else {
             final View titleItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
             final TitleViewHolder titleViewHolder = new TitleViewHolder(titleItem);
-            // 点击title收起task
-            titleItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    titleViewHolder.task_title.toggle();//隐藏或显示数字
-                    //todo 收起或展开子任务
-                    if (onItemClickListener != null){
-                        onItemClickListener.onItemClick(v,mData.get(titleViewHolder.getLayoutPosition()), titleViewHolder.getLayoutPosition());
-                    }
-                }
-            });
             return titleViewHolder;
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         int type = getItemViewType(position);
         if (type == Constant.ITEM_TYPE_TASK){
-            Task task = (Task) mData.get(position).getData();
+            Task task = (Task) mData.get(position).getContent();
             ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
+            ((TaskViewHolder)holder).task_item.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
+
         }else {
-            ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getData());
-            ((TitleViewHolder)holder).task_title.setNum("8");
+            ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getContent());
+//            ((TitleViewHolder)holder).task_title.setNum(mData.get(position).getTaskCount()+"");
+            ((TitleViewHolder)holder).task_title.setNum(getTypeCount(mData.get(position).getLabel())+"");
+            ((TitleViewHolder)holder).task_title.toggle(mData.get(position).isExpand() ? true : false);
+            ((TitleViewHolder)holder).task_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    expandOrFoldTitle(position);
+                }
+            });
         }
+    }
+
+    public void expandOrFoldTitle(int position){
+        String label = mData.get(position).getLabel();
+        mData.get(position).setExpand(!mData.get(position).isExpand());
+        int count = 0;
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getItemType() == Constant.ITEM_TYPE_TASK && mData.get(i).getLabel().equals(label)){
+                count++;
+                if (mData.get(position).isExpand()){
+                    //展开
+                    mData.get(i).setExpand(true);
+                }else {
+                    //收起
+                    mData.get(i).setExpand(false);
+                }
+            }
+        }
+        notifyItemRangeChanged(position,count+1);
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    private int getTypeCount(String label){
+        int count = 0;
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getItemType() == Constant.ITEM_TYPE_TASK && mData.get(i).getLabel().equals(label)){
+                count ++;
+            }
+        }
+        return count;
+    }
+
+    public void notifyTitleChanged(String label){
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getItemType() != Constant.ITEM_TYPE_TASK && mData.get(i).getLabel().equals(label)){
+                notifyItemChanged(i);
+            }
+        }
+
+    }
+
+    public void notifyAllTitleChanged(){
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getItemType() != Constant.ITEM_TYPE_TASK){
+                notifyItemChanged(i);
+            }
+        }
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -125,18 +169,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public interface onItemClickListener{
-        void onItemClick(View view ,MultiItemModel model,int position);
-//        void onItemLongClick(View view ,MultiItemModel model,int position);
-    }
-
-    public void setOnItemClickListener(onItemClickListener listener){
-        this.onItemClickListener = listener;
-    }
 
     public void setItemTouchHelper(ItemTouchHelper helper){
         this.itemTouchHelper = helper;
-
     }
 
 }

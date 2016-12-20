@@ -9,31 +9,50 @@ import com.pfh.promiselist.utils.Constant;
 public class MultiItemModel {
 
     private int itemType;
-    private Object data; // task 或者String
+    private Object content; // task 或者String
     private String label; // 所属的类别，今天、清单名、高
+    private boolean expand = true; // 是否展开(可见)，对title来标识是否显示子任务数 对task来标识是否gone
+    private Object data;// 保存真实类型 task,project,
 
-    public MultiItemModel(int itemType, Object data){
+    public MultiItemModel(int itemType, Object content){
         this.itemType = itemType;
-        this.data = data;
+        this.content = content;
     }
 
-    public MultiItemModel(int itemType, Object data,String label){
+    public MultiItemModel(int itemType, Object content, String label){
         this.itemType = itemType;
-        this.data = data;
+        this.content = content;
         this.label = label;
     }
 
-    public void setItemType(int itemType) {
-        this.itemType = itemType;
+    public Object getData() {
+        return data;
     }
 
     public void setData(Object data) {
         this.data = data;
     }
 
+
+    public boolean isExpand() {
+        return expand;
+    }
+
+    public void setExpand(boolean expand) {
+        this.expand = expand;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setContent(Object content) {
+        this.content = content;
+    }
+
     public String getLabel() {
         if (itemType != Constant.ITEM_TYPE_TASK){
-            return (String) data;// 非task label就是data
+            return (String) content;// 非task label就是content
         }
         return label;
     }
@@ -42,8 +61,8 @@ public class MultiItemModel {
         this.label = label;
     }
 
-    public Object getData(){
-        return data;
+    public Object getContent(){
+        return content;
     }
 
     public int getItemType(){
@@ -55,7 +74,7 @@ public class MultiItemModel {
     public String toString() {
         return "MultiItemModel{" +
                 "itemType=" + itemType +
-                ", data=" + data +
+                ", content=" + content +
                 '}';
     }
 }

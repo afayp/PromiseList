@@ -11,6 +11,10 @@ import com.pfh.promiselist.utils.DateUtil;
 
 public class SimulatedData {
 
+    public static String TODAY = "2016-12-20 23:30:00";
+    public static String TOMORROW = "2016-12-21 23:30:00";
+    public static String FEATURE = "2016-12-23 23:30:00";
+
     public static User getCurrentUser(){
 
         User user = new User();
@@ -61,7 +65,7 @@ public class SimulatedData {
         task1.setTaskId("task_1");
         task1.setOwner(getCurrentUser());
         task1.setState(1);
-        task1.setDueTime(DateUtil.str2Date("2016-12-19 23:30:00").getTime());
+        task1.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task1.setImportance(1);
         return task1;
     }
@@ -72,7 +76,7 @@ public class SimulatedData {
         task2.setTaskId("task_2");
         task2.setOwner(getCurrentUser());
         task2.setState(1);
-        task2.setDueTime(DateUtil.str2Date("2016-12-19 23:30:00").getTime());
+        task2.setDueTime(DateUtil.str2Date(FEATURE).getTime());
         task2.setImportance(2);
         return task2;
     }
@@ -83,7 +87,7 @@ public class SimulatedData {
         task3.setTaskId("task_3");
         task3.setOwner(getCurrentUser());
         task3.setState(1);
-        task3.setDueTime(DateUtil.str2Date("2016-12-19 13:30:00").getTime());
+        task3.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task3.setImportance(3);
         return task3;
     }
@@ -94,7 +98,7 @@ public class SimulatedData {
         task4.setTaskId("task_4");
         task4.setOwner(getCurrentUser());
         task4.setState(1);
-        task4.setDueTime(DateUtil.str2Date("2016-12-19 22:30:00").getTime());
+        task4.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task4.setImportance(1);
         return task4;
     }
@@ -104,7 +108,7 @@ public class SimulatedData {
         task5.setTaskId("task_5");
         task5.setOwner(getCurrentUser());
         task5.setState(1);
-        task5.setDueTime(DateUtil.str2Date("2016-12-19 22:30:00").getTime());
+        task5.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
         task5.setImportance(2);
         return task5;
     }
@@ -115,7 +119,7 @@ public class SimulatedData {
         task6.setTaskId("task_6");
         task6.setOwner(getCurrentUser());
         task6.setState(1);
-        task6.setDueTime(DateUtil.str2Date("2016-12-23 07:30:00").getTime());
+        task6.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
         task6.setImportance(3);
         return task6;
     }
@@ -126,7 +130,7 @@ public class SimulatedData {
         task7.setTaskId("task_7");
         task7.setOwner(getCurrentUser());
         task7.setState(1);
-        task7.setDueTime(DateUtil.str2Date("2016-12-20 14:00:00").getTime());
+        task7.setDueTime(DateUtil.str2Date(FEATURE).getTime());
         task7.setImportance(0);
         return task7;
     }
@@ -137,7 +141,7 @@ public class SimulatedData {
         task8.setTaskId("task_8");
         task8.setOwner(getCurrentUser());
         task8.setState(1);
-        task8.setDueTime(DateUtil.str2Date("2016-12-19 14:00:00").getTime());
+        task8.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task8.setImportance(3);
         return task8;
     }

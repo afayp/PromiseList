@@ -43,7 +43,6 @@ public class UserActivity extends BaseActivity implements AppBarLayout.OnOffsetC
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.e("TAG","verticalOffset: "+verticalOffset);
     }
 
 
