@@ -20,7 +20,6 @@
     </android.support.design.widget.AppBarLayout>
 
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
@@ -40,6 +39,6 @@
         app:fabSize="normal"
         android:layout_margin="10dp"
         app:layout_behavior="com.pfh.promiselist.utils.ScrollAwareFABBehavior"
-        android:transitionName="fb"/>
+        android:transitionName="add"/>
 
 </android.support.design.widget.CoordinatorLayout>

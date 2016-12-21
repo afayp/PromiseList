@@ -38,7 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="搜索任务"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:focusableInTouchMode="true"
+            android:focusable="true" />
     </LinearLayout>
 
     <ImageView

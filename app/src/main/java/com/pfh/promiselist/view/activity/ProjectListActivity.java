@@ -69,7 +69,19 @@ public class ProjectListActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectListActivity.this,UserActivity.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectListActivity.this,fb_add,"fb").toBundle());
+                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectListActivity.this,fb_add,"add").toBundle());
+                }else {
+                    startActivity(intent);
+                }
+            }
+        });
+
+        fb_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProjectListActivity.this,NewProjectActivity.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectListActivity.this,fb_add,"add").toBundle());
                 }else {
                     startActivity(intent);
                 }

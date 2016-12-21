@@ -252,7 +252,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSearch(String keyword) {
                 if (keyword.equals("")){
-                    recyclerview.setAdapter(new TaskListAdapter(mContext,modelList,orderMode));
+                    mTaskListAdapter.refreshData(modelList,orderMode);
                 }else {
                     searchResultTasks = RealmDB.searchTaskByKeyword(mRealm, keyword);
                     List<MultiItemModel> results = new ArrayList<MultiItemModel>();
@@ -260,6 +260,18 @@ public class MainActivity extends BaseActivity {
                         results.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,searchResultTasks.get(i)));
                     }
                     mTaskListAdapter.refreshData(results,orderMode);
+                }
+            }
+        });
+
+        fb_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,NewTaskActivity.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
+                }else {
+                    startActivity(intent);
                 }
             }
         });

@@ -29,6 +29,10 @@
 
         <activity android:name=".view.activity.UserActivity"/>
 
+        <activity android:name=".view.activity.NewProjectActivity"/>
+
+        <activity android:name=".view.activity.NewTaskActivity"/>
+
 
     </application>
 

@@ -75,6 +75,9 @@ public class MultiItemModel {
         return "MultiItemModel{" +
                 "itemType=" + itemType +
                 ", content=" + content +
+                ", label='" + label + '\'' +
+                ", expand=" + expand +
+                ", data=" + data +
                 '}';
     }
 }

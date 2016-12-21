@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.pfh.promiselist.R;
+import com.pfh.promiselist.utils.ImeUtil;
 
 /**
  * 主界面toolbar
@@ -57,6 +58,8 @@ public class TaskListToolbar extends LinearLayout {
                 iv_search.setVisibility(VISIBLE);
                 iv_sort.setVisibility(VISIBLE);
                 et_task.setText("");
+                et_task.clearFocus();
+                ImeUtil.hideSoftKeyboard(et_task);
 
             }
         });
@@ -69,6 +72,9 @@ public class TaskListToolbar extends LinearLayout {
                 et_task.setVisibility(VISIBLE);
                 iv_search.setVisibility(GONE);
                 iv_sort.setVisibility(GONE);
+
+                et_task.requestFocus();
+                ImeUtil.showSoftKeyboard(et_task);
             }
         });
 
@@ -85,7 +91,7 @@ public class TaskListToolbar extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                onSearchTaskListener.onSearch(s.toString());//// TODO: 2016/12/17 过滤多次请求
+                onSearchTaskListener.onSearch(s.toString());// TODO: 2016/12/17 过滤多次请求
             }
         });
     }

@@ -42,7 +42,7 @@
         app:fabSize="normal"
         android:layout_margin="10dp"
         app:layout_behavior="com.pfh.promiselist.utils.ScrollAwareFABBehavior"
-        android:transitionName="fb"/>
+        android:transitionName="add"/>
 
 </android.support.design.widget.CoordinatorLayout>
 
