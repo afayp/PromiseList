@@ -175,7 +175,32 @@ public class DateUtil {
     public static String getCurDateStr(String format) {
         Calendar c = Calendar.getInstance();
         return date2Str(c, format);
+    }
 
+    /**
+     * 获取明天日期的字符串
+     * @param format
+     * @return
+     */
+    public static String getTomorrowDateStr(String format){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_MONTH,c.get(Calendar.DAY_OF_MONTH)+1);
+        return date2Str(c,format);
+    }
+
+
+    /**
+     * 获取下周周一str
+     * @param format
+     * @return
+     */
+    public static String getNextMondayStr(String format){
+        Calendar c = Calendar.getInstance();
+        int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0)
+            day_of_week = 7;
+        c.add(Calendar.DATE, -day_of_week + 1+7);
+        return date2Str(c,format);
     }
 
 
