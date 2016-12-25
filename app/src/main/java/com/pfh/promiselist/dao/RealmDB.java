@@ -1,6 +1,7 @@
 package com.pfh.promiselist.dao;
 
 import com.pfh.promiselist.MyApplication;
+import com.pfh.promiselist.model.BgColor;
 import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.model.User;
@@ -13,8 +14,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-import static com.pfh.promiselist.utils.SPUtil.get;
 
 /**
  * 封装realm数据库的常用操作
@@ -45,7 +44,7 @@ public class RealmDB {
      * @return
      */
     public static String getCurrentUserId(){
-        return (String) get(MyApplication.getContext(),Constant.CURRENT_USERId,"");
+        return (String) SPUtil.get(MyApplication.getContext(),Constant.CURRENT_USERId,"");
     }
 
     /**
@@ -123,7 +122,7 @@ public class RealmDB {
      * @return 可能是active 或者inactive
      */
     public static Project getProjectByProjectId(Realm realm,String projectId){
-        return realm.where(Project.class).equalTo("projectId", projectId).findFirst();
+        return realm.copyFromRealm(realm.where(Project.class).equalTo("projectId", projectId).findFirst());
     }
 
     /**
@@ -202,7 +201,7 @@ public class RealmDB {
      * @param realm
      * @param task
      */
-    public static void saveTask(Realm realm, String projectId, final Task task){
+    public static void saveTaskToProject(Realm realm, String projectId, final Task task){
         //找到当前project
         final Project project = realm.where(Project.class)
                 .equalTo("owner.uid", getCurrentUserId())
@@ -226,7 +225,7 @@ public class RealmDB {
      * @return
      */
     public static Task getTaskByTaskId(Realm realm,String taskId){
-        return realm.where(Task.class).equalTo("taskId", taskId).findFirst();
+        return realm.copyFromRealm(realm.where(Task.class).equalTo("taskId", taskId).findFirst());
     }
 
 
@@ -369,16 +368,32 @@ public class RealmDB {
     }
 
     /**
-     * 刷新某条task
+     * 刷新某条task 注意这里是刷新全部字段 比较耗资源滴
      * @param realm
      * @param newTask
      */
     public static void refreshTask(Realm realm,Task newTask){
         Task oldTask = realm.where(Task.class).equalTo("taskId", newTask.getTaskId()).findFirst();
         realm.beginTransaction();
-        oldTask = newTask;
+
+        realm.copyToRealmOrUpdate(newTask);
+//        oldTask.setName(newTask.getName());
+//        oldTask.setDueTime(newTask.getDueTime());
+//        oldTask.setRemindMode(newTask.isRemindMode());
+//        oldTask.setRemindTime(newTask.getRemindTime());
+//        oldTask.setDesc(newTask.getDesc());
+//        oldTask.setState(newTask.getState());
+//        oldTask.setRepeatMode(newTask.getRepeatMode());
+//        oldTask.setRepeatTime(newTask.getRepeatTime());
+//
+//        oldTask.setProject(newTask.getProject());// todo
+//        oldTask.setTags(newTask.getTags());// todo
+//        oldTask.setBgColor(newTask.getBgColor());// todo
+//        oldTask.setOwner(newTask.getOwner());//todo
+//        oldTask.setCooperators(newTask.getCooperators()); // todo
         realm.commitTransaction();
     }
+
 
     //********************Tag相关********************//
 
@@ -390,6 +405,37 @@ public class RealmDB {
     public static void getAllTagsByUserId(Realm realm,String uid){
 
 
+    }
+
+
+    //********************Color相关********************//
+
+    public static List<BgColor> getAllBgColor(Realm realm , String uid) {
+        return realm.copyFromRealm(realm.where(BgColor.class).findAll());
+    }
+
+    public static void saveBgColor(Realm realm , final BgColor bgColor) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(bgColor);
+            }
+        });
+    }
+
+    public static void saveBgColors(Realm realm , final List<BgColor> bgColors) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                for (int i = 0; i < bgColors.size(); i++) {
+                    realm.copyToRealm(bgColors.get(i));
+                }
+            }
+        });
+    }
+
+    public static BgColor getBgColorByName(Realm realm ,String name) {
+        return realm.copyFromRealm(realm.where(BgColor.class).equalTo("chineseName",name).or().equalTo("englishName",name).findFirst());
     }
 
 

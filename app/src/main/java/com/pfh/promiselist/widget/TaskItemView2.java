@@ -1,70 +1,59 @@
 package com.pfh.promiselist.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.Task;
-import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.Constant;
 import com.pfh.promiselist.utils.DateUtil;
 
 /**
- * 任务列表中的单条任务
+ * Created by Administrator on 2016/12/25 0025.
  */
 
-public class TaskItemView extends LinearLayout {
-
-    private LinearLayout ll_content;
-    private ImageView iv_icon;
-    private TextView tv_title;
-    private TextView tv_info;
-    private View view_importance1;
-    private View view_importance2;
-    private LinearLayout ll_setting;
-
-    private boolean expand;//是否展开状态
+public class TaskItemView2 extends LinearLayout {
     private Context mContext;
     private Task mTask;
     private int mOrderMode;
+    private LinearLayout ll_root;
+    private TextView tv_title;
+    private TextView tv_info;
+    private CardView cardview;
+    private LinearLayout ll_setting;
     private int parentWidthMeasureSpec;
     private int parentHeightMeasureSpec;
-    private int animationTime = 250;
+    private boolean expand;
+    private int animationTime = 200;
 
-    public TaskItemView(Context context) {
+    public TaskItemView2(Context context) {
         this(context,null);
     }
 
-    public TaskItemView(Context context, AttributeSet attrs) {
+    public TaskItemView2(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public TaskItemView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaskItemView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_task_item_view, this, true);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_task_item_view_2, this, true);
         findViews(view);
     }
 
     private void findViews(View view) {
+        cardview = (CardView) view.findViewById(R.id.cardview);
+        ll_root = (LinearLayout) view.findViewById(R.id.ll_root);
         tv_title = (TextView) view.findViewById(R.id.tv_title);
         tv_info = (TextView) view.findViewById(R.id.tv_info);
-        ll_content = (LinearLayout) view.findViewById(R.id.ll_content);
-        iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
-        view_importance1 = view.findViewById(R.id.view_importance1);
-        view_importance2 = view.findViewById(R.id.view_importance2);
         ll_setting = (LinearLayout) view.findViewById(R.id.ll_setting);
     }
 
@@ -75,6 +64,7 @@ public class TaskItemView extends LinearLayout {
     }
 
     private void initView() {
+
         tv_title.setText(mTask.getName());
         if (mOrderMode == Constant.ORDER_BY_DATE){
             tv_info.setText("#"+mTask.getProject().getName() +" | " + getStrByTime(mTask.getDueTime()) );
@@ -91,16 +81,27 @@ public class TaskItemView extends LinearLayout {
             time = DateUtil.timeStamp2Str(mTask.getDueTime(),"HH:mm");
             tv_info.setText(date +" " +time);
         }
-        int color = ColorsUtil.SKYBLUE;
-//        if (mTask.getImportance() == 1){
-//            color = ColorsUtil.BLUE_LIGHT;
-//        }else if (mTask.getImportance() == 2){
-//            color = ColorsUtil.SKYBLUE;
-//        }else if (mTask.getImportance() == 3){
-//            color = ColorsUtil.RED;
+        //其他设置...
+        cardview.setCardBackgroundColor(Color.parseColor(mTask.getBgColor().getValue()));
+
+//        switch (mTask.getImportance()){
+//            case 1:
+//                cardview.setCardBackgroundColor(getResources().getColor(R.color.importance_low));
+//                break;
+//            case 2:
+//                cardview.setCardBackgroundColor(getResources().getColor(R.color.importance_normal));
+//                break;
+//            case 3:
+//                cardview.setCardBackgroundColor(getResources().getColor(R.color.importance_high));
+//                break;
 //        }
-        view_importance1.setBackgroundColor(color);
-        view_importance2.setBackgroundColor(color);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        parentWidthMeasureSpec = widthMeasureSpec;
+        parentHeightMeasureSpec = heightMeasureSpec;
     }
 
     public void toggleView(){
@@ -112,17 +113,10 @@ public class TaskItemView extends LinearLayout {
         }
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        parentWidthMeasureSpec = widthMeasureSpec;
-        parentHeightMeasureSpec = heightMeasureSpec;
-    }
-
     private void expand(final View view){
         view.measure(parentWidthMeasureSpec,parentHeightMeasureSpec);
-        final int measuredWidth = view.getMeasuredWidth();
-        final int measuredHeight = view.getMeasuredHeight();
+        int measuredWidth = view.getMeasuredWidth();
+        int measuredHeight = view.getMeasuredHeight();
         view.setVisibility(VISIBLE);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, measuredHeight);
@@ -156,47 +150,6 @@ public class TaskItemView extends LinearLayout {
             }
         });
         animator.start();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void revealShow(View view){
-        // get the center for the clipping circle
-        int cx = (view.getLeft() + view.getRight()) / 2;
-        int cy = (view.getTop() + view.getBottom()) / 2;
-
-        // get the final radius for the clipping circle
-        int finalRadius = Math.max(view.getWidth(), view.getHeight());
-
-        // create the animator for this view (the start radius is zero)
-        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, 0, finalRadius);
-
-        // make the view visible and start the animation
-        view.setVisibility(View.VISIBLE);
-        anim.start();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void revealHide(final View view){
-        // get the center for the clipping circle
-        int cx = (view.getLeft() + view.getRight()) / 2;
-        int cy = (view.getTop() + view.getBottom()) / 2;
-
-        // get the initial radius for the clipping circle
-        int initialRadius = view.getWidth();
-
-        // create the animation (the final radius is zero)
-        Animator anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0);
-
-        // make the view invisible when the animation is done
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                view.setVisibility(View.GONE);
-            }
-        });
-        // start the animation
-        anim.start();
     }
 
     private String getStrByTime(long time){

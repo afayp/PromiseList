@@ -15,6 +15,7 @@ import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.utils.Constant;
 import com.pfh.promiselist.widget.TaskItemTitle;
 import com.pfh.promiselist.widget.TaskItemView;
+import com.pfh.promiselist.widget.TaskItemView2;
 
 import java.util.List;
 
@@ -50,27 +51,28 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == Constant.ITEM_TYPE_TASK){
-            View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type, parent, false);
-            final TaskViewHolder taskViewHolder = new TaskViewHolder(taskItem);
-            // 长按开启拖动
+            View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type_2, parent, false);
+            final TaskView2Holder taskView2Holder = new TaskView2Holder(taskItem);
+
             taskItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    taskViewHolder.task_item.toggleView();
+                    taskView2Holder.task_item_2.toggleView();
                 }
             });
+
             taskItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if (itemTouchHelper != null){
-                        itemTouchHelper.startDrag(taskViewHolder);
+                        itemTouchHelper.startDrag(taskView2Holder);
                         Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
                         vibrator.vibrate(70);
                     }
                     return true;
                 }
             });
-            return taskViewHolder;
+            return taskView2Holder;
         }else {
             final View titleItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
             final TitleViewHolder titleViewHolder = new TitleViewHolder(titleItem);
@@ -83,8 +85,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int type = getItemViewType(position);
         if (type == Constant.ITEM_TYPE_TASK){
             Task task = (Task) mData.get(position).getContent();
-            ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
-            ((TaskViewHolder)holder).task_item.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
+//            ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
+//            ((TaskViewHolder)holder).task_item.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
+            ((TaskView2Holder)holder).task_item_2.setData(task,mOrderMode);
+            ((TaskView2Holder)holder).task_item_2.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
 
         }else {
             ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getContent());
@@ -117,6 +121,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         notifyItemRangeChanged(position,count+1);
+    }
+
+    //找到该task的title,展开该title,注意是向上找
+    public void expandTaskOfTitle(int position){
+        for (int i = position; i >= 0 ; i--) {
+            if (mData.get(i).getItemType() != Constant.ITEM_TYPE_TASK && mData.get(i).getLabel().equals(mData.get(position).getLabel())){
+                expandOrFoldTitle(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -166,6 +180,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TitleViewHolder(View itemView) {
             super(itemView);
             task_title = (TaskItemTitle) itemView.findViewById(R.id.task_title);
+        }
+    }
+
+    static class TaskView2Holder extends RecyclerView.ViewHolder {
+
+        TaskItemView2 task_item_2;
+
+        public TaskView2Holder(View itemView) {
+            super(itemView);
+            task_item_2 = (TaskItemView2) itemView.findViewById(R.id.task_item_2);
         }
     }
 

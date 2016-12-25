@@ -1,7 +1,6 @@
 package com.pfh.promiselist.adapter;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -148,8 +147,8 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
      */
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
+        if (onItemTouchCallbackListener != null) {
+            onItemTouchCallbackListener.onSelectedChanged(viewHolder,actionState);
         }
         super.onSelectedChanged(viewHolder, actionState);
     }
@@ -162,7 +161,9 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
-        viewHolder.itemView.setBackgroundColor(0);
+        if (onItemTouchCallbackListener != null) {
+            onItemTouchCallbackListener.onRelease(viewHolder);
+        }
     }
 
     @Override
@@ -186,5 +187,9 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
          * @return 开发者处理了操作应该返回true，开发者没有处理就返回false,恢复原来状态
          */
         boolean onMove(int srcPosition, int targetPosition);
+
+        void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState);
+
+        void onRelease(RecyclerView.ViewHolder viewHolder);
     }
 }

@@ -1,6 +1,7 @@
 package com.pfh.promiselist.view.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity {
     private List<MultiItemModel> modelList = new ArrayList<>();// 更具排序模式处理过的数据
     private List<Task> searchResultTasks = new ArrayList<>();
     private TaskListAdapter mTaskListAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
-        initSimulatedData();// todo 自动把早于今天 但是未完成的任务提到今天 避免出现未完成又过期的任务
+//        initSimulatedData();// todo
         initSymbol();
         loadData();
         initViews();
@@ -67,6 +69,7 @@ public class MainActivity extends BaseActivity {
     private void initSymbol() {
         orderMode = (int) SPUtil.get(mContext, Constant.LAST_ORDER_MODE,Constant.ORDER_BY_DATE);
         selectedProjectId = (String) SPUtil.get(mContext,Constant.LAST_SELECTED_PROJECT,"");
+        Log.e("TAG","selectedProjectId: " +selectedProjectId);
     }
 
     /**
@@ -89,6 +92,7 @@ public class MainActivity extends BaseActivity {
             for (int i = 0; i < selectedProjects.size(); i++) {
                 allTasks.addAll(RealmDB.getAllUncompletedTasksByProjectId(mRealm,selectedProjects.get(i).getProjectId()));
             }
+            Log.e("TAG","allTasks size: "+allTasks.size());
             List<MultiItemModel> today = new ArrayList<>();
             List<MultiItemModel> tomorrow = new ArrayList<>();
             List<MultiItemModel> future = new ArrayList<>();
@@ -101,6 +105,7 @@ public class MainActivity extends BaseActivity {
                     future.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"未来"));
                 }
             }
+
             modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"今天"));
             modelList.addAll(today);
             modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"明天"));
@@ -120,30 +125,31 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }else if (orderMode == Constant.ORDER_BY_IMPORTANCE){
-            List<Task> allTasks = new ArrayList<>();
-            for (int i = 0; i < selectedProjects.size(); i++) {
-                allTasks.addAll(RealmDB.getAllUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId()));
-            }
-
-            List<MultiItemModel> high = new ArrayList<>();
-            List<MultiItemModel> normal = new ArrayList<>();
-            List<MultiItemModel> low = new ArrayList<>();
-            for (int i = 0; i < allTasks.size(); i++) {
-                if (allTasks.get(i).getImportance() == 3){
-                    high.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"高"));
-                }else if (allTasks.get(i).getImportance() == 2){
-                    normal.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"正常"));
-                }else if (allTasks.get(i).getImportance() == 1){
-                    low.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"低"));
-                }
-            }
-
-            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"高"));
-            modelList.addAll(high);
-            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"正常"));
-            modelList.addAll(normal);
-            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"低"));
-            modelList.addAll(low);
+            //取消的优先级 改成按颜色排序 TODO
+//            List<Task> allTasks = new ArrayList<>();
+//            for (int i = 0; i < selectedProjects.size(); i++) {
+//                allTasks.addAll(RealmDB.getAllUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId()));
+//            }
+//
+//            List<MultiItemModel> high = new ArrayList<>();
+//            List<MultiItemModel> normal = new ArrayList<>();
+//            List<MultiItemModel> low = new ArrayList<>();
+//            for (int i = 0; i < allTasks.size(); i++) {
+//                if (allTasks.get(i).getImportance() == 3){
+//                    high.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"高"));
+//                }else if (allTasks.get(i).getImportance() == 2){
+//                    normal.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"正常"));
+//                }else if (allTasks.get(i).getImportance() == 1){
+//                    low.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"低"));
+//                }
+//            }
+//
+//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"高"));
+//            modelList.addAll(high);
+//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"正常"));
+//            modelList.addAll(normal);
+//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"低"));
+//            modelList.addAll(low);
         }
 
         for (int i = 0; i < modelList.size(); i++) {
@@ -155,6 +161,7 @@ public class MainActivity extends BaseActivity {
     private void loadProjects() {
         if (selectedProjectId.equals("")){
             selectedProjects = RealmDB.getAllActiveProjectsByUserId(mRealm, RealmDB.getCurrentUserId());
+            Log.e("TAG","selectedProjects size: " + selectedProjects.size());
         }else {
             selectedProjects.add(RealmDB.getProjectByProjectId(mRealm,selectedProjectId));
         }
@@ -165,7 +172,7 @@ public class MainActivity extends BaseActivity {
         fb_add = (FloatingActionButton) findViewById(R.id.fb_add);
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerview.setItemAnimator(new DefaultItemAnimator());
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
         mTaskListAdapter = new TaskListAdapter(mContext, modelList, orderMode);
@@ -178,12 +185,61 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onMove(int srcPosition, int targetPosition) {
-                if (modelList.get(targetPosition).getItemType() != Constant.ITEM_TYPE_TASK && !modelList.get(targetPosition).isExpand()){
+                Log.e("TAG","src: "+srcPosition);
+                Log.e("TAG","tar: "+targetPosition);
+                if (srcPosition < targetPosition) {
+                    //向下
+                    if (modelList.get(targetPosition).getItemType() != Constant.ITEM_TYPE_TASK && !modelList.get(targetPosition).isExpand()){
 //                    modelList.get(targetPosition).setExpand(true);
-                    mTaskListAdapter.expandOrFoldTitle(targetPosition);
+                        mTaskListAdapter.expandOrFoldTitle(targetPosition);
+                    }
+                }else {
+                    //向上 targetPosition肯定是本title,所以要去判断再上面title是否展开，
+                    if (targetPosition - 1 < 0 ) return false;
+                    if ( modelList.get(targetPosition - 1).getItemType() != Constant.ITEM_TYPE_TASK
+                            && !modelList.get(targetPosition - 1).isExpand()){//如果是title,则该title下的task一个为0，没展开则展开(只为显示数字..)
+                        mTaskListAdapter.expandOrFoldTitle(targetPosition-1);
+                    }else if (!modelList.get(targetPosition - 1).isExpand()){//如果是task,并且没有展开，则找到task的title,展开
+                        mTaskListAdapter.expandTaskOfTitle(targetPosition - 1);
+                    }
                 }
-                // 如果targetPosition 处于屏幕上下边界，为了方便，屏幕要向上或向下滚动 TODO
+//                // 如果targetPosition 处于屏幕上下边界，为了方便，屏幕要向上或向下滚动 TODO
+//                if (targetPosition - 2 < linearLayoutManager.findFirstCompletelyVisibleItemPosition() && srcPosition > targetPosition ) {
+//                    //向上
+//                    recyclerview.scrollToPosition(targetPosition -2 == 0 ? 0 : targetPosition -2 );
+//                    Log.e("TAG","smoothScrollToPosition up");
+//
+//                }else if (targetPosition + 2 > linearLayoutManager.findLastCompletelyVisibleItemPosition()){
+//                    //向下
+//                    recyclerview.scrollToPosition(linearLayoutManager.findFirstCompletelyVisibleItemPosition() + 2);
+//                    Log.e("TAG","smoothScrollToPosition down");
+//
+//                }
                 return changeDataByMode(srcPosition,targetPosition);
+                // 先处理拖动 release的时候在处理数据和刷新view,否则太卡
+//                Collections.swap(modelList, srcPosition, targetPosition);
+//                mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
+//                return true;
+            }
+
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                 if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+                    viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
+                     Log.e("TAG","onSelectedChanged " +viewHolder.getAdapterPosition());
+                     Log.e("TAG","onSelectedChanged " +viewHolder.getLayoutPosition());
+                 }
+            }
+
+            @Override
+            public void onRelease(RecyclerView.ViewHolder viewHolder) {
+                viewHolder.itemView.setBackgroundColor(0);
+                if (modelList.get(viewHolder.getLayoutPosition()).getItemType() == Constant.ITEM_TYPE_TASK) {
+                    Task task = (Task) modelList.get(viewHolder.getLayoutPosition()).getContent();
+                    RealmDB.refreshTask(mRealm,task);
+                }
+                Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
+                Log.e("TAG","release " +viewHolder.getLayoutPosition());
             }
         });
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -348,7 +404,7 @@ public class MainActivity extends BaseActivity {
         Log.e("TAG","success: "+success);
 
         if (success){
-            RealmDB.refreshTask(mRealm,srctTask);
+//            RealmDB.refreshTask(mRealm,srctTask); // release的时候统一刷新
             mTaskListAdapter.notifyItemChanged(srcPosition);
 //            mTaskListAdapter.notifyItemChanged(targetPosition);
             Collections.swap(modelList, srcPosition, targetPosition);
@@ -368,13 +424,16 @@ public class MainActivity extends BaseActivity {
         RealmDB.saveProject(mRealm,SimulatedData.getWorkProject());
         RealmDB.saveProject(mRealm,SimulatedData.getReadProject());
         RealmDB.saveProject(mRealm,SimulatedData.getTravelProject());
-        RealmDB.saveTask(mRealm,"project_111",SimulatedData.getTask1());
-        RealmDB.saveTask(mRealm,"project_111",SimulatedData.getTask2());
-        RealmDB.saveTask(mRealm,"project_222",SimulatedData.getTask3());
-        RealmDB.saveTask(mRealm,"project_333",SimulatedData.getTask4());
-        RealmDB.saveTask(mRealm,"project_333",SimulatedData.getTask5());
-        RealmDB.saveTask(mRealm,"project_333",SimulatedData.getTask6());
-        RealmDB.saveTask(mRealm,"project_111",SimulatedData.getTask7());
-        RealmDB.saveTask(mRealm,"project_222",SimulatedData.getTask8());
+        RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask1());
+        RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask2());
+        RealmDB.saveTaskToProject(mRealm,"project_222",SimulatedData.getTask3());
+        RealmDB.saveTaskToProject(mRealm,"project_333",SimulatedData.getTask4());
+        RealmDB.saveTaskToProject(mRealm,"project_333",SimulatedData.getTask5());
+        RealmDB.saveTaskToProject(mRealm,"project_333",SimulatedData.getTask6());
+        RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask7());
+        RealmDB.saveTaskToProject(mRealm,"project_222",SimulatedData.getTask8());
+        RealmDB.saveBgColor(mRealm,SimulatedData.getHighBgColor());
+        RealmDB.saveBgColor(mRealm,SimulatedData.getNormalBgColor());
+        RealmDB.saveBgColor(mRealm,SimulatedData.getLowBgColor());
     }
 }

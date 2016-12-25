@@ -1,6 +1,7 @@
 package com.pfh.promiselist.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import com.pfh.promiselist.R;
 import com.pfh.promiselist.dao.RealmDB;
 import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Task;
-import com.pfh.promiselist.utils.ColorsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,13 +103,16 @@ public class ProjectItemView extends LinearLayout {
             }else if (tasks.get(i).getState() == 1){
                 cb.setChecked(false);//未完成
             }
-            if (tasks.get(i).getImportance() == 1){
-                cb.setTextColor(ColorsUtil.BLUE_LIGHT);
-            }else if (tasks.get(i).getImportance() == 2){
-                cb.setTextColor(ColorsUtil.SKYBLUE);
-            }else if (tasks.get(i).getImportance() == 3){
-                cb.setTextColor(ColorsUtil.RED);
-            }
+
+            cb.setTextColor(Color.parseColor(tasks.get(i).getBgColor().getValue()));
+
+//            if (tasks.get(i).getImportance() == 1){
+//                cb.setTextColor(ColorsUtil.BLUE_LIGHT);
+//            }else if (tasks.get(i).getImportance() == 2){
+//                cb.setTextColor(ColorsUtil.SKYBLUE);
+//            }else if (tasks.get(i).getImportance() == 3){
+//                cb.setTextColor(ColorsUtil.RED);
+//            }
             checkBoxList.add(cb);
             ll_tasks.addView(cb);
         }

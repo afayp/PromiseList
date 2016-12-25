@@ -4,13 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="85dp"
+    android:layout_height="75dp"
     android:background="@drawable/rectangle_corner_shape">
 
     <LinearLayout
         android:id="@+id/ll_1"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="75dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/tv_today_date"
@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/tv_tomorrow_date"
@@ -84,8 +84,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/tv_next_week_date"
@@ -115,8 +115,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
 
             <TextView
                 android:id="@+id/tv_custom_date"
@@ -248,6 +248,7 @@
             android:paddingBottom="10dp">
 
             <TextView
+                android:id="@+id/tv_custom_time"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="/"

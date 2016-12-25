@@ -42,6 +42,7 @@ dependencies {
     compile dependencies.baseRecyclerViewAdapterHelper
     compile dependencies.materialDialogs
     compile dependencies.materialedittext
+    compile dependencies.sublimepicker
 
 
     testCompile dependencies.jUnit

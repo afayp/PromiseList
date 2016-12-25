@@ -158,7 +158,7 @@ public class SmoothSwitch extends CompoundButton {
 	
 	static class Default {
 		static final int DEFAULT_SIZE_DP = 20;//高度
-		static final int DEFAULT_THUMB_OFF_COLOR = 0xffececec;// Color.parseColor("#E3E3E3");
+		static final int DEFAULT_THUMB_OFF_COLOR = 0xffececec;// BgColor.parseColor("#E3E3E3");
 		static final int DEFAULT_THUMB_ON_COLOR = 0xff009688;// 0xff43d95d;//#02BFE7
 		static final int DEFAULT_TRACK_OFF_COLOR = 0x4cececec;// getThemeAttrColor(R.attr.colorForeground, 0.3f);
 		static final int DEFAULT_TRACK_ON_COLOR = 0x4c009688;//alpha=0.3f=0x4c getThemeAttrColor(R.attr.colorControlActivated, 0.3f);
@@ -1304,7 +1304,7 @@ public class SmoothSwitch extends CompoundButton {
 //
 //	    int getThemeAttrColor(int attr, float alpha) {
 //	        final int color = getThemeAttrColor(attr);
-//	        final int originalAlpha = Color.alpha(color);
+//	        final int originalAlpha = BgColor.alpha(color);
 //
 //	        // Return the color, multiplying the original alpha by the disabled value
 //	        return (color & 0x00ffffff) | (Math.round(originalAlpha * alpha) << 24);

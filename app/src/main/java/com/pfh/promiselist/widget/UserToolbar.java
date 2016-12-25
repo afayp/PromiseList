@@ -13,6 +13,10 @@ import com.pfh.promiselist.R;
  */
 
 public class UserToolbar extends LinearLayout {
+
+    private ImageView iv_back;
+    private ImageView iv_edit;
+
     public UserToolbar(Context context) {
         this(context,null);
     }
@@ -28,7 +32,15 @@ public class UserToolbar extends LinearLayout {
 
     private void initView(Context context) {
         LayoutInflater.from(context).inflate(R.layout.layout_user_toolbar,this,true);
-        ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
-        ImageView iv_edit = (ImageView) findViewById(R.id.iv_edit);
+        iv_back = (ImageView) findViewById(R.id.iv_back);
+        iv_edit = (ImageView) findViewById(R.id.iv_edit);
+    }
+
+    public void setBackListener(OnClickListener listener){
+        iv_back.setOnClickListener(listener);
+    }
+
+    public void setEditListener(OnClickListener listener) {
+        iv_edit.setOnClickListener(listener);
     }
 }

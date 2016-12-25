@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:padding="5dp"
+    android:background="@drawable/rectangle_shadow_layer_list"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="工作"
+        android:paddingTop="10dp"/>
+
+</LinearLayout>

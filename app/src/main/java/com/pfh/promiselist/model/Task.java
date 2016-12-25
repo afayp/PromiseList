@@ -13,23 +13,40 @@ public class Task extends RealmObject {
     @PrimaryKey
     private String taskId; // 任务唯一标识 task_UuidUtils.getShortUuid() 如 task_pCoApzyH
     private String name;
-    private long startTime;
+    private long startTime;// 默认当前时间
     private long dueTime;
-    private long createdTime; // 创建时间
+    private long createdTime; // 创建时间 默认当前时间
     private Project project; // 所属的project
     private boolean remindMode;// 是否开启提醒
     private long remindTime;// 结束前几分钟提醒
-    private int importance; // 低1、正常2、高3
+//    private int importance; // 低1、正常2、高3 默认正常2 取消 改成用颜色区分 更灵活更好看
     private RealmList<Tag> tags;
-    private String iconUrl;
+    private BgColor bgColor; // 背景用哪个颜色，可以选择和自定义
     private String desc;
     private User owner;
     private RealmList<User> cooperators;
     private int state;//1表示未完成uncompleted，2表示已完成completed，0表示已删除(进回收站)deleted
 
-//    private int repeatMode;
-//    private long repeatTime;
+    private String repeatMode; // NOREPEAT、DAILY、WEEKLY、MONTHLY、YEARLY
+    private long repeatTime; //一个确切的时间，在创建任务时确定，根据repeatMode和repeatTime算出某天是否符合
+                            // (如WEEKLY，算出repeatTime为周几，则下面的每周几都要重复该任务；如MONTHLY，算出repeatTime为几号，则下面每个月几号都要重复)，
+                            //如果符合则创建该任务到任务列表
 
+    public String getRepeatMode() {
+        return repeatMode;
+    }
+
+    public void setRepeatMode(String repeatMode) {
+        this.repeatMode = repeatMode;
+    }
+
+    public long getRepeatTime() {
+        return repeatTime;
+    }
+
+    public void setRepeatTime(long repeatTime) {
+        this.repeatTime = repeatTime;
+    }
 
     public String getTaskId() {
         return taskId;
@@ -95,13 +112,13 @@ public class Task extends RealmObject {
         this.remindTime = remindTime;
     }
 
-    public int getImportance() {
-        return importance;
-    }
-
-    public void setImportance(int importance) {
-        this.importance = importance;
-    }
+//    public int getImportance() {
+//        return importance;
+//    }
+//
+//    public void setImportance(int importance) {
+//        this.importance = importance;
+//    }
 
     public RealmList<Tag> getTags() {
         return tags;
@@ -111,13 +128,6 @@ public class Task extends RealmObject {
         this.tags = tags;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
 
     public String getDesc() {
         return desc;
@@ -151,6 +161,14 @@ public class Task extends RealmObject {
         this.state = state;
     }
 
+    public BgColor getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(BgColor bgColor) {
+        this.bgColor = bgColor;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -162,13 +180,14 @@ public class Task extends RealmObject {
                 ", project=" + project +
                 ", remindMode=" + remindMode +
                 ", remindTime=" + remindTime +
-                ", importance=" + importance +
                 ", tags=" + tags +
-                ", iconUrl='" + iconUrl + '\'' +
+                ", bgColor=" + bgColor +
                 ", desc='" + desc + '\'' +
                 ", owner=" + owner +
                 ", cooperators=" + cooperators +
                 ", state=" + state +
+                ", repeatMode='" + repeatMode + '\'' +
+                ", repeatTime=" + repeatTime +
                 '}';
     }
 }

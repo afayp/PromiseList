@@ -2,6 +2,8 @@ package com.pfh.promiselist.model;
 
 import com.pfh.promiselist.utils.Constant;
 
+import java.util.List;
+
 /**
  * 用于recyclerview中的数据源
  */
@@ -13,16 +15,32 @@ public class MultiItemModel {
     private String label; // 所属的类别，今天、清单名、高
     private boolean expand = true; // 是否展开(可见)，对title来标识是否显示子任务数 对task来标识是否gone
     private Object data;// 保存真实类型 task,project,
+    private List<MultiItemModel> childern;
 
     public MultiItemModel(int itemType, Object content){
         this.itemType = itemType;
         this.content = content;
     }
 
+    public MultiItemModel(int itemType, Object content, List<MultiItemModel> childern) {
+        this.itemType = itemType;
+        this.content = content;
+        this.childern = childern;
+    }
+
+    // for task
     public MultiItemModel(int itemType, Object content, String label){
         this.itemType = itemType;
         this.content = content;
         this.label = label;
+    }
+
+    public List<MultiItemModel> getChildern() {
+        return childern;
+    }
+
+    public void setChildern(List<MultiItemModel> childern) {
+        this.childern = childern;
     }
 
     public Object getData() {

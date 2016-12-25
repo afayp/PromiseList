@@ -119,7 +119,6 @@ public class Project extends RealmObject {
                 ", category='" + category + '\'' +
                 ", backgroundUrl='" + backgroundUrl + '\'' +
                 ", desc='" + desc + '\'' +
-                ", tasks=" + tasks +
                 ", owner=" + owner +
                 ", cooperators=" + cooperators +
                 ", state=" + state +

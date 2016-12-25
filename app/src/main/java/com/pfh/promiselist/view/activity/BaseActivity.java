@@ -6,9 +6,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.transition.Explode;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,6 +40,15 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         mRealm = Realm.getDefaultInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            getWindow().setEnterTransition(new Explode());
+//            getWindow().setEnterTransition(new Slide());
+//            getWindow().setEnterTransition(new Fade());
+            getWindow().setExitTransition(new Explode());
+//            getWindow().setExitTransition(new Slide());
+//            getWindow().setExitTransition(new Fade());
+        }
 
     }
 
@@ -90,6 +101,14 @@ public class BaseActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= 21){
                 getWindow().setStatusBarColor(ColorsUtil.SKYBLUE_DARK_TRANSLUCENT);
             }
+        }
+    }
+
+    protected void exitActivity(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        }else {
+            finish();
         }
     }
 

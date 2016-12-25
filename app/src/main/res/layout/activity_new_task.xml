@@ -5,14 +5,16 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/rl_bg"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="220dp"
         android:orientation="vertical"
         android:background="@drawable/bg3">
 
         <include layout="@layout/layout_new_project_task_toolbar"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/et_title"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="我想..."
@@ -22,21 +24,24 @@
             android:textColor="@color/white"
             android:layout_marginBottom="30dp"/>
 
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp">
-        <ImageView
+        android:layout_height="50dp"
+        android:layout_marginTop="-25dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fb_add"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_done"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="-25dp"
-            android:elevation="5dp"
+            android:elevation="10dp"
             android:transitionName="add"/>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -45,10 +50,37 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DUE TIME"
+            android:paddingBottom="5dp"/>
+
         <com.pfh.promiselist.widget.TimeSelector
+            android:id="@+id/timeSelector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LIST"
+            android:paddingBottom="5dp"/>
+
+        <com.pfh.promiselist.widget.ProjectSelector
+            android:id="@+id/projectSelector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="更多设置"/>
+
+        <com.pfh.promiselist.widget.OtherSettingSelector
+            android:id="@+id/otherSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

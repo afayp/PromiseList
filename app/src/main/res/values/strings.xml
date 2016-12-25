@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Promise List</string>
+    <string name="importance_normal">正常</string>
+    <string name="importance_high">高</string>
+    <string name="importance_low">低</string>
+    <string name="choose_importance">优先级选择</string>
+    <string name="cancel">取消</string>
+    <string name="new_task">新建任务</string>
+    <string name="new_project">新建清单</string>
 </resources>

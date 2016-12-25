@@ -8,9 +8,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.transition.Explode;
 import android.view.View;
-import android.view.Window;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.adapter.ProjectListAdapter;
@@ -36,15 +34,6 @@ public class ProjectListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setEnterTransition(new Explode());
-//            getWindow().setEnterTransition(new Slide());
-//            getWindow().setEnterTransition(new Fade());
-            getWindow().setExitTransition(new Explode());
-//            getWindow().setExitTransition(new Slide());
-//            getWindow().setExitTransition(new Fade());
-        }
         setContentView(R.layout.activity_project_list);
 
         findViews();
@@ -69,7 +58,7 @@ public class ProjectListActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProjectListActivity.this,UserActivity.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectListActivity.this,fb_add,"add").toBundle());
+                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectListActivity.this,toolbar.getAvatar(),"avatar").toBundle());
                 }else {
                     startActivity(intent);
                 }

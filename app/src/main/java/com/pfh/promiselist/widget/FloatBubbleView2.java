@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.animation.AnimationUtils;
@@ -237,6 +238,7 @@ public class FloatBubbleView2 extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.e("TAG","---surfaceDestroyed---"+System.currentTimeMillis());
         synchronized (mDrawThread) {
             mDrawThread.mSurface = holder;
             mDrawThread.notify();           //唤醒
