@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +25,7 @@ import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.Constant;
+import com.pfh.promiselist.utils.CustomItemAnimator;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.L;
@@ -52,6 +54,7 @@ public class MainActivity extends BaseActivity {
     private List<Task> searchResultTasks = new ArrayList<>();
     private TaskListAdapter mTaskListAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private CoordinatorLayout coordinator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
-//        initSimulatedData();// todo
+        initSimulatedData();// todo
         initSymbol();
         loadData();
         initViews();
@@ -168,6 +171,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initViews() {
+        coordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         toolbar = (TaskListToolbar) findViewById(R.id.toolbar);
         fb_add = (FloatingActionButton) findViewById(R.id.fb_add);
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
@@ -175,10 +179,22 @@ public class MainActivity extends BaseActivity {
         linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.setItemAnimator(new CustomItemAnimator());
         mTaskListAdapter = new TaskListAdapter(mContext, modelList, orderMode);
         CustomItemTouchHelpCallback callback = new CustomItemTouchHelpCallback(new CustomItemTouchHelpCallback.OnItemTouchCallbackListener() {
             @Override
-            public void onSwiped(int adapterPosition) {
+            public void onSwiped(final int adapterPosition) {
+                final MultiItemModel model = modelList.get(adapterPosition);
+                final Task task = (Task) model.getContent();
+                showConfrimSnackBar(coordinator, "已完成" + task.getName(), "撤销", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RealmDB.saveTaskToProject(mRealm,task.getProject().getProjectId(),task);
+                        modelList.add(adapterPosition,model);
+                        mTaskListAdapter.notifyItemInserted(adapterPosition);
+                    }
+                });
+
                 modelList.remove(adapterPosition);
                 mTaskListAdapter.notifyItemRemoved(adapterPosition);
             }
@@ -237,9 +253,9 @@ public class MainActivity extends BaseActivity {
                 if (modelList.get(viewHolder.getLayoutPosition()).getItemType() == Constant.ITEM_TYPE_TASK) {
                     Task task = (Task) modelList.get(viewHolder.getLayoutPosition()).getContent();
                     RealmDB.refreshTask(mRealm,task);
+                    Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
+                    Log.e("TAG","release " +viewHolder.getLayoutPosition());
                 }
-                Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
-                Log.e("TAG","release " +viewHolder.getLayoutPosition());
             }
         });
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);

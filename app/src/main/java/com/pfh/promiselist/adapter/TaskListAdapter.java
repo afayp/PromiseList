@@ -5,7 +5,9 @@ import android.content.Context;
 import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +30,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context mContext;
     private List<MultiItemModel> mData;
     private int mOrderMode;
+    private int preExpandPosition = -1;// 展开的item
 
     private ItemTouchHelper itemTouchHelper;
 
@@ -54,10 +57,41 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type_2, parent, false);
             final TaskView2Holder taskView2Holder = new TaskView2Holder(taskItem);
 
+            taskItem.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (itemTouchHelper != null) {
+                        int startX = 0;
+                        int startY = 0;
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                startX = (int) event.getX();
+                                startY = (int) event.getY();
+                                Log.e("TAG","startX: "+startX +" | startY: "+startY);
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                if (Math.abs(event.getY() - startY) < 100 && Math.abs(event.getX() - startX) > 200) itemTouchHelper.startSwipe(taskView2Holder);
+                                break;
+                        }
+                    }
+                    return false;
+                }
+            });
+
             taskItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    taskView2Holder.task_item_2.toggleView();
+                    if (preExpandPosition == taskView2Holder.getLayoutPosition()){
+                        taskView2Holder.task_item_2.toggleView();
+                        preExpandPosition = -1;
+                    }else {
+                        if (preExpandPosition != -1){
+                            mData.get(preExpandPosition).setShowSetting(false);
+                            notifyItemChanged(preExpandPosition);
+                        }
+                        taskView2Holder.task_item_2.toggleView();
+                        preExpandPosition = taskView2Holder.getLayoutPosition();
+                    }
                 }
             });
 
@@ -87,8 +121,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Task task = (Task) mData.get(position).getContent();
 //            ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
 //            ((TaskViewHolder)holder).task_item.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
-            ((TaskView2Holder)holder).task_item_2.setData(task,mOrderMode);
+            ((TaskView2Holder)holder).task_item_2.toggleView(mData.get(position).isShowSetting());
             ((TaskView2Holder)holder).task_item_2.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
+            ((TaskView2Holder)holder).task_item_2.setData(task,mOrderMode);
 
         }else {
             ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getContent());

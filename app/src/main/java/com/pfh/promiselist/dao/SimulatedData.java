@@ -12,9 +12,9 @@ import com.pfh.promiselist.utils.DateUtil;
 
 public class SimulatedData {
 
-    public static String TODAY = "2016-12-25 23:30:00";
-    public static String TOMORROW = "2016-12-26 23:30:00";
-    public static String FEATURE = "2016-12-29 23:30:00";
+    public static String TODAY = "2016-12-26 23:30:00";
+    public static String TOMORROW = "2016-12-27 23:30:00";
+    public static String FEATURE = "2016-12-30 23:30:00";
 
     public static User getCurrentUser(){
 

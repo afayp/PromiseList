@@ -14,6 +14,7 @@ public class MultiItemModel {
     private Object content; // task 或者String
     private String label; // 所属的类别，今天、清单名、高
     private boolean expand = true; // 是否展开(可见)，对title来标识是否显示子任务数 对task来标识是否gone
+    private boolean isShowSetting; // for taskitem 是否显示setting部分
     private Object data;// 保存真实类型 task,project,
     private List<MultiItemModel> childern;
 
@@ -33,6 +34,14 @@ public class MultiItemModel {
         this.itemType = itemType;
         this.content = content;
         this.label = label;
+    }
+
+    public boolean isShowSetting() {
+        return isShowSetting;
+    }
+
+    public void setShowSetting(boolean showSetting) {
+        isShowSetting = showSetting;
     }
 
     public List<MultiItemModel> getChildern() {

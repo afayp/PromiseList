@@ -5,9 +5,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,7 +33,13 @@ public class TaskItemView2 extends LinearLayout {
     private int parentWidthMeasureSpec;
     private int parentHeightMeasureSpec;
     private boolean expand;
-    private int animationTime = 200;
+    private int animationTime = 150;
+    private ImageView iv_palette;
+    private ImageView iv_date;
+    private ImageView iv_tag;
+    private ImageView iv_bell;
+    private ImageView iv_fixed;
+    private ImageView iv_remark;
 
     public TaskItemView2(Context context) {
         this(context,null);
@@ -55,6 +62,12 @@ public class TaskItemView2 extends LinearLayout {
         tv_title = (TextView) view.findViewById(R.id.tv_title);
         tv_info = (TextView) view.findViewById(R.id.tv_info);
         ll_setting = (LinearLayout) view.findViewById(R.id.ll_setting);
+        iv_palette = (ImageView) view.findViewById(R.id.iv_palette);
+        iv_date = (ImageView) view.findViewById(R.id.iv_date);
+        iv_tag = (ImageView) view.findViewById(R.id.iv_tag);
+        iv_bell = (ImageView) view.findViewById(R.id.iv_bell);
+        iv_fixed = (ImageView) view.findViewById(R.id.iv_fixed);
+        iv_remark = (ImageView) view.findViewById(R.id.iv_remark);
     }
 
     public void setData(Task task,int orderMode){
@@ -95,6 +108,18 @@ public class TaskItemView2 extends LinearLayout {
 //                cardview.setCardBackgroundColor(getResources().getColor(R.color.importance_high));
 //                break;
 //        }
+
+        setListener();
+    }
+
+    private void setListener() {
+        iv_palette.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("TAG","palette");
+            }
+        });
+
     }
 
     @Override
@@ -113,6 +138,19 @@ public class TaskItemView2 extends LinearLayout {
         }
     }
 
+    public void toggleView(boolean status){
+        if (status == expand){//如果要求的状态和目前状态一致，就不需要改变
+            return;
+        }
+        expand = status;
+        if (expand){
+            expand(ll_setting);
+        }else {
+            collapse(ll_setting);
+        }
+    }
+
+
     private void expand(final View view){
         view.measure(parentWidthMeasureSpec,parentHeightMeasureSpec);
         int measuredWidth = view.getMeasuredWidth();
@@ -120,7 +158,8 @@ public class TaskItemView2 extends LinearLayout {
         view.setVisibility(VISIBLE);
 
         ValueAnimator animator = ValueAnimator.ofInt(0, measuredHeight);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+
         animator.setDuration(animationTime);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -135,7 +174,7 @@ public class TaskItemView2 extends LinearLayout {
     private void collapse(final View view){
         int measuredHeight = view.getMeasuredHeight();
         ValueAnimator animator = ValueAnimator.ofInt(measuredHeight, 0);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(animationTime);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

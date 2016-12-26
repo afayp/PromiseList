@@ -2,8 +2,10 @@ package com.pfh.promiselist.view.activity;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.Explode;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.pfh.promiselist.model.MsgEvent;
 import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.ScreenUtil;
+import com.pfh.promiselist.utils.SnackbarUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,9 +34,17 @@ import io.realm.Realm;
 
 public class BaseActivity extends AppCompatActivity {
 
+    protected static final int CONFIRM_SNACKBAR_TYPE_ = 1;
+    protected static final int WARNING_SNACKBAR_TYPE_ = 2;
+    protected static final int CONFIRM_SNACKBAR_TYPE_COLOR = 0xff4caf50;
+    protected static final int WARNING_SNACKBAR_TYPE_COLOR = 0xffffc107;
+    protected static final int SHORT_SNACKBAR_DURATION = 3000;
+    protected static final int LOGNG_SNACKBAR_DURATION = 5000;
+
     protected Context mContext;
     protected Toast mToast;
     protected Realm mRealm;
+    protected Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,11 +123,6 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -144,7 +150,7 @@ public class BaseActivity extends AppCompatActivity {
     public void onDefalultMsgEvent(MsgEvent msgEvent){
     }
 
-    public void showToast(String text) {
+    protected void showToast(String text) {
         if (!TextUtils.isEmpty(text)) {
             if(mToast == null){
                 mToast = Toast.makeText(getApplicationContext(),text,Toast.LENGTH_SHORT);
@@ -154,4 +160,15 @@ public class BaseActivity extends AppCompatActivity {
             mToast.show();
         }
     }
+
+    protected void showConfrimSnackBar(View view, String message, String actionName, View.OnClickListener action){
+        if (mSnackbar != null && mSnackbar.isShown()){
+            mSnackbar.dismiss();
+        }
+        mSnackbar = SnackbarUtil.IndefiniteSnackbar(view,message,SHORT_SNACKBAR_DURATION, Color.WHITE,CONFIRM_SNACKBAR_TYPE_COLOR);
+        mSnackbar.setAction(actionName,action);
+        mSnackbar.show();
+    }
+
+
 }

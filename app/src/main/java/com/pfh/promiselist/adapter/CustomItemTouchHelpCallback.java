@@ -17,9 +17,9 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
      */
     private boolean isCanDrag = false;
     /**
-     * 是否可以被滑动
+     * 是否可以被滑动,默认false,原因同上
      */
-    private boolean isCanSwipe = true;
+    private boolean isCanSwipe = false;
     /**
      * Item操作的回调
      */
@@ -192,4 +192,5 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
 
         void onRelease(RecyclerView.ViewHolder viewHolder);
     }
+
 }

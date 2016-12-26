@@ -45,13 +45,15 @@
             android:visibility="gone">
 
             <ImageView
+                android:id="@+id/iv_palette"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_hook"
+                android:src="@drawable/ic_palette"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_date"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
@@ -59,6 +61,7 @@
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_tag"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
@@ -66,6 +69,7 @@
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_bell"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
@@ -73,17 +77,19 @@
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_fixed"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_flag"
+                android:src="@drawable/ic_fixed"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_remark"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_pen"
+                android:src="@drawable/ic_remark"
                 android:layout_marginBottom="5dp"/>
 
         </LinearLayout>
