@@ -1,4 +1,4 @@
-package com.pfh.promiselist.utils;
+package com.pfh.promiselist.others;
 
 import android.support.annotation.NonNull;
 import android.support.v4.animation.AnimatorCompatHelper;

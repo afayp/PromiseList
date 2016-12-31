@@ -5,9 +5,12 @@
     <color name="colorAccent">#FF4081</color>
 
 
-    <color name="importance_high">#E1D2C8</color>
-    <color name="importance_normal">#6EC9FD</color>
-    <color name="importance_low">#BBD9BD</color>
+    <color name="importance_high">#FFE1D2C8</color>
+    <color name="importance_normal">#FF6EC9FD</color>
+    <color name="importance_low">#FFBBD9BD</color>
+    <color name="tag_viw_bg">#aadcdcdc</color>
+    <color name="transparent">#00000000</color>
+    <color name="item_select_bg">#FFd3d3d3</color>
 
 
 

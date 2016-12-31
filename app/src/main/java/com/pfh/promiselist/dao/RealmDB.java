@@ -3,9 +3,10 @@ package com.pfh.promiselist.dao;
 import com.pfh.promiselist.MyApplication;
 import com.pfh.promiselist.model.BgColor;
 import com.pfh.promiselist.model.Project;
+import com.pfh.promiselist.model.Tag;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.model.User;
-import com.pfh.promiselist.utils.Constant;
+import com.pfh.promiselist.others.Constant;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.SPUtil;
 
@@ -264,6 +265,19 @@ public class RealmDB {
 
 
     /**
+     * 找出某projectId下的所有未完成的task，并且fixed为true或false，按dueTime排序
+     * @param realm
+     * @param projectId
+     * @param fixed
+     * @return
+     */
+    public static List<Task> getFixedUncompletedTasksByProjectId(Realm realm,String projectId,boolean fixed){
+        RealmResults<Task> all = realm.where(Task.class).equalTo("project.projectId", projectId).equalTo("state",1).equalTo("fixed",fixed).findAll();
+        return realm.copyFromRealm(all);
+    }
+
+
+    /**
      * 找出某projectId下的所有已回收的task，按dueTime排序
      * @param realm
      * @param projectId
@@ -394,6 +408,36 @@ public class RealmDB {
         realm.commitTransaction();
     }
 
+    public static void refreshTasks(Realm realm,List<Task> tasks){
+        realm.beginTransaction();
+        for (int i = 0; i < tasks.size(); i++) {
+            realm.copyToRealmOrUpdate(tasks);
+        }
+        realm.commitTransaction();
+    }
+
+    public static void refreshTasksFixed(Realm realm,List<Task> tasks,boolean fixed){
+        realm.beginTransaction();
+        for (int i = 0; i < tasks.size(); i++) {
+            tasks.get(i).setFixed(fixed);
+            realm.copyToRealmOrUpdate(tasks.get(i));
+        }
+        realm.commitTransaction();
+    }
+
+    public static void refreshTasksColor(Realm realm, List<Task> tasks ,String colorString){
+        realm.beginTransaction();
+        for (int i = 0; i < tasks.size(); i++) {
+            tasks.get(i).setColorValue(colorString);
+            realm.copyToRealmOrUpdate(tasks.get(i));
+        }
+        realm.commitTransaction();
+    }
+
+    public static void refreshTasksTags(Realm realm, List<Task> tasks){
+
+    }
+
 
     //********************Tag相关********************//
 
@@ -402,9 +446,17 @@ public class RealmDB {
      * @param realm
      * @param uid
      */
-    public static void getAllTagsByUserId(Realm realm,String uid){
+    public static List<Tag> getAllTagsByUserId(Realm realm,String uid){
+        return realm.copyFromRealm(realm.where(Tag.class).equalTo("owner.uid",uid).findAll());
+    }
 
-
+    public static void saveTag(Realm realm, final Tag tag){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealmOrUpdate(tag);
+            }
+        });
     }
 
 

@@ -1,130 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:id="@+id/cardview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/skyblue"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="2dp"
     app:cardElevation="2dp">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/rl_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
-        <LinearLayout
-            android:id="@+id/ll_content"
+        <ImageView
+            android:id="@+id/iv_fixed"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_fixed_blue"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Email jack back"
+            android:textSize="18sp"
+            android:paddingLeft="10dp"/>
+
+        <com.pfh.promiselist.widget.FlowLayout
+            android:id="@+id/flow_tag_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/tv_title">
 
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_computer"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
+        </com.pfh.promiselist.widget.FlowLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
 
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Email jack back"
-                    android:textSize="18sp"/>
+        <!--<TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="#work | 13:55"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:visibility="gone"/>-->
 
-                <TextView
-                    android:id="@+id/tv_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="#work | 13:55"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-
-            <View
-                android:id="@+id/view_importance1"
-                android:layout_width="5dp"
-                android:layout_height="match_parent"
-                android:background="@color/red"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/ll_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone"
-            android:elevation="3dp">
+            android:elevation="3dp"
+            android:paddingTop="3dp"
+            android:visibility="gone">
 
             <ImageView
+                android:id="@+id/iv_palette"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_hook"
+                android:src="@drawable/ic_palette"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_date"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_date"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_tag"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_tag"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_bell"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_bell"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_fixed"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
-                tools:src="@drawable/ic_flag"
+                android:src="@drawable/ic_fixed"
                 android:layout_marginBottom="5dp"/>
 
             <ImageView
+                android:id="@+id/iv_remark"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_pen"
+                android:src="@drawable/ic_remark"
                 android:layout_marginBottom="5dp"/>
-            <View
-                android:id="@+id/view_importance2"
-                android:layout_width="5dp"
-                android:layout_height="match_parent"
-                android:background="@color/red" />
+        </LinearLayout>-->
 
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

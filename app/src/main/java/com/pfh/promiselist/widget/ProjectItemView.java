@@ -1,7 +1,6 @@
 package com.pfh.promiselist.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +103,7 @@ public class ProjectItemView extends LinearLayout {
                 cb.setChecked(false);//未完成
             }
 
-            cb.setTextColor(Color.parseColor(tasks.get(i).getBgColor().getValue()));
+//            cb.setTextColor(Color.parseColor(tasks.get(i).getBgColor().getValue()));
 
 //            if (tasks.get(i).getImportance() == 1){
 //                cb.setTextColor(ColorsUtil.BLUE_LIGHT);

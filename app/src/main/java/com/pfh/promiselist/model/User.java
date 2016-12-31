@@ -151,4 +151,48 @@ public class User extends RealmObject implements Serializable{
                 ", tags=" + tags +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (mobilePhoneVerified != user.mobilePhoneVerified) return false;
+        if (emailVerified != user.emailVerified) return false;
+        if (gender != user.gender) return false;
+        if (registerTime != user.registerTime) return false;
+        if (permission != user.permission) return false;
+        if (!uid.equals(user.uid)) return false;
+        if (!username.equals(user.username)) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null)
+            return false;
+        if (mobilePhoneNumber != null ? !mobilePhoneNumber.equals(user.mobilePhoneNumber) : user.mobilePhoneNumber != null)
+            return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (projects != null ? !projects.equals(user.projects) : user.projects != null)
+            return false;
+        if (tasks != null ? !tasks.equals(user.tasks) : user.tasks != null) return false;
+        return tags != null ? tags.equals(user.tags) : user.tags == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uid.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (mobilePhoneNumber != null ? mobilePhoneNumber.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (mobilePhoneVerified ? 1 : 0);
+        result = 31 * result + (emailVerified ? 1 : 0);
+        result = 31 * result + gender;
+        result = 31 * result + (int) (registerTime ^ (registerTime >>> 32));
+        result = 31 * result + permission;
+        result = 31 * result + (projects != null ? projects.hashCode() : 0);
+        result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        return result;
+    }
 }

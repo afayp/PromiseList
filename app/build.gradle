@@ -40,9 +40,11 @@ dependencies {
     compile dependencies.looger
     compile dependencies.eventBus
     compile dependencies.baseRecyclerViewAdapterHelper
-    compile dependencies.materialDialogs
+    compile dependencies.materialDialogCore
+    compile dependencies.materialDialogsCommons
     compile dependencies.materialedittext
     compile dependencies.sublimepicker
+    compile 'jp.wasabeef:richeditor-android:1.2.1'
 
 
     testCompile dependencies.jUnit

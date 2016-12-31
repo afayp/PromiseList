@@ -1,6 +1,6 @@
 package com.pfh.promiselist.model;
 
-import com.pfh.promiselist.utils.Constant;
+import com.pfh.promiselist.others.Constant;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import java.util.List;
 public class MultiItemModel {
 
     private int itemType;
-    private Object content; // task 或者String
-    private String label; // 所属的类别，今天、清单名、高
+    private Object content; // 对task type即是task,对非task type即是string
+    private String label; // 所属的类别，今天、清单名、高、固定、其他
     private boolean expand = true; // 是否展开(可见)，对title来标识是否显示子任务数 对task来标识是否gone
-    private boolean isShowSetting; // for taskitem 是否显示setting部分
-    private Object data;// 保存真实类型 task,project,
+    private boolean isShowSetting; // for taskitem 是否显示setting部分 @废弃
+    private Object data;// 保存真实类型 对非task type即是project,对task type即是task。
     private List<MultiItemModel> childern;
 
     public MultiItemModel(int itemType, Object content){
@@ -104,7 +104,9 @@ public class MultiItemModel {
                 ", content=" + content +
                 ", label='" + label + '\'' +
                 ", expand=" + expand +
+                ", isShowSetting=" + isShowSetting +
                 ", data=" + data +
+                ", childern=" + childern +
                 '}';
     }
 }

@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.adapter.CustomItemTouchHelpCallback;
 import com.pfh.promiselist.adapter.TaskListAdapter;
@@ -22,39 +28,43 @@ import com.pfh.promiselist.dao.RealmDB;
 import com.pfh.promiselist.dao.SimulatedData;
 import com.pfh.promiselist.model.MultiItemModel;
 import com.pfh.promiselist.model.Project;
+import com.pfh.promiselist.model.Tag;
 import com.pfh.promiselist.model.Task;
+import com.pfh.promiselist.others.Constant;
+import com.pfh.promiselist.others.CustomItemAnimator;
+import com.pfh.promiselist.others.DiffCallback;
 import com.pfh.promiselist.utils.ColorsUtil;
-import com.pfh.promiselist.utils.Constant;
-import com.pfh.promiselist.utils.CustomItemAnimator;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
-import com.pfh.promiselist.utils.L;
 import com.pfh.promiselist.utils.SPUtil;
 import com.pfh.promiselist.widget.CustomPopupWindow;
+import com.pfh.promiselist.widget.TagsChooseView;
 import com.pfh.promiselist.widget.TaskListToolbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
 /**
  * 首页 展示当前筛选条件(时间、清单...)下的所有任务
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements ColorChooserDialog.ColorCallback {
 
-    TaskListToolbar toolbar;
-    RecyclerView recyclerview;
-    FloatingActionButton fb_add;
+    private TaskListToolbar toolbar;
+    private RecyclerView recyclerview;
+    private FloatingActionButton fb_add;
+    private CoordinatorLayout coordinator;
 
     private int orderMode;// 读取用户上次的模式，默认1,暂时不考虑多用户
     private String selectedProjectId ;// 读取用户上次选择的在主界面展示的projectId，""表示选择所有项目
     private List<Project> selectedProjects = new ArrayList<>();//选择的项目，多个或1个
-    private List<MultiItemModel> modelList = new ArrayList<>();// 更具排序模式处理过的数据
+    private List<MultiItemModel> modelList = new ArrayList<>();// 根据排序模式处理过的数据
     private List<Task> searchResultTasks = new ArrayList<>();
     private TaskListAdapter mTaskListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private CoordinatorLayout coordinator;
+    private List<Task> selectedTasks = new ArrayList<>();//所有选中的task
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +92,11 @@ public class MainActivity extends BaseActivity {
      */
     private void loadData() {
         loadProjects();
-        orderByMode();
+        modelList = orderByMode();
     }
 
-    private void orderByMode() {
-        modelList.clear();
-
+    private List<MultiItemModel> orderByMode() {
+        List<MultiItemModel> tempModeList = new ArrayList<>();
         //按日期排序，分今天，明天，以后
         if (orderMode == Constant.ORDER_BY_DATE){
             List<Task> allTasks = new ArrayList<>();
@@ -95,38 +104,79 @@ public class MainActivity extends BaseActivity {
             for (int i = 0; i < selectedProjects.size(); i++) {
                 allTasks.addAll(RealmDB.getAllUncompletedTasksByProjectId(mRealm,selectedProjects.get(i).getProjectId()));
             }
-            Log.e("TAG","allTasks size: "+allTasks.size());
-            List<MultiItemModel> today = new ArrayList<>();
-            List<MultiItemModel> tomorrow = new ArrayList<>();
-            List<MultiItemModel> future = new ArrayList<>();
+            //筛选出固定的
+            List<MultiItemModel> fixedList = new ArrayList<>();
+            List<Task> temp = new ArrayList<>();
             for (int i = 0; i < allTasks.size(); i++) {
-                if (DateUtil.isToday(allTasks.get(i).getDueTime())){
-                    today.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"今天"));
-                }else if (DateUtil.isTomorrow(allTasks.get(i).getDueTime())){
-                    tomorrow.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"明天"));
-                }else if (DateUtil.isMoreThanToday(allTasks.get(i).getDueTime())){
-                    future.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"未来"));
+                if (allTasks.get(i).isFixed()) {
+                    fixedList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),getString(R.string.label_fixed)));
+                }else {
+                    temp.add(allTasks.get(i));
                 }
             }
-
-            modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"今天"));
-            modelList.addAll(today);
-            modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"明天"));
-            modelList.addAll(tomorrow);
-            modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"未来"));
-            modelList.addAll(future);
+            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));
+            tempModeList.addAll(fixedList);
+            //对剩下的按时间排序
+            Collections.sort(temp, new Comparator<Task>() {
+                @Override
+                public int compare(Task o1, Task o2) {
+                    return (int) (o1.getDueTime() - o2.getDueTime());
+                }
+            });
+            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_OTHER,getString(R.string.label_others)));
+            for (int i = 0; i < temp.size(); i++) {
+                tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,temp.get(i),getString(R.string.label_others)));
+            }
+//            List<MultiItemModel> today = new ArrayList<>();
+//            List<MultiItemModel> tomorrow = new ArrayList<>();
+//            List<MultiItemModel> future = new ArrayList<>();
+//            for (int i = 0; i < allTasks.size(); i++) {
+//                if (DateUtil.isToday(allTasks.get(i).getDueTime())){
+//                    today.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"今天"));
+//                }else if (DateUtil.isTomorrow(allTasks.get(i).getDueTime())){
+//                    tomorrow.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"明天"));
+//                }else if (DateUtil.isMoreThanToday(allTasks.get(i).getDueTime())){
+//                    future.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,allTasks.get(i),"未来"));
+//                }
+//            }
+//            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"今天"));
+//            tempModeList.addAll(today);
+//            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"明天"));
+//            tempModeList.addAll(tomorrow);
+//            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TIME,"未来"));
+//            tempModeList.addAll(future);
 
         }else if (orderMode == Constant.ORDER_BY_PROJECT){
             //按清单排序
+            List<MultiItemModel> fixedList = new ArrayList<>();
+            List<Task> temp = new ArrayList<>();
+            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));//固定
             for (int i = 0; i < selectedProjects.size(); i++) {
-                List<Task> tasksByProjectId = RealmDB.getAllUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId());
-                MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
-                projectModel.setData(selectedProjects.get(i));
-                modelList.add(projectModel);
-                for (int j = 0; j < tasksByProjectId.size(); j++) {
-                    modelList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasksByProjectId.get(j),selectedProjects.get(i).getName()));
+                List<Task> tasks = RealmDB.getFixedUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId(), true);
+                for (int j = 0; j < tasks.size(); j++) {
+                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),getString(R.string.label_fixed)));
                 }
             }
+            for (int i = 0; i < selectedProjects.size(); i++) {
+                List<Task> tasks = RealmDB.getFixedUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId(), false);
+                MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
+                projectModel.setData(selectedProjects.get(i));
+                tempModeList.add(projectModel);
+                for (int j = 0; j < tasks.size(); j++) {
+                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),selectedProjects.get(i).getName()));
+                }
+            }
+
+//            for (int i = 0; i < selectedProjects.size(); i++) {
+//                List<Task> tasksByProjectId = RealmDB.getAllUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId());
+//                MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
+//                projectModel.setData(selectedProjects.get(i));
+//                tempModeList.add(projectModel);
+//                for (int j = 0; j < tasksByProjectId.size(); j++) {
+//
+//                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasksByProjectId.get(j),selectedProjects.get(i).getName()));
+//                }
+//            }
         }else if (orderMode == Constant.ORDER_BY_IMPORTANCE){
             //取消的优先级 改成按颜色排序 TODO
 //            List<Task> allTasks = new ArrayList<>();
@@ -147,17 +197,18 @@ public class MainActivity extends BaseActivity {
 //                }
 //            }
 //
-//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"高"));
-//            modelList.addAll(high);
-//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"正常"));
-//            modelList.addAll(normal);
-//            modelList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"低"));
-//            modelList.addAll(low);
+//            tempModeList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"高"));
+//            tempModeList.addAll(high);
+//            tempModeList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"正常"));
+//            tempModeList.addAll(normal);
+//            tempModeList.add(new MultiItemModel(Constant.IITEM_TYPE_IMPORTANCE,"低"));
+//            tempModeList.addAll(low);
         }
 
-        for (int i = 0; i < modelList.size(); i++) {
-            L.e(modelList.get(i).toString());
+        for (int i = 0; i < tempModeList.size(); i++) {
+            Log.e("TAG",tempModeList.get(i).toString());
         }
+        return tempModeList;
 
     }
 
@@ -181,44 +232,76 @@ public class MainActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setItemAnimator(new CustomItemAnimator());
         mTaskListAdapter = new TaskListAdapter(mContext, modelList, orderMode);
+        mTaskListAdapter.setOnItemClickListener(new TaskListAdapter.onItemClickListener() {
+            @Override
+            public void onClickTask(View view, int position) {
+                //goto task activity
+            }
+
+            @Override
+            public void onSelectChanged(boolean select,int position, int count) {
+                toolbar.setSelect(select);
+                toolbar.setSelectCount(count);
+                selectedTasks.clear();
+                List<Integer> selectedPositions = mTaskListAdapter.getSelectedPositions();
+                for (int i = 0; i < selectedPositions.size(); i++) {
+                    Task task = (Task) modelList.get(selectedPositions.get(i)).getContent();
+                    selectedTasks.add(task);
+                }
+                boolean allFixed = true;
+                for (int i = 0; i < selectedTasks.size(); i++) {
+                    if (!selectedTasks.get(i).isFixed()){
+                        allFixed = false;
+                    }
+                }
+                toolbar.setFixedIconActive(allFixed);
+            }
+        });
         CustomItemTouchHelpCallback callback = new CustomItemTouchHelpCallback(new CustomItemTouchHelpCallback.OnItemTouchCallbackListener() {
             @Override
             public void onSwiped(final int adapterPosition) {
+                Log.e("TAG","adapterPosition: "+adapterPosition);
                 final MultiItemModel model = modelList.get(adapterPosition);
                 final Task task = (Task) model.getContent();
                 showConfrimSnackBar(coordinator, "已完成" + task.getName(), "撤销", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.e("TAG","task: "+task.toString());
                         RealmDB.saveTaskToProject(mRealm,task.getProject().getProjectId(),task);
                         modelList.add(adapterPosition,model);
+//                        mTaskListAdapter.setData(modelList);
+                        Log.e("TAG","size: "+mTaskListAdapter.getData().size());
                         mTaskListAdapter.notifyItemInserted(adapterPosition);
+                        Log.e("TAG","222");
                     }
                 });
 
                 modelList.remove(adapterPosition);
                 mTaskListAdapter.notifyItemRemoved(adapterPosition);
+                Log.e("TAG","size: "+mTaskListAdapter.getData().size());
+
             }
 
             @Override
             public boolean onMove(int srcPosition, int targetPosition) {
                 Log.e("TAG","src: "+srcPosition);
                 Log.e("TAG","tar: "+targetPosition);
-                if (srcPosition < targetPosition) {
-                    //向下
-                    if (modelList.get(targetPosition).getItemType() != Constant.ITEM_TYPE_TASK && !modelList.get(targetPosition).isExpand()){
-//                    modelList.get(targetPosition).setExpand(true);
-                        mTaskListAdapter.expandOrFoldTitle(targetPosition);
-                    }
-                }else {
-                    //向上 targetPosition肯定是本title,所以要去判断再上面title是否展开，
-                    if (targetPosition - 1 < 0 ) return false;
-                    if ( modelList.get(targetPosition - 1).getItemType() != Constant.ITEM_TYPE_TASK
-                            && !modelList.get(targetPosition - 1).isExpand()){//如果是title,则该title下的task一个为0，没展开则展开(只为显示数字..)
-                        mTaskListAdapter.expandOrFoldTitle(targetPosition-1);
-                    }else if (!modelList.get(targetPosition - 1).isExpand()){//如果是task,并且没有展开，则找到task的title,展开
-                        mTaskListAdapter.expandTaskOfTitle(targetPosition - 1);
-                    }
-                }
+//                if (srcPosition < targetPosition) {
+//                    //向下
+//                    if (modelList.get(targetPosition).getItemType() != Constant.ITEM_TYPE_TASK && !modelList.get(targetPosition).isExpand()){
+////                    modelList.get(targetPosition).setExpand(true);
+//                        mTaskListAdapter.expandOrFoldTitle(targetPosition);
+//                    }
+//                }else {
+//                    //向上 targetPosition肯定是本title,所以要去判断再上面title是否展开，
+//                    if (targetPosition - 1 < 0 ) return false;
+//                    if ( modelList.get(targetPosition - 1).getItemType() != Constant.ITEM_TYPE_TASK
+//                            && !modelList.get(targetPosition - 1).isExpand()){//如果是title,则该title下的task一个为0，没展开则展开(只为显示数字..)
+//                        mTaskListAdapter.expandOrFoldTitle(targetPosition-1);
+//                    }else if (!modelList.get(targetPosition - 1).isExpand()){//如果是task,并且没有展开，则找到task的title,展开
+//                        mTaskListAdapter.expandTaskOfTitle(targetPosition - 1);
+//                    }
+//                }
 //                // 如果targetPosition 处于屏幕上下边界，为了方便，屏幕要向上或向下滚动 TODO
 //                if (targetPosition - 2 < linearLayoutManager.findFirstCompletelyVisibleItemPosition() && srcPosition > targetPosition ) {
 //                    //向上
@@ -231,7 +314,12 @@ public class MainActivity extends BaseActivity {
 //                    Log.e("TAG","smoothScrollToPosition down");
 //
 //                }
-                return changeDataByMode(srcPosition,targetPosition);
+                boolean success = changeDataByMode2(srcPosition, targetPosition);
+                if (success) {
+//                    mTaskListAdapter.setSelectState(false);
+                    toolbar.setSelect(false);
+                }
+                return success;
                 // 先处理拖动 release的时候在处理数据和刷新view,否则太卡
 //                Collections.swap(modelList, srcPosition, targetPosition);
 //                mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
@@ -240,21 +328,44 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                Log.e("TAG","onSelectedChanged !" + actionState);
+
+                // 进入选择模式 TODO
                  if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                    viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
-                     Log.e("TAG","onSelectedChanged " +viewHolder.getAdapterPosition());
                      Log.e("TAG","onSelectedChanged " +viewHolder.getLayoutPosition());
                  }
+
+                switch (actionState){
+                    case ItemTouchHelper.ACTION_STATE_IDLE:
+                        Log.e("TAG","ACTION_STATE_IDLE");
+                        break;
+                    case ItemTouchHelper.DOWN:
+                        Log.e("TAG","DOWN");
+                        break;
+                    case ItemTouchHelper.ACTION_STATE_SWIPE:
+                        Log.e("TAG","ACTION_STATE_SWIPE");
+                        break;
+//                    case ItemTouchHelper.ACTION_STATE_DRAG:
+//                        Log.e("TAG","ACTION_STATE_DRAG");
+//                        break;
+                }
             }
 
             @Override
             public void onRelease(RecyclerView.ViewHolder viewHolder) {
-                viewHolder.itemView.setBackgroundColor(0);
-                if (modelList.get(viewHolder.getLayoutPosition()).getItemType() == Constant.ITEM_TYPE_TASK) {
-                    Task task = (Task) modelList.get(viewHolder.getLayoutPosition()).getContent();
-                    RealmDB.refreshTask(mRealm,task);
-                    Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
-                    Log.e("TAG","release " +viewHolder.getLayoutPosition());
+//                viewHolder.itemView.setBackgroundColor(0);
+//                mTaskListAdapter.setSelectState(false);
+//                if (modelList.get(viewHolder.getLayoutPosition()).getItemType() == Constant.ITEM_TYPE_TASK) {
+//                    Task task = (Task) modelList.get(viewHolder.getLayoutPosition()).getContent();
+//                    RealmDB.refreshTask(mRealm,task);
+//                    Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
+//                    Log.e("TAG","release " +viewHolder.getLayoutPosition());
+//                }
+
+                if (!toolbar.isSelect()){
+                    mTaskListAdapter.setSelectState(false);
+                    mTaskListAdapter.notifyItemChanged(viewHolder.getLayoutPosition());
+//                    mTaskListAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -263,7 +374,7 @@ public class MainActivity extends BaseActivity {
         mTaskListAdapter.setItemTouchHelper(itemTouchHelper);
         recyclerview.setAdapter(mTaskListAdapter);
 
-        toolbar.setProjectsClickListener(new View.OnClickListener() {
+        toolbar.getIvProjects().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,ProjectListActivity.class);
@@ -275,64 +386,93 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        //更多
-        toolbar.setMoreClickListener(new View.OnClickListener() {
+        toolbar.getIvMore().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CustomPopupWindow more = new CustomPopupWindow(mContext, R.layout.popup_more_menu);
                 more.showAsDropDown(v);
             }
         });
-        //排序
-        toolbar.setSortClickListener(new View.OnClickListener() {
+
+        toolbar.getIvSort().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomPopupWindow sort = new CustomPopupWindow(mContext, R.layout.popup_sort_menu);
-                sort.showAsDropDown(v, -DensityUtil.dp2px(mContext,20),0);
+                final CustomPopupWindow sort = new CustomPopupWindow(mContext, R.layout.popup_sort_menu);
+                sort.showAsDropDown(v, -DensityUtil.dp2px(mContext,30),0);
                 LinearLayout ll_date_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_date_sort);
                 LinearLayout ll_project_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_project_sort);
                 LinearLayout ll_importance_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_importance_sort);
                 ll_date_sort.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sort.dismiss();
                         orderMode = Constant.ORDER_BY_DATE;
-                        orderByMode();
-                        mTaskListAdapter.refreshData(modelList,orderMode);
+                        refreshByMode();
                     }
                 });
                 ll_project_sort.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sort.dismiss();
                         orderMode = Constant.ORDER_BY_PROJECT;
-                        orderByMode();
-                        mTaskListAdapter.refreshData(modelList,orderMode);
+                        refreshByMode();
                     }
                 });
                 ll_importance_sort.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        orderMode = Constant.ORDER_BY_IMPORTANCE;
-                        orderByMode();
-                        mTaskListAdapter.refreshData(modelList,orderMode);
+                        sort.dismiss();
+//                        orderMode = Constant.ORDER_BY_IMPORTANCE;
+                        orderMode = Constant.ORDER_BY_COLOR;
+                        refreshByMode();
                     }
                 });
             }
         });
 
-        //搜索
-        toolbar.setOnSearchTaskListener(new TaskListToolbar.onSearchTaskListener() {
+        toolbar.getIvBack().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSearch(String keyword) {
-                if (keyword.equals("")){
-                    mTaskListAdapter.refreshData(modelList,orderMode);
-                }else {
-                    searchResultTasks = RealmDB.searchTaskByKeyword(mRealm, keyword);
-                    List<MultiItemModel> results = new ArrayList<MultiItemModel>();
-                    for (int i = 0; i < searchResultTasks.size(); i++) {
-                        results.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,searchResultTasks.get(i)));
-                    }
-                    mTaskListAdapter.refreshData(results,orderMode);
-                }
+            public void onClick(View v) {
+                toolbar.setSelect(false);
+                mTaskListAdapter.setSelectState(false);
+//                mTaskListAdapter.notifyDataSetChanged();//其实也可以只刷新selectedPosition里面的几个item
+                mTaskListAdapter.notifySelectedItem();
+            }
+        });
+
+        toolbar.getIvFixed().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toolbar.setSelect(false);
+                mTaskListAdapter.setSelectState(false);
+                RealmDB.refreshTasksFixed(mRealm,selectedTasks,!toolbar.isFixedActive());
+                List<MultiItemModel> newModeList = orderByMode();//保存后重新获取一次，即新的数据
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallback(modelList, newModeList),true);// 注意这里old modeList的fixed属性也对更改了！只是位置还未刷新
+                diffResult.dispatchUpdatesTo(mTaskListAdapter);
+                modelList = newModeList;
+//                mTaskListAdapter.refreshData(newModeList,orderMode);
+                mTaskListAdapter.setData(newModeList);
+            }
+        });
+
+        toolbar.getIvPalette().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showColorChooseDialog();
+            }
+        });
+
+        toolbar.getIvTag().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTagChooseDialog();
+            }
+        });
+
+        toolbar.getIvDate().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDateChooseDialog();
             }
         });
 
@@ -347,6 +487,110 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void showDateChooseDialog() {
+
+    }
+
+    private void showTagChooseDialog() {
+
+        List<Tag> allTags = RealmDB.getAllTagsByUserId(mRealm, RealmDB.getCurrentUserId());
+        final TagsChooseView tagsChooseView = new TagsChooseView(mContext);
+        tagsChooseView.setData(allTags,selectedTasks);
+        new MaterialDialog.Builder(mContext)
+                .title(R.string.tag_choose_dialog_label)
+                .customView(tagsChooseView,true)
+                .negativeText(R.string.cancel)
+                .positiveText(R.string.ok)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        tagsChooseView.onPositive();
+                        RealmDB.refreshTasks(mRealm,selectedTasks);
+                        mTaskListAdapter.setSelectState(false);
+                        toolbar.setSelect(false);
+                        mTaskListAdapter.notifySelectedItem();
+                    }
+                })
+                .show();
+    }
+
+    private void showColorChooseDialog() {
+        String[] colorArrays = getResources().getStringArray(R.array.colors);
+        int[] colors = new int[colorArrays.length];
+        for (int i = 0; i < colorArrays.length; i++) {
+            colors[i] = Color.parseColor(colorArrays[i]);
+        }
+
+        new ColorChooserDialog.Builder(this,R.string.choose_color)
+                .customColors(colors,null)
+                .accentMode(false)
+                .show(); // todo
+    }
+
+    @Override
+    public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
+        String color_hex = String.format("#%06X", (0xFFFFFFFF & selectedColor));
+        Log.e("TAG","selectedColor"+ color_hex);
+        RealmDB.refreshTasksColor(mRealm,selectedTasks,color_hex);
+//        mTaskListAdapter.notifyItemChanged();
+        toolbar.setSelect(false);
+        mTaskListAdapter.setSelectState(false);
+        mTaskListAdapter.notifySelectedItem();
+
+
+    }
+
+    private void refreshByMode(){
+        modelList = orderByMode();
+        mTaskListAdapter.refreshData(modelList,orderMode);
+        recyclerview.smoothScrollToPosition(0);
+    }
+
+    private boolean changeDataByMode2(int srcPosition, int targetPosition){
+        boolean success = false;//默认交换不成功，下面只需对能成功的情况举例即可
+        MultiItemModel srcModel = modelList.get(srcPosition);
+        MultiItemModel targetModel = modelList.get(targetPosition);
+        Task srctTask = (Task) srcModel.getContent();//src肯定是task
+        if (orderMode == Constant.ORDER_BY_DATE){
+            if (srcModel.getItemType() == Constant.ITEM_TYPE_TASK && targetModel.getItemType() == Constant.ITEM_TYPE_TASK
+                    && srcModel.getLabel().equals(targetModel.getLabel())) {// 都是任务，并且都是固定或者都是其他
+                success = true;
+            }
+        }else if (orderMode == Constant.ORDER_BY_PROJECT){
+
+            if (srcModel.getItemType() == Constant.ITEM_TYPE_TASK && targetModel.getItemType() == Constant.ITEM_TYPE_TASK
+                    && srcModel.getLabel().equals(targetModel.getLabel())) {
+                success = true;
+            }else if (srcModel.getItemType() == Constant.ITEM_TYPE_TASK && targetModel.getItemType() == Constant.ITEM_TYPE_PROJECT
+                    && !targetModel.getLabel().equals(getString(R.string.label_fixed))){
+                if (srcPosition < targetPosition) {// 下移 要变成的label即是targetd的label
+                    if (!srctTask.isFixed()) {
+                        srctTask.setProject((Project) targetModel.getData());
+                        srcModel.setLabel(targetModel.getLabel());
+                        success = true;
+                    }
+                }else {//上移，要变成的label是 target 上面的label
+                    if (!modelList.get(targetPosition -1).getLabel().equals(getString(R.string.label_fixed))){//排除第一个project里的task向上移到固定里
+                        srctTask.setProject(((Task) modelList.get(targetPosition-1).getContent()).getProject());
+                        srcModel.setLabel(modelList.get(targetPosition -1).getLabel());
+                        success = true;
+                    }
+                }
+            }
+
+        }else if (orderMode == Constant.ORDER_BY_COLOR){
+
+        }
+
+        if (success) {
+            Collections.swap(modelList, srcPosition, targetPosition);
+            mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
+//            mTaskListAdapter.setSelectState(false);
+        }
+
+        return success;
     }
 
     private boolean changeDataByMode(int srcPosition, int targetPosition) {
@@ -433,6 +677,16 @@ public class MainActivity extends BaseActivity {
         return success;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (toolbar.isSelect()){
+            toolbar.setSelect(false);
+            mTaskListAdapter.setSelectState(false);
+            mTaskListAdapter.notifySelectedItem();
+            return;
+        }
+        super.onBackPressed();
+    }
 
     private void initSimulatedData() {
         RealmDB.setCurrentUserId("user_111");
@@ -440,6 +694,8 @@ public class MainActivity extends BaseActivity {
         RealmDB.saveProject(mRealm,SimulatedData.getWorkProject());
         RealmDB.saveProject(mRealm,SimulatedData.getReadProject());
         RealmDB.saveProject(mRealm,SimulatedData.getTravelProject());
+        RealmDB.saveTag(mRealm,SimulatedData.getTag1());
+        RealmDB.saveTag(mRealm,SimulatedData.getTag2());
         RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask1());
         RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask2());
         RealmDB.saveTaskToProject(mRealm,"project_222",SimulatedData.getTask3());
@@ -448,8 +704,9 @@ public class MainActivity extends BaseActivity {
         RealmDB.saveTaskToProject(mRealm,"project_333",SimulatedData.getTask6());
         RealmDB.saveTaskToProject(mRealm,"project_111",SimulatedData.getTask7());
         RealmDB.saveTaskToProject(mRealm,"project_222",SimulatedData.getTask8());
-        RealmDB.saveBgColor(mRealm,SimulatedData.getHighBgColor());
-        RealmDB.saveBgColor(mRealm,SimulatedData.getNormalBgColor());
-        RealmDB.saveBgColor(mRealm,SimulatedData.getLowBgColor());
+//        RealmDB.saveBgColor(mRealm,SimulatedData.getHighBgColor());
+//        RealmDB.saveBgColor(mRealm,SimulatedData.getNormalBgColor());
+//        RealmDB.saveBgColor(mRealm,SimulatedData.getLowBgColor());
     }
+
 }

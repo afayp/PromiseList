@@ -67,6 +67,10 @@ public class CustomPopupWindow {
         startAnim();
     }
 
+    public void dismiss(){
+        mPopupWindow.dismiss();
+    }
+
     private void startAnim(){
         mContentView.setVisibility(View.VISIBLE);
         ValueAnimator animator = ValueAnimator.ofInt(0, viewHeight);

@@ -19,7 +19,7 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
     /**
      * 是否可以被滑动,默认false,原因同上
      */
-    private boolean isCanSwipe = false;
+    private boolean isCanSwipe = true;
     /**
      * Item操作的回调
      */

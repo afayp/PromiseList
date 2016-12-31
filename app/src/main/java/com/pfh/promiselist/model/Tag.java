@@ -45,4 +45,25 @@ public class Tag extends RealmObject{
                 ", owner=" + owner +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag tag = (Tag) o;
+
+        if (!tagId.equals(tag.tagId)) return false;
+        if (!name.equals(tag.name)) return false;
+        return owner.equals(tag.owner);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tagId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + owner.hashCode();
+        return result;
+    }
 }

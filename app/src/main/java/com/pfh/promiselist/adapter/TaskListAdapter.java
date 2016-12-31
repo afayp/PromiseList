@@ -7,18 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.MultiItemModel;
 import com.pfh.promiselist.model.Task;
-import com.pfh.promiselist.utils.Constant;
+import com.pfh.promiselist.others.Constant;
 import com.pfh.promiselist.widget.TaskItemTitle;
 import com.pfh.promiselist.widget.TaskItemView;
-import com.pfh.promiselist.widget.TaskItemView2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context mContext;
     private List<MultiItemModel> mData;
     private int mOrderMode;
-    private int preExpandPosition = -1;// 展开的item
+    private boolean select;// 是否处于选择状态
+    private List<Integer> selectedPosition = new ArrayList<>(); // 选中的位置
 
     private ItemTouchHelper itemTouchHelper;
 
@@ -46,6 +47,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void setData(List<MultiItemModel> list){
+        mData = list;
+    }
+
+    public List<MultiItemModel> getData(){
+        return mData;
+    }
+
     @Override
     public int getItemViewType(int position) {
         return mData.get(position).getItemType();
@@ -53,60 +62,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.e("TAG","onCreateViewHolder");
         if (viewType == Constant.ITEM_TYPE_TASK){
-            View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type_2, parent, false);
-            final TaskView2Holder taskView2Holder = new TaskView2Holder(taskItem);
-
-            taskItem.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (itemTouchHelper != null) {
-                        int startX = 0;
-                        int startY = 0;
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                startX = (int) event.getX();
-                                startY = (int) event.getY();
-                                Log.e("TAG","startX: "+startX +" | startY: "+startY);
-                                break;
-                            case MotionEvent.ACTION_MOVE:
-                                if (Math.abs(event.getY() - startY) < 100 && Math.abs(event.getX() - startX) > 200) itemTouchHelper.startSwipe(taskView2Holder);
-                                break;
-                        }
-                    }
-                    return false;
-                }
-            });
-
-            taskItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (preExpandPosition == taskView2Holder.getLayoutPosition()){
-                        taskView2Holder.task_item_2.toggleView();
-                        preExpandPosition = -1;
-                    }else {
-                        if (preExpandPosition != -1){
-                            mData.get(preExpandPosition).setShowSetting(false);
-                            notifyItemChanged(preExpandPosition);
-                        }
-                        taskView2Holder.task_item_2.toggleView();
-                        preExpandPosition = taskView2Holder.getLayoutPosition();
-                    }
-                }
-            });
-
-            taskItem.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (itemTouchHelper != null){
-                        itemTouchHelper.startDrag(taskView2Holder);
-                        Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
-                        vibrator.vibrate(70);
-                    }
-                    return true;
-                }
-            });
-            return taskView2Holder;
+            View taskItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_task_type, parent, false);
+            TaskViewHolder taskViewHolder = new TaskViewHolder(taskItem);
+            setupTaskItem(taskItem,taskViewHolder);
+            return taskViewHolder;
         }else {
             final View titleItem = LayoutInflater.from(mContext).inflate(R.layout.item_task_list_title_type, parent, false);
             final TitleViewHolder titleViewHolder = new TitleViewHolder(titleItem);
@@ -116,18 +77,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        Log.e("TAG","onBindViewHolder: "+position);
         int type = getItemViewType(position);
         if (type == Constant.ITEM_TYPE_TASK){
             Task task = (Task) mData.get(position).getContent();
-//            ((TaskViewHolder)holder).task_item.setData(task,mOrderMode);
-//            ((TaskViewHolder)holder).task_item.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
-            ((TaskView2Holder)holder).task_item_2.toggleView(mData.get(position).isShowSetting());
-            ((TaskView2Holder)holder).task_item_2.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
-            ((TaskView2Holder)holder).task_item_2.setData(task,mOrderMode);
+            TaskItemView taskItem = ((TaskViewHolder)holder).taskItem;
+            taskItem.setVisibility(mData.get(position).isExpand() ? View.VISIBLE : View.GONE);
+            taskItem.setData(task,mOrderMode);
+            taskItem.setSelectedBg(select && selectedPosition.contains((Integer)position));
 
         }else {
             ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getContent());
-//            ((TitleViewHolder)holder).task_title.setNum(mData.get(position).getTaskCount()+"");
             ((TitleViewHolder)holder).task_title.setNum(getTypeCount(mData.get(position).getLabel())+"");
             ((TitleViewHolder)holder).task_title.toggle(mData.get(position).isExpand() ? true : false);
             ((TitleViewHolder)holder).task_title.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +97,105 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
+    }
+
+    public void setSelectState(boolean select){
+        this.select = select;
+//        if (!select) {
+//            selectedPosition.clear();
+//        }
+    }
+
+    public void notifySelectedItem(){
+        for (int i = 0; i < selectedPosition.size(); i++) {
+            notifyItemChanged(selectedPosition.get(i));
+        }
+    }
+
+    public void clearSelect(){
+        selectedPosition.clear();
+        notifyDataSetChanged();
+    }
+
+    private void setupTaskItem(View taskItem, final TaskViewHolder taskViewHolder){
+
+//        taskItem.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (itemTouchHelper != null) {
+//                    int startX = 0;
+//                    int startY = 0;
+//                    switch (event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                            startX = (int) event.getX();
+//                            startY = (int) event.getY();
+//                            Log.e("TAG","startX: "+startX +" | startY: "+startY);
+//                            break;
+//                        case MotionEvent.ACTION_MOVE:
+//                            if (Math.abs(event.getY() - startY) < 100 && Math.abs(event.getX() - startX) > 200) itemTouchHelper.startSwipe(taskViewHolder);
+//                            break;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+
+        taskItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("TAG","onclick "+taskViewHolder.getLayoutPosition());
+                Log.e("TAG","select: "+select);
+                if (select) {
+                    handleClickIfSelect(taskViewHolder);
+                }else {
+                    onItemClickListener.onClickTask(v,taskViewHolder.getLayoutPosition());
+                }
+
+            }
+        });
+
+        taskItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.e("TAG","onLongClick "+taskViewHolder.getLayoutPosition());
+                Log.e("TAG","select: "+select);
+
+                if (itemTouchHelper != null){
+                    if (!select) {
+                        selectedPosition.clear();
+                        itemTouchHelper.startDrag(taskViewHolder);
+                        Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
+                        vibrator.vibrate(70);
+                        select = true;
+                        taskViewHolder.taskItem.setSelectedBg(true);
+                        selectedPosition.add((Integer) taskViewHolder.getLayoutPosition());
+                        onItemClickListener.onSelectChanged(select,taskViewHolder.getLayoutPosition(),1);
+                    }else {
+                        handleClickIfSelect(taskViewHolder);
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
+    private void handleClickIfSelect(TaskViewHolder taskViewHolder){
+        if (selectedPosition.contains(taskViewHolder.getLayoutPosition())) {//去掉
+            taskViewHolder.taskItem.setSelectedBg(false);
+            selectedPosition.remove((Integer) taskViewHolder.getLayoutPosition());
+            Log.e("TAG","selectedPosition: "+selectedPosition);
+            select = selectedPosition.size() != 0;
+            onItemClickListener.onSelectChanged(select,taskViewHolder.getLayoutPosition(),selectedPosition.size());
+        } else {//添加
+            taskViewHolder.taskItem.setSelectedBg(true);
+            selectedPosition.add((Integer) taskViewHolder.getLayoutPosition());
+            onItemClickListener.onSelectChanged(select,taskViewHolder.getLayoutPosition(),selectedPosition.size());
+            Log.e("TAG","selectedPosition: "+selectedPosition);
+        }
+    }
+
+    public List<Integer> getSelectedPositions(){
+        return selectedPosition;
     }
 
     public void expandOrFoldTitle(int position){
@@ -200,16 +259,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    static class TaskViewHolder extends RecyclerView.ViewHolder {
-
-        TaskItemView task_item;
-
-        public TaskViewHolder(View itemView) {
-            super(itemView);
-            task_item = (TaskItemView) itemView.findViewById(R.id.task_item);
-        }
-    }
-
     static class TitleViewHolder extends RecyclerView.ViewHolder {
         TaskItemTitle task_title;
         public TitleViewHolder(View itemView) {
@@ -218,19 +267,32 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    static class TaskView2Holder extends RecyclerView.ViewHolder {
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
-        TaskItemView2 task_item_2;
+        TaskItemView taskItem;
+        LinearLayout ll_root;
 
-        public TaskView2Holder(View itemView) {
+        public TaskViewHolder(View itemView) {
             super(itemView);
-            task_item_2 = (TaskItemView2) itemView.findViewById(R.id.task_item_2);
+            ll_root = (LinearLayout) itemView.findViewById(R.id.ll_root);
+            taskItem = (TaskItemView) itemView.findViewById(R.id.task_item);
         }
     }
-
 
     public void setItemTouchHelper(ItemTouchHelper helper){
         this.itemTouchHelper = helper;
     }
+
+    private onItemClickListener onItemClickListener;
+
+    public interface onItemClickListener {
+        void onClickTask(View view , int position);
+        void onSelectChanged(boolean select,int position , int count);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener){
+        this.onItemClickListener = listener;
+    }
+
 
 }

@@ -1,4 +1,4 @@
-package com.pfh.promiselist.utils;
+package com.pfh.promiselist.others;
 
 /**
  * 集中保存常量
@@ -12,6 +12,7 @@ public class Constant {
     public static final int ORDER_BY_DATE = 1;//按日期排序
     public static final int ORDER_BY_PROJECT = 2;// 按项目排序
     public static final int ORDER_BY_IMPORTANCE = 3;// 按优先级排序
+    public static final int ORDER_BY_COLOR = 4;// 按颜色排序
 
     public static final String LAST_SELECTED_PROJECT = "LAST_SELECTED_PROJECT";// 用户上次选择的在主界面展示的projectId
 
@@ -19,6 +20,8 @@ public class Constant {
     public static final int ITEM_TYPE_TASK = 1;
     public static final int ITEM_TYPE_TIME = 2;
     public static final int ITEM_TYPE_PROJECT = 3;
-    public static final int IITEM_TYPE_IMPORTANCE = 4;
+    public static final int ITEM_TYPE_IMPORTANCE = 4;
+    public static final int ITEM_TYPE_OTHER = 5;
+    public static final int ITEM_TYPE_FIXED = 6;
 
 }
