@@ -1,4 +1,4 @@
-package com.pfh.promiselist.utils;
+package com.pfh.promiselist.others;
 
 import android.content.Context;
 import android.os.Build;

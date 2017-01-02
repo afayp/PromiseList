@@ -10,14 +10,14 @@
         android:id="@+id/iv_back"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/ic_blue_left_arrow"/>
+        android:src="@drawable/ic_delete"/>
 
     <TextView
         android:id="@+id/tv_new_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="新建项目"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:paddingLeft="10dp"/>
 
     <View
@@ -26,18 +26,51 @@
         android:layout_weight="1"/>
 
     <ImageView
-        android:id="@+id/iv_ok"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_white_all_done"
-        android:layout_marginRight="10dp"/>
+        android:id="@+id/iv_palette"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_palette"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/icon_default_selector"/>
 
     <ImageView
-        android:id="@+id/iv_delete"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_white_trashcan"
-        android:layout_marginRight="10dp"/>
+        android:id="@+id/iv_tag"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_tag_grey"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/icon_default_selector"/>
 
+    <ImageView
+        android:id="@+id/iv_fixed"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_fixed"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/icon_default_selector"/>
+
+    <ImageView
+        android:id="@+id/iv_date"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_calendar_grey"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/icon_default_selector"/>
+
+    <ImageView
+        android:id="@+id/iv_project"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_folder_grey"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/icon_default_selector"/>
+
+    <ImageView
+        android:id="@+id/iv_ok"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_send"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"/>
 
 </LinearLayout>

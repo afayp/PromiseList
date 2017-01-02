@@ -6,6 +6,8 @@ import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.model.User;
 import com.pfh.promiselist.utils.DateUtil;
 
+import java.util.Date;
+
 import io.realm.RealmList;
 
 /**
@@ -32,6 +34,15 @@ public class SimulatedData {
         user.setRegisterTime(1481353391289L);
         user.setPermission(0);
         return user;
+    }
+
+    public static Project getDefaultProject(){ // 收集箱
+        Project collection = new Project();
+        collection.setName("收集箱");
+        collection.setProjectId("project_000");
+        collection.setOwner(getCurrentUser());
+        collection.setState(1);
+        return collection;
     }
 
 
@@ -86,7 +97,9 @@ public class SimulatedData {
         task1.setOwner(getCurrentUser());
         task1.setState(1);
         task1.setDueTime(DateUtil.str2Date(TODAY).getTime());
+        task1.setCreatedTime(new Date().getTime());
         task1.setColorValue(getLowBgColor());
+        task1.setDesc("desc /n desc \n desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         tags.add(getTag2());
@@ -101,7 +114,9 @@ public class SimulatedData {
         task2.setOwner(getCurrentUser());
         task2.setState(1);
         task2.setDueTime(DateUtil.str2Date(FEATURE).getTime());
+        task2.setCreatedTime(new Date().getTime());
         task2.setColorValue(getNormalBgColor());
+        task2.setDesc("desc /n desc \n desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
         task2.setTags(tags);
@@ -115,7 +130,9 @@ public class SimulatedData {
         task3.setOwner(getCurrentUser());
         task3.setState(1);
         task3.setDueTime(DateUtil.str2Date(TODAY).getTime());
+        task3.setCreatedTime(new Date().getTime());
         task3.setColorValue(getHighBgColor());
+        task3.setDesc("desc /n desc \n desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
         task3.setTags(tags);
@@ -130,6 +147,7 @@ public class SimulatedData {
         task4.setOwner(getCurrentUser());
         task4.setState(1);
         task4.setDueTime(DateUtil.str2Date(TODAY).getTime());
+        task4.setCreatedTime(new Date().getTime());
         task4.setColorValue(getLowBgColor());
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
@@ -143,6 +161,7 @@ public class SimulatedData {
         task5.setOwner(getCurrentUser());
         task5.setState(1);
         task5.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
+        task5.setCreatedTime(new Date().getTime());
         task5.setColorValue(getHighBgColor());
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
@@ -158,6 +177,7 @@ public class SimulatedData {
         task6.setOwner(getCurrentUser());
         task6.setState(1);
         task6.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
+        task6.setCreatedTime(new Date().getTime());
         task6.setColorValue(getNormalBgColor());
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
@@ -172,6 +192,7 @@ public class SimulatedData {
         task7.setOwner(getCurrentUser());
         task7.setState(1);
         task7.setDueTime(DateUtil.str2Date(FEATURE).getTime());
+        task7.setCreatedTime(new Date().getTime());
         task7.setColorValue(getLowBgColor());
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
@@ -186,6 +207,7 @@ public class SimulatedData {
         task8.setOwner(getCurrentUser());
         task8.setState(1);
         task8.setDueTime(DateUtil.str2Date(TODAY).getTime());
+        task8.setCreatedTime(new Date().getTime());
         task8.setColorValue(getHighBgColor());
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());

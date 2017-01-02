@@ -19,7 +19,7 @@ public class Project extends RealmObject {
     private RealmList<Task> tasks; //该project下所有task
     private User owner;
     private RealmList<User> cooperators;
-    private int state;// 1表示激活active,0表示已删除deleted(进回收站)
+    private int state;// 1表示激活active,2表示已删除deleted(进回收站)
     private int completion;// 0表示一项都没完成，1表示全部完成，2表示部分完成
     private long createdTime;// 创建时间
 
@@ -119,50 +119,11 @@ public class Project extends RealmObject {
                 ", category='" + category + '\'' +
                 ", backgroundUrl='" + backgroundUrl + '\'' +
                 ", desc='" + desc + '\'' +
-                ", owner=" + owner +
+                ", owner=" + owner.getUsername() +
                 ", cooperators=" + cooperators +
                 ", state=" + state +
                 ", completion=" + completion +
                 ", createdTime=" + createdTime +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Project project = (Project) o;
-
-        if (state != project.state) return false;
-        if (completion != project.completion) return false;
-        if (createdTime != project.createdTime) return false;
-        if (!projectId.equals(project.projectId)) return false;
-        if (!name.equals(project.name)) return false;
-        if (category != null ? !category.equals(project.category) : project.category != null)
-            return false;
-        if (backgroundUrl != null ? !backgroundUrl.equals(project.backgroundUrl) : project.backgroundUrl != null)
-            return false;
-        if (desc != null ? !desc.equals(project.desc) : project.desc != null) return false;
-        if (tasks != null ? !tasks.equals(project.tasks) : project.tasks != null) return false;
-        if (!owner.equals(project.owner)) return false;
-        return cooperators != null ? cooperators.equals(project.cooperators) : project.cooperators == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = projectId.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (category != null ? category.hashCode() : 0);
-        result = 31 * result + (backgroundUrl != null ? backgroundUrl.hashCode() : 0);
-        result = 31 * result + (desc != null ? desc.hashCode() : 0);
-        result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
-        result = 31 * result + owner.hashCode();
-        result = 31 * result + (cooperators != null ? cooperators.hashCode() : 0);
-        result = 31 * result + state;
-        result = 31 * result + completion;
-        result = 31 * result + (int) (createdTime ^ (createdTime >>> 32));
-        return result;
     }
 }

@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.appeaser.sublimepickerlibrary.SublimePicker;
-import com.appeaser.sublimepickerlibrary.datepicker.SelectedDate;
-import com.appeaser.sublimepickerlibrary.helpers.SublimeListenerAdapter;
-import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
-import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
@@ -38,7 +32,7 @@ public class TimeSelector extends LinearLayout {
     private LinearLayout.LayoutParams defaultParams;
     private Calendar dueTimeC;// 记录选择的dueTime
     private Context mContext;
-    private SublimeListenerAdapter sublimeListener;
+//    private SublimeListenerAdapter sublimeListener;
     private MaterialDialog dialog; // 用来放时间选择器
 
     private LinearLayout ll_1;
@@ -141,70 +135,70 @@ public class TimeSelector extends LinearLayout {
         ll_18.setOnClickListener(defaultUpListener);
         ll2_customize.setOnClickListener(defaultUpListener);
 
-        sublimeListener = new SublimeListenerAdapter() {
-            @Override
-            public void onDateTimeRecurrenceSet(SublimePicker sublimeMaterialPicker, SelectedDate selectedDate,
-                                                int hourOfDay, int minute, SublimeRecurrencePicker.RecurrenceOption recurrenceOption, String recurrenceRule) {
-
-                if (dialog != null){
-                    dialog.dismiss();
-                }
-
-                dueTimeC = selectedDate.getStartDate();//年月日
-                if (hourOfDay != -1 && minute != -1){
-                    dueTimeC.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                    dueTimeC.set(Calendar.MINUTE,minute);
-                }
-                Log.e("TAG",DateUtil.date2Str(dueTimeC));
-
-                if (currState == STATE_1) {
-                    //setDate
-                    tv_custom_date.setText(dueTimeC.get(Calendar.DAY_OF_MONTH)+"");
-                    startFlipAnim(true);
-                    currState = STATE_2;
-                    showSublimePicker();
-                }else {
-                    tv_custom_time.setText(dueTimeC.get(Calendar.HOUR_OF_DAY) +":"+dueTimeC.get(Calendar.MINUTE));
-                }
-            }
-
-            @Override
-            public void onCancelled() {
-                if (dialog != null) dialog.dismiss();
-            }
-        };
+//        sublimeListener = new SublimeListenerAdapter() {
+//            @Override
+//            public void onDateTimeRecurrenceSet(SublimePicker sublimeMaterialPicker, SelectedDate selectedDate,
+//                                                int hourOfDay, int minute, SublimeRecurrencePicker.RecurrenceOption recurrenceOption, String recurrenceRule) {
+//
+//                if (dialog != null){
+//                    dialog.dismiss();
+//                }
+//
+//                dueTimeC = selectedDate.getStartDate();//年月日
+//                if (hourOfDay != -1 && minute != -1){
+//                    dueTimeC.set(Calendar.HOUR_OF_DAY,hourOfDay);
+//                    dueTimeC.set(Calendar.MINUTE,minute);
+//                }
+//                Log.e("TAG",DateUtil.date2Str(dueTimeC));
+//
+//                if (currState == STATE_1) {
+//                    //setDate
+//                    tv_custom_date.setText(dueTimeC.get(Calendar.DAY_OF_MONTH)+"");
+//                    startFlipAnim(true);
+//                    currState = STATE_2;
+//                    showSublimePicker();
+//                }else {
+//                    tv_custom_time.setText(dueTimeC.get(Calendar.HOUR_OF_DAY) +":"+dueTimeC.get(Calendar.MINUTE));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled() {
+//                if (dialog != null) dialog.dismiss();
+//            }
+//        };
 
     }
 
     private void showSublimePicker(){
-        SublimePicker sublimePicker = new SublimePicker(mContext);
-        sublimePicker.initializePicker(getSublimeOptions(),sublimeListener);
-        dialog = new MaterialDialog.Builder(mContext)
-                .customView(sublimePicker, false)
-                .show();
+//        SublimePicker sublimePicker = new SublimePicker(mContext);
+//        sublimePicker.initializePicker(getSublimeOptions(),sublimeListener);
+//        dialog = new MaterialDialog.Builder(mContext)
+//                .customView(sublimePicker, false)
+//                .show();
     }
 
-    private SublimeOptions getSublimeOptions(){
-        SublimeOptions options = new SublimeOptions();
-        int displayOptions = 0;
-
-        if (currState == STATE_1) {
-            displayOptions |= SublimeOptions.ACTIVATE_DATE_PICKER;
-            options.setPickerToShow(SublimeOptions.Picker.DATE_PICKER);
-        }
-        if (currState == STATE_2) {
-            displayOptions |= SublimeOptions.ACTIVATE_DATE_PICKER;//选择time也可以返回更改date
-            displayOptions |= SublimeOptions.ACTIVATE_TIME_PICKER;
-            options.setPickerToShow(SublimeOptions.Picker.DATE_PICKER);
-            options.setPickerToShow(SublimeOptions.Picker.TIME_PICKER);
-        }
-
-        options.setDisplayOptions(displayOptions);
-        options.setCanPickDateRange(false);
-        options.setAnimateLayoutChanges(true);
-        options.setDateParams(dueTimeC);
-        return options;
-    }
+//    private SublimeOptions getSublimeOptions(){
+//        SublimeOptions options = new SublimeOptions();
+//        int displayOptions = 0;
+//
+//        if (currState == STATE_1) {
+//            displayOptions |= SublimeOptions.ACTIVATE_DATE_PICKER;
+//            options.setPickerToShow(SublimeOptions.Picker.DATE_PICKER);
+//        }
+//        if (currState == STATE_2) {
+//            displayOptions |= SublimeOptions.ACTIVATE_DATE_PICKER;//选择time也可以返回更改date
+//            displayOptions |= SublimeOptions.ACTIVATE_TIME_PICKER;
+//            options.setPickerToShow(SublimeOptions.Picker.DATE_PICKER);
+//            options.setPickerToShow(SublimeOptions.Picker.TIME_PICKER);
+//        }
+//
+//        options.setDisplayOptions(displayOptions);
+//        options.setCanPickDateRange(false);
+//        options.setAnimateLayoutChanges(true);
+//        options.setDateParams(dueTimeC);
+//        return options;
+//    }
 
     private void startFlipAnim(boolean up){
         ValueAnimator animator = up ? ValueAnimator.ofInt(0, HEIGHT_PX) : ValueAnimator.ofInt(HEIGHT_PX,0);

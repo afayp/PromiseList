@@ -17,6 +17,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -38,19 +39,31 @@ import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.SPUtil;
 import com.pfh.promiselist.widget.CustomPopupWindow;
+import com.pfh.promiselist.widget.ProjectChooseView;
 import com.pfh.promiselist.widget.TagsChooseView;
 import com.pfh.promiselist.widget.TaskListToolbar;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 
+
 /**
  * 首页 展示当前筛选条件(时间、清单...)下的所有任务
  */
-public class MainActivity extends BaseActivity implements ColorChooserDialog.ColorCallback {
+public class MainActivity extends BaseActivity implements
+        ColorChooserDialog.ColorCallback,
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener {
+
+    public static final int REQUEST_NEW = 1; // 新建任务
+    public static final int REQUEST_EDIT = 2; // 修改任务
+    public static final String EDIT_TASK_ID = "edit_task_id"; // 修改的任务
 
     private TaskListToolbar toolbar;
     private RecyclerView recyclerview;
@@ -65,6 +78,9 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
     private TaskListAdapter mTaskListAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<Task> selectedTasks = new ArrayList<>();//所有选中的task
+    private Calendar targetCalendar; // 选择的日期
+    private Task deletedTask;
+    private boolean isDragSuccess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,19 +130,25 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
                     temp.add(allTasks.get(i));
                 }
             }
-            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));
-            tempModeList.addAll(fixedList);
-            //对剩下的按时间排序
-            Collections.sort(temp, new Comparator<Task>() {
-                @Override
-                public int compare(Task o1, Task o2) {
-                    return (int) (o1.getDueTime() - o2.getDueTime());
-                }
-            });
-            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_OTHER,getString(R.string.label_others)));
-            for (int i = 0; i < temp.size(); i++) {
-                tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,temp.get(i),getString(R.string.label_others)));
+            if (fixedList.size() != 0){ // 如果没有则不显示
+                tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));
+                tempModeList.addAll(fixedList);
             }
+
+            if (temp.size() != 0){ // 如果没有则不显示
+                //对剩下的按时间排序
+                Collections.sort(temp, new Comparator<Task>() {
+                    @Override
+                    public int compare(Task o1, Task o2) {
+                        return (int) (o1.getDueTime() - o2.getDueTime());
+                    }
+                });
+                tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_OTHER,getString(R.string.label_others)));
+                for (int i = 0; i < temp.size(); i++) {
+                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,temp.get(i),getString(R.string.label_others)));
+                }
+            }
+
 //            List<MultiItemModel> today = new ArrayList<>();
 //            List<MultiItemModel> tomorrow = new ArrayList<>();
 //            List<MultiItemModel> future = new ArrayList<>();
@@ -149,21 +171,31 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
         }else if (orderMode == Constant.ORDER_BY_PROJECT){
             //按清单排序
             List<MultiItemModel> fixedList = new ArrayList<>();
-            List<Task> temp = new ArrayList<>();
-            tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));//固定
+            List<Task> fixedTaskList = new ArrayList<>();
             for (int i = 0; i < selectedProjects.size(); i++) {
                 List<Task> tasks = RealmDB.getFixedUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId(), true);
-                for (int j = 0; j < tasks.size(); j++) {
-                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),getString(R.string.label_fixed)));
+                fixedTaskList.addAll(tasks);
+//                for (int j = 0; j < tasks.size(); j++) {
+//                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),getString(R.string.label_fixed)));
+//                }
+            }
+            if (fixedTaskList.size() != 0) {
+                tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_FIXED,getString(R.string.label_fixed)));//固定
+                for (int i = 0; i < fixedTaskList.size(); i++) {
+                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,fixedTaskList.get(i),getString(R.string.label_fixed)));
                 }
             }
+
+
             for (int i = 0; i < selectedProjects.size(); i++) {
                 List<Task> tasks = RealmDB.getFixedUncompletedTasksByProjectId(mRealm, selectedProjects.get(i).getProjectId(), false);
-                MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
-                projectModel.setData(selectedProjects.get(i));
-                tempModeList.add(projectModel);
-                for (int j = 0; j < tasks.size(); j++) {
-                    tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),selectedProjects.get(i).getName()));
+                if (tasks.size() != 0) {
+                    MultiItemModel projectModel = new MultiItemModel(Constant.ITEM_TYPE_PROJECT, selectedProjects.get(i).getName());
+                    projectModel.setData(selectedProjects.get(i));
+                    tempModeList.add(projectModel);
+                    for (int j = 0; j < tasks.size(); j++) {
+                        tempModeList.add(new MultiItemModel(Constant.ITEM_TYPE_TASK,tasks.get(j),selectedProjects.get(i).getName()));
+                    }
                 }
             }
 
@@ -227,7 +259,12 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
         fb_add = (FloatingActionButton) findViewById(R.id.fb_add);
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         recyclerview.setItemAnimator(new DefaultItemAnimator());
-        linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager = new LinearLayoutManager(mContext){
+            @Override
+            protected int getExtraLayoutSpace(RecyclerView.State state) {
+                return 400;
+            }
+        };
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setItemAnimator(new CustomItemAnimator());
@@ -236,6 +273,15 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
             @Override
             public void onClickTask(View view, int position) {
                 //goto task activity
+                Intent intent = new Intent(MainActivity.this,NewTaskActivity.class);
+                Task task = (Task) modelList.get(position).getContent();
+                intent.putExtra(EDIT_TASK_ID,task.getTaskId());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    startActivityForResult(intent,REQUEST_EDIT,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
+                }else {
+                    startActivityForResult(intent,REQUEST_EDIT);
+                }
+
             }
 
             @Override
@@ -259,27 +305,21 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
         });
         CustomItemTouchHelpCallback callback = new CustomItemTouchHelpCallback(new CustomItemTouchHelpCallback.OnItemTouchCallbackListener() {
             @Override
-            public void onSwiped(final int adapterPosition) {
+            public void onSwiped(int adapterPosition) {
                 Log.e("TAG","adapterPosition: "+adapterPosition);
-                final MultiItemModel model = modelList.get(adapterPosition);
-                final Task task = (Task) model.getContent();
-                showConfrimSnackBar(coordinator, "已完成" + task.getName(), "撤销", new View.OnClickListener() {
+                deletedTask = (Task) modelList.get(adapterPosition).getContent();
+                deletedTask.setState(2);
+                Log.e("TAG","deletedTask: "+deletedTask.toString());
+                RealmDB.refreshTask(mRealm, deletedTask);
+                refreshTaskListUseDiffUtil();
+                showConfrimSnackBar(coordinator, "已完成", "撤销", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("TAG","task: "+task.toString());
-                        RealmDB.saveTaskToProject(mRealm,task.getProject().getProjectId(),task);
-                        modelList.add(adapterPosition,model);
-//                        mTaskListAdapter.setData(modelList);
-                        Log.e("TAG","size: "+mTaskListAdapter.getData().size());
-                        mTaskListAdapter.notifyItemInserted(adapterPosition);
-                        Log.e("TAG","222");
+                        deletedTask.setState(1);
+                        RealmDB.refreshTask(mRealm, deletedTask);
+                        refreshTaskListUseDiffUtil();
                     }
                 });
-
-                modelList.remove(adapterPosition);
-                mTaskListAdapter.notifyItemRemoved(adapterPosition);
-                Log.e("TAG","size: "+mTaskListAdapter.getData().size());
-
             }
 
             @Override
@@ -317,6 +357,7 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
                 boolean success = changeDataByMode2(srcPosition, targetPosition);
                 if (success) {
 //                    mTaskListAdapter.setSelectState(false);
+                    isDragSuccess = true;
                     toolbar.setSelect(false);
                 }
                 return success;
@@ -324,6 +365,15 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
 //                Collections.swap(modelList, srcPosition, targetPosition);
 //                mTaskListAdapter.notifyItemMoved(srcPosition,targetPosition);
 //                return true;
+            }
+
+            @Override
+            public boolean canSwipe() {
+                if (toolbar.isSelect()){
+                    return false;
+                }else {
+                    return true;
+                }
             }
 
             @Override
@@ -359,12 +409,13 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
 //                    Task task = (Task) modelList.get(viewHolder.getLayoutPosition()).getContent();
 //                    RealmDB.refreshTask(mRealm,task);
 //                    Log.e("TAG","refresh task: "+(Task) modelList.get(viewHolder.getLayoutPosition()).getContent());
-//                    Log.e("TAG","release " +viewHolder.getLayoutPosition());
+//                    Log.e("TAG","release " + viewHolder.getLayoutPosition());
 //                }
 
-                if (!toolbar.isSelect()){
+                if (!toolbar.isSelect() && isDragSuccess){
                     mTaskListAdapter.setSelectState(false);
                     mTaskListAdapter.notifyItemChanged(viewHolder.getLayoutPosition());
+                    isDragSuccess = false;
 //                    mTaskListAdapter.notifyDataSetChanged();
                 }
             }
@@ -443,15 +494,11 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
         toolbar.getIvFixed().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toolbar.setSelect(false);
-                mTaskListAdapter.setSelectState(false);
-                RealmDB.refreshTasksFixed(mRealm,selectedTasks,!toolbar.isFixedActive());
-                List<MultiItemModel> newModeList = orderByMode();//保存后重新获取一次，即新的数据
-                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallback(modelList, newModeList),true);// 注意这里old modeList的fixed属性也对更改了！只是位置还未刷新
-                diffResult.dispatchUpdatesTo(mTaskListAdapter);
-                modelList = newModeList;
-//                mTaskListAdapter.refreshData(newModeList,orderMode);
-                mTaskListAdapter.setData(newModeList);
+                for (int i = 0; i < selectedTasks.size(); i++) {
+                    selectedTasks.get(i).setFixed(!toolbar.isFixedActive());
+                }
+                RealmDB.refreshTasks(mRealm,selectedTasks);// 使用此方法要先刷新selectedTasks，再将更改保存到数据库
+                refreshTaskListUseDiffUtil();
             }
         });
 
@@ -469,10 +516,84 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
             }
         });
 
+        toolbar.getIvSelectPorject().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProjectChooseDialog();
+            }
+        });
+
         toolbar.getIvDate().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDateChooseDialog();
+                showDatePickerDialog();
+            }
+        });
+
+        toolbar.getIVMoreSelect().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CustomPopupWindow selectMore = new CustomPopupWindow(mContext, R.layout.popu_more_select_menu);
+                View view = selectMore.getContentView();
+                TextView tv_complete = (TextView) view.findViewById(R.id.tv_complete);
+                TextView tv_delete = (TextView) view.findViewById(R.id.tv_delete);
+                TextView tv_copy = (TextView) view.findViewById(R.id.tv_copy);
+                TextView tv_send = (TextView) view.findViewById(R.id.tv_send);
+                tv_complete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (int i = 0; i < selectedTasks.size(); i++) {
+                            selectedTasks.get(i).setState(2);
+                        }
+                        RealmDB.refreshTasks(mRealm,selectedTasks);// 使用此方法要先刷新selectedTasks，再将更改保存到数据库
+                        refreshTaskListUseDiffUtil();
+                        showConfrimSnackBar(coordinator, "已完成", "撤销", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for (int i = 0; i < selectedTasks.size(); i++) {
+                                    selectedTasks.get(i).setState(1);
+                                }
+                                RealmDB.refreshTasks(mRealm,selectedTasks);// 使用此方法要先刷新selectedTasks，再将更改保存到数据库
+                                refreshTaskListUseDiffUtil();
+                            }
+                        });
+                    }
+                });
+                tv_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (int i = 0; i < selectedTasks.size(); i++) {
+                            selectedTasks.get(i).setState(3);
+                        }
+                        RealmDB.refreshTasks(mRealm,selectedTasks);// 使用此方法要先刷新selectedTasks，再将更改保存到数据库
+                        refreshTaskListUseDiffUtil();
+                        showConfrimSnackBar(coordinator, "已删除", "撤销", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for (int i = 0; i < selectedTasks.size(); i++) {
+                                    selectedTasks.get(i).setState(1);
+                                }
+                                RealmDB.refreshTasks(mRealm,selectedTasks);// 使用此方法要先刷新selectedTasks，再将更改保存到数据库
+                                refreshTaskListUseDiffUtil();
+                            }
+                        });
+
+                    }
+                });
+                tv_copy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                tv_send.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                selectMore.showAsDropDown(v,-DensityUtil.dp2px(mContext,30),0);
             }
         });
 
@@ -481,23 +602,112 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,NewTaskActivity.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
+//                    startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
+                    startActivityForResult(intent,REQUEST_NEW,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
                 }else {
-                    startActivity(intent);
+//                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_NEW);
                 }
             }
         });
     }
 
-    private void showDateChooseDialog() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            refreshTaskListUseDiffUtil();
+        }
 
+    }
+
+    private void refreshTaskListUseDiffUtil(){
+        toolbar.setSelect(false);
+        mTaskListAdapter.setSelectState(false);
+        List<MultiItemModel> newModeList = orderByMode();//默认新数据来源重新遍历数据库
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallback(modelList, newModeList),true);//旧数据默认modelList
+        diffResult.dispatchUpdatesTo(mTaskListAdapter);
+        modelList = newModeList;
+        mTaskListAdapter.setData(newModeList);
+    }
+
+    private void showDatePickerDialog() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                MainActivity.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setAccentColor(Color.parseColor("#BBD9BD"));
+        dpd.setTitle("设置到期时间");
+        dpd.setMinDate(now);
+        dpd.show(getFragmentManager(),"tag");
+    }
+
+    private void showTimePickerDialog(){
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                MainActivity.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.setAccentColor(Color.parseColor("#BBD9BD"));
+        tpd.setTitle("设置到期时间");
+        tpd.show(getFragmentManager(),"tag");
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Log.e("TAg","year: "+year + " monthOfYear: "+monthOfYear + " dayOfMonth: "+dayOfMonth);
+        showTimePickerDialog();
+        targetCalendar = Calendar.getInstance();
+        targetCalendar.set(Calendar.YEAR,year);
+        targetCalendar.set(Calendar.MONTH,monthOfYear);
+        targetCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        Log.e("TAg","hourOfDay: "+hourOfDay + " minute: "+minute + " second: "+second);
+        targetCalendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+        targetCalendar.set(Calendar.MINUTE,minute);
+        for (int i = 0; i < selectedTasks.size(); i++) {
+            selectedTasks.get(i).setDueTime(targetCalendar.getTimeInMillis());
+        }
+        RealmDB.refreshTasks(mRealm,selectedTasks);
+        refreshTaskListUseDiffUtil();
+//        mTaskListAdapter.setSelectState(false);
+//        toolbar.setSelect(false);
+//        mTaskListAdapter.notifySelectedItem();//不刷新位置吗？TODO
+    }
+
+    private void showProjectChooseDialog() {
+        List<Project> allProjects = RealmDB.getAllActiveProjectsByUserId(mRealm, RealmDB.getCurrentUserId());
+        ProjectChooseView projectChooseView = new ProjectChooseView(mContext);
+        projectChooseView.setData(allProjects,selectedTasks,mRealm);
+
+        final MaterialDialog dialog = new MaterialDialog.Builder(mContext)
+                .title(R.string.tag_choose_dialog_label)
+                .customView(projectChooseView, true)
+                .negativeText(R.string.cancel)
+                .show();
+
+        projectChooseView.setOnProjectSelectedListener(new ProjectChooseView.onProjectSelectedListener() {
+            @Override
+            public void projectSelected() {
+                dialog.dismiss();
+                RealmDB.refreshTasks(mRealm,selectedTasks);
+                refreshTaskListUseDiffUtil();
+            }
+        });
     }
 
     private void showTagChooseDialog() {
 
         List<Tag> allTags = RealmDB.getAllTagsByUserId(mRealm, RealmDB.getCurrentUserId());
         final TagsChooseView tagsChooseView = new TagsChooseView(mContext);
-        tagsChooseView.setData(allTags,selectedTasks);
+        tagsChooseView.setData(allTags,selectedTasks,mRealm);
         new MaterialDialog.Builder(mContext)
                 .title(R.string.tag_choose_dialog_label)
                 .customView(tagsChooseView,true)
@@ -522,7 +732,6 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
         for (int i = 0; i < colorArrays.length; i++) {
             colors[i] = Color.parseColor(colorArrays[i]);
         }
-
         new ColorChooserDialog.Builder(this,R.string.choose_color)
                 .customColors(colors,null)
                 .accentMode(false)
@@ -543,6 +752,7 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
     }
 
     private void refreshByMode(){
+        //todo 改成diffutil
         modelList = orderByMode();
         mTaskListAdapter.refreshData(modelList,orderMode);
         recyclerview.smoothScrollToPosition(0);
@@ -691,6 +901,7 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
     private void initSimulatedData() {
         RealmDB.setCurrentUserId("user_111");
         RealmDB.saveUser(mRealm, SimulatedData.getCurrentUser());
+        RealmDB.saveProject(mRealm,SimulatedData.getDefaultProject());
         RealmDB.saveProject(mRealm,SimulatedData.getWorkProject());
         RealmDB.saveProject(mRealm,SimulatedData.getReadProject());
         RealmDB.saveProject(mRealm,SimulatedData.getTravelProject());
@@ -708,5 +919,6 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
 //        RealmDB.saveBgColor(mRealm,SimulatedData.getNormalBgColor());
 //        RealmDB.saveBgColor(mRealm,SimulatedData.getLowBgColor());
     }
+
 
 }

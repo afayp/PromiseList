@@ -73,7 +73,8 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
      */
     @Override
     public boolean isItemViewSwipeEnabled() {
-        return isCanSwipe;
+        return onItemTouchCallbackListener.canSwipe();
+//        return isCanSwipe;
     }
 
     /**
@@ -187,6 +188,8 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
          * @return 开发者处理了操作应该返回true，开发者没有处理就返回false,恢复原来状态
          */
         boolean onMove(int srcPosition, int targetPosition);
+
+        boolean canSwipe();
 
         void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState);
 

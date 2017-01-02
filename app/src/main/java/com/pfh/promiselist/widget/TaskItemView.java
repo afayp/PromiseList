@@ -70,7 +70,8 @@ public class TaskItemView extends LinearLayout {
         tv_title = (TextView) view.findViewById(R.id.tv_title);
         iv_fixed = (ImageView) view.findViewById(R.id.iv_fixed);
         flow_tag_container = (FlowLayout) view.findViewById(R.id.flow_tag_container);
-        flow_tag_container.setHorizontalSpacing(5);
+        flow_tag_container.setHorizontalSpacing(8);
+        flow_tag_container.setVerticalSpacing(5);
 
 //        tv_info = (TextView) view.findViewById(R.id.tv_info);
 //        ll_setting = (LinearLayout) view.findViewById(R.id.ll_setting);
@@ -91,6 +92,7 @@ public class TaskItemView extends LinearLayout {
     }
 
     private void initView() {
+        //todo tag以动画形式向下展开
         flow_tag_container.removeAllViews();
         tv_title.setText(mTask.getName());
 
@@ -118,7 +120,9 @@ public class TaskItemView extends LinearLayout {
             flow_tag_container.addView(tag_tag);
         }
         //其他设置...
-        cardview.setCardBackgroundColor(Color.parseColor(mTask.getColorValue()));
+        if (mTask.getColorValue() != null) {
+            cardview.setCardBackgroundColor(Color.parseColor(mTask.getColorValue()));
+        }
         iv_fixed.setVisibility(mTask.isFixed() ? VISIBLE : GONE);
         setListener();
     }

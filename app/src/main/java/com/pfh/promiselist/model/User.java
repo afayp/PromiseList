@@ -190,7 +190,6 @@ public class User extends RealmObject implements Serializable{
         result = 31 * result + gender;
         result = 31 * result + (int) (registerTime ^ (registerTime >>> 32));
         result = 31 * result + permission;
-        result = 31 * result + (projects != null ? projects.hashCode() : 0);
         result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;

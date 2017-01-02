@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.widget.MemberList;
-import com.pfh.promiselist.widget.SmoothSwitch;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 /**
@@ -30,11 +29,10 @@ public class NewProjectActivity extends BaseActivity {
         ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
         TextView tv_new_item = (TextView) findViewById(R.id.tv_new_item);
         ImageView iv_ok = (ImageView) findViewById(R.id.iv_ok);
-        ImageView iv_delete = (ImageView) findViewById(R.id.iv_delete);
         MaterialEditText et_title = (MaterialEditText) findViewById(R.id.et_title);
         FloatingActionButton fb_add = (FloatingActionButton) findViewById(R.id.fb_add);
         MemberList memberList = (MemberList) findViewById(R.id.memberList);
-        SmoothSwitch smoothSwitch = (SmoothSwitch) findViewById(R.id.smoothSwitch);
+//        SmoothSwitch smoothSwitch = (SmoothSwitch) findViewById(R.id.smoothSwitch);
         ImageView iv_bg = (ImageView) findViewById(R.id.iv_bg);
 
         tv_new_item.setText(R.string.new_project);
@@ -51,12 +49,7 @@ public class NewProjectActivity extends BaseActivity {
                 exitActivity();
             }
         });
-        iv_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                exitActivity();
-            }
-        });
+
         fb_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

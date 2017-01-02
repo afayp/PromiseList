@@ -126,6 +126,20 @@ public class RealmDB {
         return realm.copyFromRealm(realm.where(Project.class).equalTo("projectId", projectId).findFirst());
     }
 
+    public static Project getProjectByProjectName(Realm realm,String projectName){
+        return realm.copyFromRealm(realm.where(Project.class).equalTo("name",projectName).findFirst());
+    }
+
+    /**
+     * 如果已经存在返回true,否则返回false
+     * @param realm
+     * @param projectName
+     * @return
+     */
+    public static boolean isProjectNameExist(Realm realm, String projectName){
+        return realm.where(Project.class).equalTo("name",projectName).count() != 0;
+    }
+
     /**
      * 找出某个user的所有project，包括active 和 deleted
      * @param realm
@@ -159,7 +173,7 @@ public class RealmDB {
     public static List<Project> getAllDeletedProjectsByUserId(Realm realm,String uid){
         return realm.copyFromRealm(realm.where(Project.class)
                 .equalTo("owner.uid", uid)
-                .equalTo("state",0)
+                .equalTo("state",2)
                 .findAll()
                 .sort("createdTime"));
     }
@@ -387,9 +401,7 @@ public class RealmDB {
      * @param newTask
      */
     public static void refreshTask(Realm realm,Task newTask){
-        Task oldTask = realm.where(Task.class).equalTo("taskId", newTask.getTaskId()).findFirst();
         realm.beginTransaction();
-
         realm.copyToRealmOrUpdate(newTask);
 //        oldTask.setName(newTask.getName());
 //        oldTask.setDueTime(newTask.getDueTime());
@@ -410,9 +422,10 @@ public class RealmDB {
 
     public static void refreshTasks(Realm realm,List<Task> tasks){
         realm.beginTransaction();
-        for (int i = 0; i < tasks.size(); i++) {
-            realm.copyToRealmOrUpdate(tasks);
-        }
+        realm.copyToRealmOrUpdate(tasks);
+//        for (int i = 0; i < tasks.size(); i++) {
+//            realm.copyToRealmOrUpdate(tasks);
+//        }
         realm.commitTransaction();
     }
 
@@ -451,12 +464,17 @@ public class RealmDB {
     }
 
     public static void saveTag(Realm realm, final Tag tag){
+        tag.setOwner(getUserByUserId(realm,getCurrentUserId()));
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.copyToRealmOrUpdate(tag);
             }
         });
+    }
+
+    public static boolean isTagNameExist(Realm realm,String tagName){
+        return realm.where(Tag.class).equalTo("name",tagName).count() != 0;
     }
 
 

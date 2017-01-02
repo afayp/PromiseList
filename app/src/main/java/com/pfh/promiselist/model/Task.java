@@ -20,18 +20,47 @@ public class Task extends RealmObject {
 //    private boolean remindMode;// 是否开启提醒 废弃有了dueTime就不增加这个设置了
 //    private long remindTime;// 结束前几分钟提醒
     private String colorValue; // 背景颜色
-    private String desc;
+    private String desc; // 文字明细
     private User owner;
     //    private int importance; // 低1、正常2、高3 默认正常2 取消 改成用颜色区分 更灵活更好看
     private RealmList<Tag> tags;
     private RealmList<User> cooperators;
-    private int state;//1表示未完成uncompleted，2表示已完成completed，0表示已删除(进回收站)deleted
+    private int state;//1表示未完成uncompleted，2表示已完成completed，3表示已删除(进回收站)deleted
 
     private String repeatMode; // NOREPEAT、DAILY、WEEKLY、MONTHLY、YEARLY
     private long repeatTime; //一个确切的时间，在创建任务时确定，根据repeatMode和repeatTime算出某天是否符合
                             // (如WEEKLY，算出repeatTime为周几，则下面的每周几都要重复该任务；如MONTHLY，算出repeatTime为几号，则下面每个月几号都要重复)，
                             //如果符合则创建该任务到任务列表
+
     private boolean fixed; // 固定 如果固定无论何种排序都固定在最上面
+
+    private String picUrls; // 本任务包含的图片地址 如有多个用英文逗号分隔
+    private String recordingUrls; // 本任务包含的录音地址 如有多个用英文逗号分隔
+    private String videoUrls; // 本任务包含的视频地址 如有多个用英文逗号分隔
+
+    public String getRecordingUrls() {
+        return recordingUrls;
+    }
+
+    public void setRecordingUrls(String recordingUrls) {
+        this.recordingUrls = recordingUrls;
+    }
+
+    public String getVideoUrls() {
+        return videoUrls;
+    }
+
+    public void setVideoUrls(String videoUrls) {
+        this.videoUrls = videoUrls;
+    }
+
+    public String getPicUrls() {
+        return picUrls;
+    }
+
+    public void setPicUrls(String picUrls) {
+        this.picUrls = picUrls;
+    }
 
     public boolean isFixed() {
         return fixed;
@@ -189,15 +218,19 @@ public class Task extends RealmObject {
                 ", project=" + project +
                 ", colorValue='" + colorValue + '\'' +
                 ", desc='" + desc + '\'' +
-                ", owner=" + owner +
+                ", owner=" + owner.getUsername() +
                 ", tags=" + tags +
                 ", cooperators=" + cooperators +
                 ", state=" + state +
                 ", repeatMode='" + repeatMode + '\'' +
                 ", repeatTime=" + repeatTime +
                 ", fixed=" + fixed +
+                ", picUrls='" + picUrls + '\'' +
+                ", recordingUrls='" + recordingUrls + '\'' +
+                ", videoUrls='" + videoUrls + '\'' +
                 '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -222,7 +255,12 @@ public class Task extends RealmObject {
         if (tags != null ? !tags.equals(task.tags) : task.tags != null) return false;
         if (cooperators != null ? !cooperators.equals(task.cooperators) : task.cooperators != null)
             return false;
-        return repeatMode != null ? repeatMode.equals(task.repeatMode) : task.repeatMode == null;
+        if (repeatMode != null ? !repeatMode.equals(task.repeatMode) : task.repeatMode != null)
+            return false;
+        if (picUrls != null ? !picUrls.equals(task.picUrls) : task.picUrls != null) return false;
+        if (recordingUrls != null ? !recordingUrls.equals(task.recordingUrls) : task.recordingUrls != null)
+            return false;
+        return videoUrls != null ? videoUrls.equals(task.videoUrls) : task.videoUrls == null;
 
     }
 
@@ -243,6 +281,9 @@ public class Task extends RealmObject {
         result = 31 * result + (repeatMode != null ? repeatMode.hashCode() : 0);
         result = 31 * result + (int) (repeatTime ^ (repeatTime >>> 32));
         result = 31 * result + (fixed ? 1 : 0);
+        result = 31 * result + (picUrls != null ? picUrls.hashCode() : 0);
+        result = 31 * result + (recordingUrls != null ? recordingUrls.hashCode() : 0);
+        result = 31 * result + (videoUrls != null ? videoUrls.hashCode() : 0);
         return result;
     }
 }

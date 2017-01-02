@@ -38,6 +38,9 @@ ext {
             materialDialogCore: "com.afollestad.material-dialogs:core:0.9.1.0", // https://github.com/afollestad/material-dialogs
             materialDialogsCommons: "com.afollestad.material-dialogs:commons:0.9.1.0",
             materialedittext: "com.rengwuxian.materialedittext:library:2.1.4", // https://github.com/rengwuxian/MaterialEditText
-            sublimepicker: "com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.1" // https://github.com/vikramkakkar/SublimePicker
+            sublimepicker: "com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.1", // https://github.com/vikramkakkar/SublimePicker
+            materialdatetimepicker: "com.wdullaer:materialdatetimepicker:3.0.0",// https://github.com/wdullaer/MaterialDateTimePicker
+            recyclerviewAnimators: "jp.wasabeef:recyclerview-animators:2.2.5",// https://github.com/wasabeef/recyclerview-animators
+            photoview: "com.bm.photoview:library:1.4.1" // https://github.com/bm-x/PhotoView
     ]
 }

@@ -31,6 +31,7 @@ public class TaskListToolbar extends LinearLayout {
     private ImageView iv_fixed;
     private ImageView iv_date;
     private ImageView iv_more_select;
+    private ImageView iv_select_project;
 
     public TaskListToolbar(Context context) {
         this(context,null);
@@ -58,6 +59,7 @@ public class TaskListToolbar extends LinearLayout {
         iv_palette = (ImageView) view.findViewById(R.id.iv_palette);
         iv_tag = (ImageView) view.findViewById(R.id.iv_tag);
         iv_fixed = (ImageView) view.findViewById(R.id.iv_fixed);
+        iv_select_project = (ImageView) view.findViewById(R.id.iv_project);
         iv_date = (ImageView) view.findViewById(R.id.iv_date);
         iv_more_select = (ImageView) view.findViewById(R.id.iv_more_select);
     }
@@ -118,6 +120,8 @@ public class TaskListToolbar extends LinearLayout {
         return iv_tag;
     }
 
+    public ImageView getIvSelectPorject() {return iv_select_project;}
+
     public ImageView getIvDate(){
         return iv_date;
     }
@@ -125,5 +129,6 @@ public class TaskListToolbar extends LinearLayout {
     public ImageView getIVMoreSelect(){
         return iv_more_select;
     }
+
 
 }

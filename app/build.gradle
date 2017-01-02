@@ -39,12 +39,11 @@ dependencies {
     compile dependencies.circleImageView
     compile dependencies.looger
     compile dependencies.eventBus
-    compile dependencies.baseRecyclerViewAdapterHelper
     compile dependencies.materialDialogCore
     compile dependencies.materialDialogsCommons
     compile dependencies.materialedittext
-    compile dependencies.sublimepicker
-    compile 'jp.wasabeef:richeditor-android:1.2.1'
+    compile dependencies.materialdatetimepicker
+    compile dependencies.photoview
 
 
     testCompile dependencies.jUnit

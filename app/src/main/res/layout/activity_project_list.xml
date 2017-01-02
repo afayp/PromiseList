@@ -38,7 +38,6 @@
         app:pressedTranslationZ="25dp"
         app:fabSize="normal"
         android:layout_margin="10dp"
-        app:layout_behavior="com.pfh.promiselist.utils.ScrollAwareFABBehavior"
         android:transitionName="add"/>
 
 </android.support.design.widget.CoordinatorLayout>

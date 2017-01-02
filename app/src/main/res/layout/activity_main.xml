@@ -27,6 +27,7 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layoutAnimation="@anim/task_list_layout_anim"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
@@ -42,7 +43,6 @@
         app:pressedTranslationZ="25dp"
         app:fabSize="normal"
         android:layout_margin="10dp"
-        app:layout_behavior="com.pfh.promiselist.utils.ScrollAwareFABBehavior"
         android:transitionName="add"/>
 
 </android.support.design.widget.CoordinatorLayout>

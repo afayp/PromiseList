@@ -107,6 +107,15 @@
             android:layout_marginLeft="20dp"
             android:background="@drawable/icon_default_selector"/>
 
+        <ImageView
+            android:id="@+id/iv_project"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_folder_grey"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/icon_default_selector"/>
+
+
          <ImageView
             android:id="@+id/iv_date"
             android:layout_width="20dp"
@@ -114,14 +123,6 @@
             android:src="@drawable/ic_date"
              android:layout_marginLeft="20dp"
              android:background="@drawable/icon_default_selector"/>
-
-         <!--<ImageView
-            android:id="@+id/iv_bell"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_bell"
-             android:layout_marginLeft="20dp"
-             android:background="@drawable/icon_default_selector"/>-->
 
         <ImageView
             android:id="@+id/iv_more_select"
