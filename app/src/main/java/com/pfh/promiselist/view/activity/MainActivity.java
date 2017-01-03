@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.jaeger.library.StatusBarUtil;
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.adapter.CustomItemTouchHelpCallback;
 import com.pfh.promiselist.adapter.TaskListAdapter;
@@ -34,7 +35,6 @@ import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.others.Constant;
 import com.pfh.promiselist.others.CustomItemAnimator;
 import com.pfh.promiselist.others.DiffCallback;
-import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.SPUtil;
@@ -86,8 +86,9 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setStatusBarColor(ColorsUtil.TRANSPARENT);
+//        setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.importance_normal),0);
         initSimulatedData();// todo
         initSymbol();
         loadData();
@@ -441,6 +442,14 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 CustomPopupWindow more = new CustomPopupWindow(mContext, R.layout.popup_more_menu);
+                TextView tv_setting = (TextView) more.getContentView().findViewById(R.id.tv_setting);
+                tv_setting.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(intent);
+                    }
+                });
                 more.showAsDropDown(v);
             }
         });
@@ -448,6 +457,8 @@ public class MainActivity extends BaseActivity implements
         toolbar.getIvSort().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 final CustomPopupWindow sort = new CustomPopupWindow(mContext, R.layout.popup_sort_menu);
                 sort.showAsDropDown(v, -DensityUtil.dp2px(mContext,30),0);
                 LinearLayout ll_date_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_date_sort);

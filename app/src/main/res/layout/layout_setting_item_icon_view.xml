@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        tools:src="@drawable/ic_theme_grey"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/theme"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:paddingLeft="10dp"
+        android:layout_centerVertical="true"
+        android:textSize="18sp"/>
+
+    <!--<com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/sb"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"/>-->
+
+</RelativeLayout>

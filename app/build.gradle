@@ -44,6 +44,8 @@ dependencies {
     compile dependencies.materialedittext
     compile dependencies.materialdatetimepicker
     compile dependencies.photoview
+    compile dependencies.statusbaruitl
+    compile dependencies.switchbutton
 
 
     testCompile dependencies.jUnit

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SettingItemIconView">
+        <attr name="setting_item_icon" format="reference"/>
+        <attr name="setting_item_name" format="string|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SettingItemSwitchView">
+
+        <attr name="setting_item_name" format="string|reference"/>
+        <attr name="setting_item_desc" format="string|reference"/>
+        <attr name="setting_item_show_switch" format="boolean"/>
+
+    </declare-styleable>
+</resources>

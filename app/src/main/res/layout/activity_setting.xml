@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightgray">
+
+    <!--toolbar-->
+
+    <LinearLayout
+        android:id="@+id/ll_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:padding="5dp">
+
+        <com.pfh.promiselist.widget.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/avatar"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="你爸爸"
+            android:textSize="20sp"
+            android:paddingLeft="20dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="应用程序"
+            android:textSize="16sp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
+
+        <com.pfh.promiselist.widget.SettingItemIconView
+            android:id="@+id/setting_preferences"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:setting_item_icon="@drawable/ic_setting_grey"
+            app:setting_item_name="@string/setting_preferences"/>
+
+        <com.pfh.promiselist.widget.SettingItemIconView
+            android:id="@+id/setting_remind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:setting_item_icon="@drawable/ic_alarm_grey"
+            app:setting_item_name="@string/setting_remind"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

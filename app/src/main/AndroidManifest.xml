@@ -33,6 +33,10 @@
 
         <activity android:name=".view.activity.NewTaskActivity"/>
 
+        <activity android:name=".view.activity.SettingActivity"/>
+
+        <activity android:name=".view.activity.SettingDetailActivity"/>
+
 
     </application>
 

@@ -22,4 +22,7 @@
     <string name="setting">设置</string>
     <string name="add_project">添加清单</string>
     <string name="collection_box">收集箱</string>
+    <string name="theme">主题</string>
+    <string name="setting_preferences">偏好设置</string>
+    <string name="setting_remind">提醒</string>
 </resources>
