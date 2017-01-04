@@ -54,16 +54,29 @@
             android:id="@+id/setting_preferences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:setting_item_icon="@drawable/ic_setting_grey"
-            app:setting_item_name="@string/setting_preferences"/>
+            app:settingItem_icon="@drawable/ic_setting_grey"
+            app:settingItem_name="@string/setting_preferences"/>
 
         <com.pfh.promiselist.widget.SettingItemIconView
             android:id="@+id/setting_remind"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:setting_item_icon="@drawable/ic_alarm_grey"
-            app:setting_item_name="@string/setting_remind"/>
+            app:settingItem_icon="@drawable/ic_alarm_grey"
+            app:settingItem_name="@string/setting_remind"/>
 
+        <com.pfh.promiselist.widget.SettingItemSwitchView
+            android:id="@+id/setting_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_title="@string/notification_bar"
+            app:settingItem_desc="在通知栏显示快速添加及未完成任务"/>
+
+        <com.pfh.promiselist.widget.SettingItemSwitchView
+            android:id="@+id/setting_task_remind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_title="提醒"
+            app:settingItem_desc="在任务指定的截止日期发出提醒"/>
 
     </LinearLayout>
 

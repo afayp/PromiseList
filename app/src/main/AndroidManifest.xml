@@ -37,6 +37,14 @@
 
         <activity android:name=".view.activity.SettingDetailActivity"/>
 
+        <activity android:name=".view.activity.NotificationNewTaskActivity"
+            android:theme="@style/Transparent"
+            android:excludeFromRecents="true"/>
+
+        <service android:name=".service.NotificationService"/>
+
+        <service android:name=".service.RemindService"/>
+
 
     </application>
 

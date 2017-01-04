@@ -2,15 +2,17 @@
 <resources>
 
     <declare-styleable name="SettingItemIconView">
-        <attr name="setting_item_icon" format="reference"/>
-        <attr name="setting_item_name" format="string|reference"/>
+        <attr name="settingItem_icon" format="reference"/>
+        <attr name="settingItem_name" format="string|reference"/>
+        <attr name="settingItem_icon_underline" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="SettingItemSwitchView">
 
-        <attr name="setting_item_name" format="string|reference"/>
-        <attr name="setting_item_desc" format="string|reference"/>
-        <attr name="setting_item_show_switch" format="boolean"/>
+        <attr name="settingItem_title" format="string|reference"/>
+        <attr name="settingItem_desc" format="string|reference"/>
+        <attr name="settingItem_switch_on" format="boolean"/>
+        <attr name="settingItem_switch_underline" format="boolean"/>
 
     </declare-styleable>
 </resources>

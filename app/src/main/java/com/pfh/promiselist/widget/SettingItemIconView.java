@@ -29,16 +29,19 @@ public class SettingItemIconView extends RelativeLayout {
     public SettingItemIconView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SettingItemIconView, defStyleAttr, 0);
-        int iconResId = typedArray.getResourceId(R.styleable.SettingItemIconView_setting_item_icon, R.drawable.ic_setting_grey);
-        String name = typedArray.getString(R.styleable.SettingItemIconView_setting_item_name);
+        int iconResId = typedArray.getResourceId(R.styleable.SettingItemIconView_settingItem_icon, R.drawable.ic_setting_grey);
+        String name = typedArray.getString(R.styleable.SettingItemIconView_settingItem_name);
+        boolean showUnderLine = typedArray.getBoolean(R.styleable.SettingItemIconView_settingItem_icon_underline,true);
         typedArray.recycle();
 
         View view = LayoutInflater.from(context).inflate(R.layout.layout_setting_item_icon_view, this, true);
         ImageView iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
         TextView tv_name = (TextView) view.findViewById(R.id.tv_name);
+        View underline = view.findViewById(R.id.underline);
 
         iv_icon.setImageResource(iconResId);
         tv_name.setText(name);
+        underline.setVisibility(showUnderLine ? VISIBLE : GONE);
     }
 
 

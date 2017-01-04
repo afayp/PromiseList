@@ -16,6 +16,9 @@ import com.pfh.promiselist.R;
  */
 
 public class SettingItemSwitchView extends RelativeLayout {
+
+    private SwitchButton sb;
+
     public SettingItemSwitchView(Context context) {
         this(context,null);
     }
@@ -28,20 +31,31 @@ public class SettingItemSwitchView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SettingItemSwitchView, defStyleAttr, 0);
-        String name = typedArray.getString(R.styleable.SettingItemSwitchView_setting_item_name);
-        String desc = typedArray.getString(R.styleable.SettingItemSwitchView_setting_item_desc);
-        boolean isShowSwitch = typedArray.getBoolean(R.styleable.SettingItemSwitchView_setting_item_show_switch,false);
+        String name = typedArray.getString(R.styleable.SettingItemSwitchView_settingItem_title);
+        String desc = typedArray.getString(R.styleable.SettingItemSwitchView_settingItem_desc);
+        boolean isShowSwitch = typedArray.getBoolean(R.styleable.SettingItemSwitchView_settingItem_switch_on,true);
+        boolean showUnderline = typedArray.getBoolean(R.styleable.SettingItemSwitchView_settingItem_switch_underline,true);
         typedArray.recycle();
 
         View view = LayoutInflater.from(context).inflate(R.layout.layout_setting_item_switch_view, this, true);
         TextView tv_name = (TextView) view.findViewById(R.id.tv_name);
         TextView tv_description = (TextView) view.findViewById(R.id.tv_description);
-        SwitchButton sb = (SwitchButton) view.findViewById(R.id.sb);
+        sb = (SwitchButton) view.findViewById(R.id.sb);
+        View underline = view.findViewById(R.id.underline);
 
         tv_name.setText(name);
         tv_description.setText(desc);
         sb.setVisibility(isShowSwitch ? VISIBLE : GONE);
+        underline.setVisibility(showUnderline ? VISIBLE : GONE);
 
+    }
+
+    public boolean isSwitchOn(){
+        return sb.isChecked();
+    }
+
+    public SwitchButton getSb(){
+        return sb;
     }
 
 
