@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.jaeger.library.StatusBarUtil;
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.adapter.CustomItemTouchHelpCallback;
 import com.pfh.promiselist.adapter.TaskListAdapter;
@@ -88,7 +87,7 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
 //        setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
-        StatusBarUtil.setColor(this, getResources().getColor(R.color.importance_normal),0);
+//        StatusBarUtil.setColor(this, getResources().getColor(R.color.importance_normal),0);
         initSimulatedData();// todo
         initSymbol();
         loadData();

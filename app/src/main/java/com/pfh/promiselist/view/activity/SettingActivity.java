@@ -41,6 +41,11 @@ public class SettingActivity extends BaseActivity {
         SettingItemIconView setting_remind = (SettingItemIconView) findViewById(R.id.setting_remind);
         SettingItemSwitchView setting_notification = (SettingItemSwitchView) findViewById(R.id.setting_notification);
         SettingItemSwitchView setting_task_remind = (SettingItemSwitchView) findViewById(R.id.setting_task_remind);
+        SettingItemSwitchView setting_gesture_password = (SettingItemSwitchView) findViewById(R.id.setting_gesture_password);
+
+        SettingItemIconView setting_help = (SettingItemIconView) findViewById(R.id.setting_help);
+        SettingItemIconView setting_feedback = (SettingItemIconView) findViewById(R.id.setting_feedback);
+        SettingItemIconView setting_about = (SettingItemIconView) findViewById(R.id.setting_about);
 
         setting_preferences.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +81,6 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-
                     ArrayList<TaskInfo> taskInfos = new ArrayList<>();
                     for (int i = 0; i < 20; i++) {
                         TaskInfo taskInfo = new TaskInfo();
@@ -88,7 +92,17 @@ public class SettingActivity extends BaseActivity {
                     Intent intent = new Intent(SettingActivity.this, RemindService.class);
                     intent.putExtra("task_info_list",taskInfos);
                     startService(intent);
+                }else {
+                    Intent intent = new Intent(SettingActivity.this, RemindService.class);
+                    stopService(intent);
                 }
+            }
+        });
+
+        setting_gesture_password.getSb().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
             }
         });
 

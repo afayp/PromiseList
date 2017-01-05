@@ -45,7 +45,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="应用程序"
+            android:text="@string/application"
             android:textSize="16sp"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"/>
@@ -76,7 +76,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:settingItem_title="提醒"
-            app:settingItem_desc="在任务指定的截止日期发出提醒"/>
+            app:settingItem_desc="在任务指定的截止日期发出提醒" />
+
+        <com.pfh.promiselist.widget.SettingItemSwitchView
+            android:id="@+id/setting_gesture_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_title="手势密码" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/other"
+            android:textSize="16sp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"/>
+
+        <com.pfh.promiselist.widget.SettingItemIconView
+            android:id="@+id/setting_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_icon="@drawable/ic_help_grey"
+            app:settingItem_name="@string/help"
+            app:settingItem_icon_underline="false"/>
+
+        <com.pfh.promiselist.widget.SettingItemIconView
+            android:id="@+id/setting_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_icon="@drawable/ic_feedback_grey"
+            app:settingItem_name="@string/feedback"
+            app:settingItem_icon_underline="false"/>
+
+        <com.pfh.promiselist.widget.SettingItemIconView
+            android:id="@+id/setting_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:settingItem_icon="@drawable/ic_about_grey"
+            app:settingItem_name="@string/about"
+            app:settingItem_icon_underline="false"/>
+
 
     </LinearLayout>
 

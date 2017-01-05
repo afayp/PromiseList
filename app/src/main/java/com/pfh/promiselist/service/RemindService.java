@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.pfh.promiselist.model.TaskInfo;
+import com.pfh.promiselist.utils.CloneUtils;
 
 import java.util.ArrayList;
 
@@ -34,25 +35,29 @@ public class RemindService extends Service {
         ArrayList<TaskInfo> taskList = (ArrayList<TaskInfo>) intent.getSerializableExtra("task_info_list");
         boolean start = intent.getBooleanExtra("start",false);
         Log.e("TAG","taskList: "+taskList.toString());
+        Log.e("TAG","taskList size: "+taskList.size());
 
         if (start) {
-            TaskInfo latest = taskList.get(0);
-            taskList.remove(0);
+//            TaskInfo latest = taskList.get(0);
+            TaskInfo latest = taskList.remove(0);
+            Log.e("TAG","taskList size: "+taskList.size());
             // 用latest去桌面启动activity
             Log.e("TAG","latest: "+latest);
         }
 
         if (taskList.size() > 0) {
-            startAlarm(taskList);
+            ArrayList<TaskInfo> clone = CloneUtils.clone(taskList);
+            startAlarm(clone);
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
     public void startAlarm(ArrayList<TaskInfo> taskList){
-        long time = taskList.get(0).getDueTime();
+//        long time = taskList.get(0).getDueTime();
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
         Intent toService = new Intent(this,RemindService.class);
+        Log.e("TAG","taskList size: "+taskList.size());
         toService.putExtra("task_info_list",taskList);// 剩下的继续传下去
         toService.putExtra("start",true);// 剩下的继续传下去
         PendingIntent pi = PendingIntent.getService(this,0,toService,0); // 重新启动本服务
@@ -61,10 +66,10 @@ public class RemindService extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            manager.setExact(AlarmManager.RTC_WAKEUP, time, pi);
-            manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, now+30*1000, pi);
+            manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, now+10*1000, pi);
         }else {
 //            manager.set(AlarmManager.RTC_WAKEUP, time, pi);
-            manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, now+30*1000, pi);
+            manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, now+10*1000, pi);
         }
     }
 
@@ -81,4 +86,10 @@ public class RemindService extends Service {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cancelAlarm();
+        Log.e("TAG","RemindService---onDestroy");
+    }
 }

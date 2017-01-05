@@ -26,4 +26,14 @@
     <string name="setting_preferences">偏好设置</string>
     <string name="setting_remind">提醒</string>
     <string name="notification_bar">通知栏</string>
+    <string name="help">帮助</string>
+    <string name="feedback">反馈</string>
+    <string name="about">关于</string>
+    <string name="application">应用程序</string>
+    <string name="other">其他</string>
+    <string name="all_projects">所有清单</string>
+    <string name="today">今天</string>
+    <string name="tag">标签</string>
+    <string name="manage_projects">管理清单</string>
+    <string name="manage_tags">管理标签</string>
 </resources>

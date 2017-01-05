@@ -8,11 +8,15 @@
     </declare-styleable>
 
     <declare-styleable name="SettingItemSwitchView">
-
         <attr name="settingItem_title" format="string|reference"/>
         <attr name="settingItem_desc" format="string|reference"/>
         <attr name="settingItem_switch_on" format="boolean"/>
         <attr name="settingItem_switch_underline" format="boolean"/>
+    </declare-styleable>
 
+    <declare-styleable name="NavigationItem">
+        <attr name="navigationIcon" format="reference"/>
+        <attr name="navigationName" format="string|reference"/>
+        <attr name="navigationExpand" format="boolean"/>
     </declare-styleable>
 </resources>

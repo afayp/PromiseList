@@ -24,4 +24,7 @@ public class Constant {
     public static final int ITEM_TYPE_OTHER = 5;
     public static final int ITEM_TYPE_FIXED = 6;
 
+    //----------------preference-----------------//
+
+
 }
