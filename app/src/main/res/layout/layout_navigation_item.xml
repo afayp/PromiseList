@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:gravity="center_vertical"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_menu_black"/>
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        tools:src="@drawable/ic_menu_black"/>
 
     <TextView
         android:id="@+id/tv_name"
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="@string/all_projects"
         android:paddingLeft="20dp"
-        android:textSize="18sp"/>
+        android:textSize="16sp"/>
 
     <View
         android:layout_width="0dp"
@@ -26,25 +27,26 @@
         android:layout_weight="1"/>
 
     <FrameLayout
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginRight="20dp">
 
         <ImageView
             android:id="@+id/iv_expand"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@drawable/ic_arrow_down"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:layout_margin="2.5dp"/>
 
         <TextView
             android:id="@+id/tv_count"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:text="6"
             android:gravity="center"
-            android:textSize="18sp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:textSize="14sp"/>
     </FrameLayout>
 
 </LinearLayout>

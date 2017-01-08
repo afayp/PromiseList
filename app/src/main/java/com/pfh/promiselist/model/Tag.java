@@ -42,7 +42,7 @@ public class Tag extends RealmObject{
         return "Tag{" +
                 "tagId='" + tagId + '\'' +
                 ", name='" + name + '\'' +
-                ", owner=" + owner +
+                ", owner.name =" + owner.getUsername() +
                 '}';
     }
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:id="@+id/rl_root">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_tag_grey"
+        android:layout_marginLeft="20dp"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_toRightOf="@+id/iv_icon"
+        android:layout_marginLeft="20dp"
+        android:layout_centerVertical="true"
+        android:gravity="bottom"/>
+
+    <ImageView
+        android:id="@+id/iv_edit_ok"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_pen_grey"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/iv_delete"/>
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_delete_grey"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>

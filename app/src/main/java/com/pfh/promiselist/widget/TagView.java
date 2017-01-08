@@ -42,11 +42,11 @@ public class TagView extends LinearLayout {
 
     public void setData(String type,String content){
         tv_content.setText(content);
-        if (type == TIME_TYPE) {
+        if (type.equals(TIME_TYPE)) {
             iv_icon.setImageResource(R.drawable.ic_clock_grey);
-        }else if (type == TAG_TYPE) {
+        }else if (type.equals(TAG_TYPE)) {
             iv_icon.setImageResource(R.drawable.ic_tag_grey);
-        }else if (type == PROJECT_TYPE) {
+        }else if (type.equals(PROJECT_TYPE)) {
             iv_icon.setImageResource(R.drawable.ic_folder_grey);
         }
 

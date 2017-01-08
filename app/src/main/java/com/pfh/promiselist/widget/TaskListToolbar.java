@@ -32,6 +32,7 @@ public class TaskListToolbar extends LinearLayout {
     private ImageView iv_date;
     private ImageView iv_more_select;
     private ImageView iv_select_project;
+    private TextView tv_title;
 
     public TaskListToolbar(Context context) {
         this(context,null);
@@ -52,6 +53,7 @@ public class TaskListToolbar extends LinearLayout {
         iv_sort = (ImageView) view.findViewById(R.id.iv_sort);
         iv_search = (ImageView) view.findViewById(R.id.iv_search);
         iv_more = (ImageView) view.findViewById(R.id.iv_more);
+        tv_title = (TextView) view.findViewById(R.id.tv_title);
 
         ll_select = (LinearLayout) view.findViewById(R.id.ll_select);
         iv_back = (ImageView) view.findViewById(R.id.iv_back);
@@ -78,6 +80,10 @@ public class TaskListToolbar extends LinearLayout {
     public void setFixedIconActive(boolean active){
         iv_fixed.setImageResource(active ? R.drawable.ic_fixed_blue : R.drawable.ic_fixed);
         fixedActive = active;
+    }
+
+    public void setTitle(String title){
+        tv_title.setText(title);
     }
 
     public boolean isFixedActive(){

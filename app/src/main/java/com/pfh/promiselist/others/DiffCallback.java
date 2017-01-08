@@ -35,17 +35,31 @@ public class DiffCallback extends DiffUtil.Callback {
      */
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        if (oldData.get(oldItemPosition).getItemType() == newData.get(newItemPosition).getItemType()){
-            if (oldData.get(oldItemPosition).getItemType() != Constant.ITEM_TYPE_TASK){
-                return true;
-//                return oldData.get(oldItemPosition).getLabel().equals(newData.get(newItemPosition).getLabel());
-            }else {
-                Task oldTask = (Task) oldData.get(oldItemPosition).getContent();
-                Task newTask = (Task) newData.get(newItemPosition).getContent();
-                return oldTask.getTaskId().equals(newTask.getTaskId());
-            }
+        if (oldData.get(oldItemPosition).getItemType() != Constant.ITEM_TYPE_TASK
+                && newData.get(newItemPosition).getItemType() != Constant.ITEM_TYPE_TASK){
+            return true;
+        }
+
+        if (oldData.get(oldItemPosition).getItemType() == Constant.ITEM_TYPE_TASK
+                && newData.get(newItemPosition).getItemType() == Constant.ITEM_TYPE_TASK) {
+            Task oldTask = (Task) oldData.get(oldItemPosition).getContent();
+            Task newTask = (Task) newData.get(newItemPosition).getContent();
+            return oldTask.getTaskId().equals(newTask.getTaskId());
         }
         return false;
+
+//        if (oldData.get(oldItemPosition).getItemType() == newData.get(newItemPosition).getItemType()){
+//
+//            if (oldData.get(oldItemPosition).getItemType() != Constant.ITEM_TYPE_TASK){
+//                return true;
+////                return oldData.get(oldItemPosition).getLabel().equals(newData.get(newItemPosition).getLabel());
+//            }else {
+//                Task oldTask = (Task) oldData.get(oldItemPosition).getContent();
+//                Task newTask = (Task) newData.get(newItemPosition).getContent();
+//                return oldTask.getTaskId().equals(newTask.getTaskId());
+//            }
+//        }
+//        return false;
     }
 
     /*
@@ -54,14 +68,19 @@ public class DiffCallback extends DiffUtil.Callback {
      */
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        return oldData.get(oldItemPosition).equals(newData.get(newItemPosition));
 
-        if (oldData.get(oldItemPosition).getItemType() != Constant.ITEM_TYPE_TASK) {
-            return true;
-        }else {
-            Task oldTask = (Task) oldData.get(oldItemPosition).getContent();
-            Task newTask = (Task) newData.get(newItemPosition).getContent();
-            return oldTask.equals(newTask);
-        }
+//        if (oldData.get(oldItemPosition).getItemType() != Constant.ITEM_TYPE_TASK
+//                && newData.get(newItemPosition).getItemType() != Constant.ITEM_TYPE_TASK) {
+//            return oldData.get(oldItemPosition).getContent().equals(newData.get(newItemPosition).getContent());
+//        }else {
+//            Log.e("TAG","old: " +oldItemPosition +": "+ oldData.get(oldItemPosition).toString());
+//            Log.e("TAG","new: " +newItemPosition +" : "+newData.get(newItemPosition).toString());
+//
+////            Task oldTask = (Task) oldData.get(oldItemPosition).getContent();
+////            Task newTask = (Task) newData.get(newItemPosition).getContent();
+////            return oldTask.equals(newTask);
+//        }
     }
 
 //    /**

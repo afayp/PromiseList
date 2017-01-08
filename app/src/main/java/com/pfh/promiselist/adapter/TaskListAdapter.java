@@ -1,8 +1,6 @@
 package com.pfh.promiselist.adapter;
 
-import android.app.Service;
 import android.content.Context;
-import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -163,9 +161,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (itemTouchHelper != null){
                     if (!select) {
                         selectedPosition.clear();
-                        itemTouchHelper.startDrag(taskViewHolder);
-                        Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
-                        vibrator.vibrate(70);
+//                        itemTouchHelper.startDrag(taskViewHolder);
+//                        Vibrator vibrator = (Vibrator) mContext.getSystemService(Service.VIBRATOR_SERVICE);
+//                        vibrator.vibrate(70);
                         select = true;
                         taskViewHolder.taskItem.setSelectedBg(true);
                         selectedPosition.add((Integer) taskViewHolder.getLayoutPosition());

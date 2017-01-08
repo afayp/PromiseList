@@ -9,11 +9,14 @@ import com.pfh.promiselist.model.User;
 import com.pfh.promiselist.others.Constant;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.SPUtil;
+import com.pfh.promiselist.utils.UuidUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -105,7 +108,7 @@ public class RealmDB {
      * @param realm
      * @param project
      */
-    public static void saveProject(Realm realm, final Project project){
+    public static Project saveProject(Realm realm, final Project project){
         final User user = realm.where(User.class).equalTo("uid", getCurrentUserId()).findFirst();
         project.setOwner(user);
         realm.executeTransaction(new Realm.Transaction() {
@@ -114,6 +117,20 @@ public class RealmDB {
                 user.getProjects().add(project);
             }
         });
+        return project;
+    }
+
+    /**
+     * 创建并保存Project到当前登录user
+     * @param realm
+     */
+    public static Project createAndSaveProject(Realm realm, String name){
+        Project project = new Project();
+        project.setName(name);
+        project.setCreatedTime(new Date().getTime());
+        project.setProjectId(UuidUtils.getShortUuid());
+        project.setState(1);
+        return saveProject(realm,project);
     }
 
     /**
@@ -277,6 +294,21 @@ public class RealmDB {
         return realm.copyFromRealm(all);
     }
 
+    public static List<Task> getAllUncompletedTasksByTagId(Realm realm,String tagId){
+        RealmResults<Task> all = realm.where(Task.class).equalTo("state",1).findAll();
+        List<Task> newTask = new ArrayList<>();
+        for (int i = 0; i < all.size(); i++) {
+            RealmList<Tag> tags = all.get(i).getTags();
+            for (int j = 0; j < tags.size(); j++) {
+                if (tags.get(j).getTagId().equals(tagId)) {
+                    newTask.add(all.get(i));
+                    break;
+                }
+            }
+        }
+        return realm.copyFromRealm(newTask);
+    }
+
 
     /**
      * 找出某projectId下的所有未完成的task，并且fixed为true或false，按dueTime排序
@@ -324,13 +356,31 @@ public class RealmDB {
     }
 
     /**
-     * 找出某uid下的所有未完成的task
+     * 找出某uid下的所有未完成的task ,按dueTime排序
      * @param realm
      * @param uid
      * @return
      */
     public static List<Task> getAllUncompletedTasksByUserId(Realm realm,String uid){
-        return realm.copyFromRealm(realm.where(Task.class).equalTo("owner.uid",uid).equalTo("state",1).findAll());
+        RealmResults<Task> tasks = realm.where(Task.class).equalTo("owner.uid", uid).equalTo("state", 1).findAll();
+        return realm.copyFromRealm(tasks);
+    }
+
+    public static List<Task> getAllTodayUncompletedTasksByUserId(Realm realm,String uid){
+        RealmResults<Task> tasks = realm.where(Task.class).equalTo("owner.uid", uid).equalTo("state", 1).findAll();
+        List<Task> newTask = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (DateUtil.isToday(tasks.get(i).getDueTime())) {
+                newTask.add(tasks.get(i));
+            }
+        }
+        return realm.copyFromRealm(newTask);
+    }
+
+    public static List<Task> getAllUncompletedFixedTasksByUserId(Realm realm,String uid,boolean fixed){
+        RealmResults<Task> tasks = realm.where(Task.class).equalTo("owner.uid", uid).equalTo("state", 1).equalTo("fixed",fixed).findAll();
+        tasks.sort("dueTime");
+        return realm.copyFromRealm(tasks);
     }
 
     /**
@@ -447,8 +497,24 @@ public class RealmDB {
         realm.commitTransaction();
     }
 
-    public static void refreshTasksTags(Realm realm, List<Task> tasks){
+    public static int getUnCompletedTasksCountByProject(Realm realm, Project project){
+//        Project target = realm.where(Project.class).equalTo("projectId", project.getProjectId()).findFirst();
+        long state = realm.where(Task.class).equalTo("project.projectId", project.getProjectId()).equalTo("state", 1).count();
+        return (int) state;
+    }
 
+    public static int getUnCompletedTaskCountByTag(Realm realm , String tagId){
+        RealmResults<Task> all = realm.where(Task.class).equalTo("state", 1).findAll();
+        int count = 0;
+        for (int i = 0; i < all.size(); i++) {
+            RealmList<Tag> tags = all.get(i).getTags();
+            for (int j = 0; j < tags.size(); j++) {
+                if (tags.get(j).getTagId().equals(tagId)) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
 
@@ -463,7 +529,11 @@ public class RealmDB {
         return realm.copyFromRealm(realm.where(Tag.class).equalTo("owner.uid",uid).findAll());
     }
 
-    public static void saveTag(Realm realm, final Tag tag){
+    public static Tag getTagByTagId(Realm realm,String tagId){
+        return realm.copyFromRealm(realm.where(Tag.class).equalTo("tagId",tagId).findFirst());
+    }
+
+    public static Tag saveTag(Realm realm, final Tag tag){
         tag.setOwner(getUserByUserId(realm,getCurrentUserId()));
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -471,10 +541,33 @@ public class RealmDB {
                 realm.copyToRealmOrUpdate(tag);
             }
         });
+        return tag;
+    }
+
+    public static Tag createAndSaveTag(Realm realm , String name){
+        Tag tag = new Tag();
+        tag.setName(name);
+        tag.setTagId(UuidUtils.getShortUuid());
+        return saveTag(realm,tag);
     }
 
     public static boolean isTagNameExist(Realm realm,String tagName){
         return realm.where(Tag.class).equalTo("name",tagName).count() != 0;
+    }
+
+    public static void deleteTag(Realm realm,Tag tag){
+        Tag first = realm.where(Tag.class).equalTo("tagId", tag.getTagId()).findFirst();
+        realm.beginTransaction();
+        first.deleteFromRealm();
+        RealmResults<Task> all = realm.where(Task.class).findAll();
+        for (int i = 0; i < all.size(); i++) {
+            RealmList<Tag> tags = all.get(i).getTags();
+            if (tags.contains(tag)){
+                tags.remove(tag);
+                realm.copyToRealmOrUpdate(all.get(i));
+            }
+        }
+        realm.commitTransaction();
     }
 
 

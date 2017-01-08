@@ -16,9 +16,9 @@ import io.realm.RealmList;
 
 public class SimulatedData {
 
-    public static String TODAY = "2016-12-30 23:30:00";
-    public static String TOMORROW = "2016-12-31 23:30:00";
-    public static String FEATURE = "2017-01-02 23:30:00";
+    public static String TODAY = "2017-01-08 23:30:00";
+    public static String TOMORROW = "2017-01-09 23:30:00";
+    public static String FEATURE = "2017-01-10 23:30:00";
 
     public static User getCurrentUser(){
 
