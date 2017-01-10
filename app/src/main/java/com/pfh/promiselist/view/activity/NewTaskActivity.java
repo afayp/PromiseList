@@ -10,7 +10,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Tag;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.utils.DateUtil;
+import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.UuidUtils;
 import com.pfh.promiselist.widget.FlowLayout;
 import com.pfh.promiselist.widget.ProjectChooseView;
@@ -75,7 +78,6 @@ public class NewTaskActivity extends BaseActivity implements
     private TagView projectTag;
     private ImageView iv_picture;
     private ImageView iv_camera;
-    private ImageView iv_recording;
     private PhotoView photoView;
     private LinearLayout ll_pic_container;
 
@@ -83,6 +85,8 @@ public class NewTaskActivity extends BaseActivity implements
     private Task task;
     private File mCurrentPhotoFile;
     private Info mRectF;
+
+    private boolean canOk = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +101,6 @@ public class NewTaskActivity extends BaseActivity implements
             initData();
         }
         setupView();
-
     }
 
     private void findViews() {
@@ -111,12 +114,11 @@ public class NewTaskActivity extends BaseActivity implements
         et_title = (MaterialEditText) findViewById(R.id.et_title);
         et_desc = (MaterialEditText) findViewById(R.id.et_desc);
         flow_tag_container = (FlowLayout) findViewById(R.id.flow_tag_container);
-        flow_tag_container.setHorizontalSpacing(10);
-        flow_tag_container.setVerticalSpacing(5);
+        flow_tag_container.setHorizontalSpacing(DensityUtil.dp2px(this,5));
+        flow_tag_container.setVerticalSpacing(DensityUtil.dp2px(this,4));
 
         iv_picture = (ImageView) findViewById(R.id.iv_picture);
         iv_camera = (ImageView) findViewById(R.id.iv_camera);
-        iv_recording = (ImageView) findViewById(R.id.iv_recording);
 
         photoView = (PhotoView) findViewById(R.id.photoView);
         photoView.enable();
@@ -129,9 +131,7 @@ public class NewTaskActivity extends BaseActivity implements
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // confrim dialog
                 showConfirmDialog();
-//                exitActivity();
             }
         });
 
@@ -175,10 +175,11 @@ public class NewTaskActivity extends BaseActivity implements
         iv_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTask();
-                setResult(RESULT_OK);
-                finish();
-//                exitActivity();
+                if (canOk) {
+                    saveTask();
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
         });
 
@@ -196,13 +197,6 @@ public class NewTaskActivity extends BaseActivity implements
             }
         });
 
-        iv_recording.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +206,29 @@ public class NewTaskActivity extends BaseActivity implements
                         photoView.setVisibility(View.GONE);
                     }
                 });
+            }
+        });
+
+        et_title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s.toString())){
+                    iv_ok.setImageResource(R.drawable.ic_send);
+                    canOk = false;
+                }else {
+                    iv_ok.setImageResource(R.drawable.ic_send_blue );
+                    canOk = true;
+                }
             }
         });
     }
@@ -276,7 +293,6 @@ public class NewTaskActivity extends BaseActivity implements
         task.setDesc(et_desc.getText().toString());
         // 图片 TODO
         task.setFixed(task.isFixed());
-        Log.e("TAG","savedTask: "+task.toString());
         RealmDB.saveTaskToProject(mRealm,task.getProject().getProjectId(),task);
     }
 
@@ -284,7 +300,6 @@ public class NewTaskActivity extends BaseActivity implements
         ll_pic_container.removeAllViews();
         if (!TextUtils.isEmpty(task.getPicUrls())) {
             String[] pics = task.getPicUrls().split(",");
-            Log.e("TAG","split pics: "+pics);
             for (int i = 0; i < pics.length; i++) {
                 final TaskPictureView taskPictureView = new TaskPictureView(mContext);
                 taskPictureView.setPicUrl(pics[i]);
@@ -316,7 +331,6 @@ public class NewTaskActivity extends BaseActivity implements
                         if (index != -1){
                             ll_pic_container.removeViewAt(index);
                             task.setPicUrls(newPicUrls);
-                            Log.e("TAG","newPicUrls: "+newPicUrls);
                         }
                     }
                 });
@@ -345,6 +359,9 @@ public class NewTaskActivity extends BaseActivity implements
         new ColorChooserDialog.Builder(this,R.string.choose_color)
                 .customColors(colors,null)
                 .accentMode(false)
+                .allowUserColorInput(false)
+                .doneButton(R.string.ok)
+                .cancelButton(R.string.cancel)
                 .show();
     }
 
@@ -355,7 +372,7 @@ public class NewTaskActivity extends BaseActivity implements
         tempList.add(task);
         tagsChooseView.setData(allTags,tempList,mRealm);
         new MaterialDialog.Builder(mContext)
-                .title(R.string.tag_choose_dialog_label)
+                .title(R.string.add_tag)
                 .customView(tagsChooseView,true)
                 .negativeText(R.string.cancel)
                 .positiveText(R.string.ok)
@@ -380,7 +397,7 @@ public class NewTaskActivity extends BaseActivity implements
         projectChooseView.setData(allProjects,tempList,mRealm);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(mContext)
-                .title(R.string.tag_choose_dialog_label)
+                .title(R.string.project_choose_dialog_label)
                 .customView(projectChooseView, true)
                 .negativeText(R.string.cancel)
                 .show();
@@ -403,8 +420,8 @@ public class NewTaskActivity extends BaseActivity implements
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
-        dpd.setAccentColor(Color.parseColor("#BBD9BD"));
-        dpd.setTitle("设置到期时间");
+        dpd.setAccentColor(Color.parseColor("#6EC9FD"));
+        dpd.setTitle(getString(R.string.set_due_time));
         dpd.setMinDate(now);
         dpd.show(getFragmentManager(),"tag");
     }
@@ -417,15 +434,14 @@ public class NewTaskActivity extends BaseActivity implements
                 now.get(Calendar.MINUTE),
                 true
         );
-        tpd.setAccentColor(Color.parseColor("#BBD9BD"));
-        tpd.setTitle("设置到期时间");
+        tpd.setAccentColor(Color.parseColor("#6EC9FD"));
+        tpd.setTitle(getString(R.string.set_due_time));
         tpd.show(getFragmentManager(),"tag");
     }
 
     @Override
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-        String color_hex = String.format("#%06X", (0xFFFFFFFF & selectedColor));
-        Log.e("TAG","selectedColor"+ color_hex);
+        String color_hex = String.format("#%06X", (0xFFFFFF & selectedColor));
         colorValue = color_hex;
 //        et_title.setBaseColor(selectedColor);
         et_title.setUnderlineColor(selectedColor);
@@ -536,13 +552,10 @@ public class NewTaskActivity extends BaseActivity implements
         if (requestCode == REQUEST_CODE_PICK_IMAGE) {
             Uri uri = data.getData();
             picUrl= getRealFilePath(uri);
-            Log.e("TAG","realFilePath: "+ picUrl);
         } else if (requestCode == REQUEST_CODE_CAPTURE_CAMEIA) {
             picUrl = mCurrentPhotoFile.getAbsolutePath();
-            Log.e("TAG","absolutePath: "+ picUrl);
         }
         task.setPicUrls(TextUtils.isEmpty(task.getPicUrls())? picUrl : task.getPicUrls()+","+picUrl);
-        Log.e("TAG","picUrls: "+task.getPicUrls());
         addPic();
     }
 

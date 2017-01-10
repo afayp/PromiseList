@@ -29,33 +29,27 @@
                     android:id="@+id/et_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
+                    android:hint="@string/title"
+                    android:textColor="@color/text_second_color_primary"
                     android:textSize="20sp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    app:met_primaryColor="?attr/colorPrimary"
-                    app:met_floatingLabel="highlight"
-                    app:met_floatingLabelText="标题"
-                    app:met_floatingLabelAlwaysShown="true"
-                    app:met_floatingLabelTextColor="?attr/colorPrimary" />
+                    app:met_hideUnderline="true"/>
 
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/et_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_second_color_primary"
+                    android:textSize="16sp"
+                    android:hint="@string/detail"
                     android:lineSpacingExtra="4dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="40dp"
                     android:layout_marginTop="10dp"
-                    app:met_hideUnderline="true"
-                    app:met_primaryColor="?attr/colorPrimary"
-                    app:met_floatingLabel="highlight"
-                    app:met_floatingLabelAlwaysShown="true"
-                    app:met_floatingLabelTextColor="?attr/colorPrimary"
-                    app:met_floatingLabelText="详细" />
+                    app:met_hideUnderline="true" />
 
                 <com.pfh.promiselist.widget.FlowLayout
                     android:id="@+id/flow_tag_container"
@@ -83,28 +77,41 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/toolbar_height"
             android:padding="10dp"
-            android:background="@color/lightgray">
+            android:gravity="center_vertical"
+            android:background="@drawable/new_task_bottom_toolbar_bg">
+
+            <ImageView
+                android:id="@+id/iv_tag"
+                android:src="@drawable/ic_tag_grey"
+                style="@style/btnStyle"/>
+
+            <ImageView
+                android:id="@+id/iv_date"
+                android:src="@drawable/ic_calendar_grey"
+                style="@style/btnStyle"/>
+
+            <ImageView
+                android:id="@+id/iv_project"
+                android:src="@drawable/ic_package_grey"
+                style="@style/btnStyle"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/iv_picture"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_picture_grey"
-                android:layout_marginRight="10dp" />
-            <ImageView
-                android:id="@+id/iv_camera"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_camera_grey"
-                android:layout_marginRight="10dp"/>
+                style="@style/btnStyle"
+                android:src="@drawable/ic_picture_grey" />
 
             <ImageView
-                android:id="@+id/iv_recording"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_recording_grey" />
+                android:id="@+id/iv_camera"
+                style="@style/btnStyle"
+                android:src="@drawable/ic_camera_grey" />
+
         </LinearLayout>
 
     </LinearLayout>

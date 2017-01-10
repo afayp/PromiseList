@@ -109,4 +109,13 @@ public class ScreenUtil {
         view.destroyDrawingCache();
         return bp;
     }
+
+    /**
+     * 获取设备屏幕密度dpi，每寸所包含的像素点
+     * @param context
+     * @return
+     */
+    public static float getDeviceDensityDpi(Context context){
+        return context.getResources().getDisplayMetrics().densityDpi;
+    }
 }

@@ -54,7 +54,6 @@ public class TagsChooseView extends LinearLayout {
     public void setData(List<Tag> allTags, List<Task> selectedTasks, Realm realm){
         this.removeAllViews();
         setOrientation(VERTICAL);
-
         this.realm = realm;
         this.selectedTasks = selectedTasks;
         checkBoxList.clear();

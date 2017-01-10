@@ -23,7 +23,7 @@ import com.pfh.promiselist.utils.DensityUtil;
 public class OtherSettingSelector extends HorizontalScrollView {
 
     private String[] settings = {"优先级" , "提醒" , "标签" , "共享者"};
-    private int[] icons = {R.drawable.ic_flag , R.drawable.ic_bell , R.drawable.ic_tag , R.drawable.ic_add_people};
+    private int[] icons = {R.drawable.ic_flag , R.drawable.ic_bell , R.drawable.ic_tag_grey , R.drawable.ic_add_people};
     private Context mContext;
     private LinearLayout.LayoutParams defaultParams;
 

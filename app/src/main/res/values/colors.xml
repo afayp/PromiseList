@@ -5,6 +5,16 @@
     <color name="colorAccent">#FF4081</color>
 
 
+    <color name="window_background">#FAFAFA</color><!--默认背景颜色-->
+    <color name="text_color_primary">#212121</color>
+    <color name="text_second_color_primary">#727272</color>
+
+    <color name="icon_color">#757575</color>
+    <color name="default_blue">#6EC9FD</color>
+    <color name="btn_pressed_bg">#EBEBEB</color>
+    <color name="tag_bg">#E0E0E0</color>
+
+
     <color name="importance_high">#FFE1D2C8</color>
     <color name="importance_normal">#FF6EC9FD</color>
     <color name="importance_low">#FFBBD9BD</color>

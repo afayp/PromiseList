@@ -2,9 +2,13 @@
 <resources>
 
     <string-array name="colors">
-        <item>#FFBBD9BD</item>
-        <item>#FF6EC9FD</item>
-        <item>#FFE1D2C8</item>
-        <item>#FFFF1D17</item>
+        <item>#FAFAFA</item>
+        <item>#BBD9BD</item>
+        <item>#CDDC39</item>
+        <item>#6EC9FD</item>
+        <item>#FFEB3B</item>
+        <item>#FF9800</item>
+        <item>#607D8B</item>
+        <item>#F44336</item>
     </string-array>
 </resources>

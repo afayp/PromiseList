@@ -4,4 +4,23 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="edit_padding_top">0dp</dimen>
+
+    <!--布局-->
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_left_space">10dp</dimen><!--最左边图标离屏幕左边缘的距离-->
+    <dimen name="toolbar_right_space">10dp</dimen>
+    <dimen name="toolbar_title_left_space">10dp</dimen>
+
+    <!--图标-->
+    <dimen name="toolbar_icon_width">30dp</dimen>
+    <dimen name="toolbar_icon_height">30dp</dimen>
+
+
+
+
+    <!--字体-->
+    <dimen name="toolbar_title_text_size">20dp</dimen>
+
+
+
 </resources>

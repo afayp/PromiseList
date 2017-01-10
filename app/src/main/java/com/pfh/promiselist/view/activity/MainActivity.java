@@ -40,6 +40,7 @@ import com.pfh.promiselist.others.DiffCallback;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.SPUtil;
+import com.pfh.promiselist.utils.ScreenUtil;
 import com.pfh.promiselist.widget.CircleImageView;
 import com.pfh.promiselist.widget.CustomPopupWindow;
 import com.pfh.promiselist.widget.NavigationItem;
@@ -147,6 +148,10 @@ public class MainActivity extends BaseActivity implements
         initSymbol();
         modelList = loadData();
         initViews();
+
+        Log.e("666","width: "+ ScreenUtil.getScreenWidth(mContext));
+        Log.e("666","height: "+ ScreenUtil.getScreenHeight(mContext));
+        Log.e("666","dpi: "+ ScreenUtil.getDeviceDensityDpi(mContext));
 
     }
 

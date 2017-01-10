@@ -40,7 +40,7 @@
         <activity android:name=".view.activity.SettingDetailActivity"/>
 
         <activity android:name=".view.activity.NotificationNewTaskActivity"
-            android:theme="@style/Transparent"
+            android:theme="@style/TransparentTheme"
             android:excludeFromRecents="true"/>
 
 

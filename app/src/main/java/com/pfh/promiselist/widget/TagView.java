@@ -47,7 +47,7 @@ public class TagView extends LinearLayout {
         }else if (type.equals(TAG_TYPE)) {
             iv_icon.setImageResource(R.drawable.ic_tag_grey);
         }else if (type.equals(PROJECT_TYPE)) {
-            iv_icon.setImageResource(R.drawable.ic_folder_grey);
+            iv_icon.setImageResource(R.drawable.ic_package_grey);
         }
 
     }
