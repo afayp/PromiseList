@@ -25,7 +25,7 @@
         android:id="@+id/iv_more"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_more"
+        android:src="@drawable/ic_more_grey"
         android:layout_marginRight="10dp"/>
 
 

@@ -11,7 +11,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="@dimen/task_label_text_size"
         tools:text="高" />
     <View
         android:layout_width="0dp"
@@ -24,7 +24,7 @@
         android:layout_height="30dp"
         android:background="@drawable/circle_surround_red_shape"
         tools:text="8"
-        android:textSize="16sp"
+        android:textSize="@dimen/task_label_text_size"
         android:gravity="center"
         android:visibility="invisible"/>
 

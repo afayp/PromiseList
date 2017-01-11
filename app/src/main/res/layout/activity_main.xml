@@ -6,12 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/main_activity_bg">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -20,7 +21,7 @@
             <com.pfh.promiselist.widget.TaskListToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                android:layout_height="@dimen/toolbar_height" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -29,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/task_list_layout_anim"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <LinearLayout
@@ -69,9 +71,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:src="@drawable/ic_plus_white"
-            app:backgroundTint="@color/skyblue"
-            app:rippleColor="@color/deepskyblue"
-            app:elevation="6dp"
+            app:backgroundTint="@color/fab_bg"
+            app:rippleColor="@color/fab_pressed_bg"
+            app:elevation="@dimen/fab_elevation"
             app:fabSize="normal"
             android:layout_margin="10dp"
             android:transitionName="add"/>
@@ -90,10 +92,10 @@
             android:orientation="vertical"
             android:clickable="true">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:background="@color/skyblue">
+                android:background="@drawable/bg7">
 
                 <com.pfh.promiselist.widget.CircleImageView
                     android:id="@+id/nav_avatar"
@@ -103,84 +105,84 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginLeft="20dp"/>
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_setting"
+                    android:src="@drawable/ic_setting_grey"
+                    style="@style/btnStyle"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"/>
+
+                <ImageView
+                    android:id="@+id/iv_search"
+                    android:src="@drawable/ic_search_grey"
+                    style="@style/btnStyle"
+                    android:layout_toLeftOf="@+id/iv_setting"
+                    android:layout_marginTop="5dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_today"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/today"
-                app:navigationIcon="@drawable/ic_today"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"/>
+                app:navigationIcon="@drawable/ic_today_grey" />
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_all_task"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/all_tasks"
-                app:navigationIcon="@drawable/ic_all_grey"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"/>
+                app:navigationIcon="@drawable/ic_all_task_grey" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/lightgray"/>
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_all_projects"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/all_projects"
                 app:navigationIcon="@drawable/ic_folder_grey"
-                app:navigationExpand="true"
-                android:layout_marginLeft="20dp" />
+                app:navigationExpand="true" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_projects"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/lightgray"/>
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"/>
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_all_tags"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/tag"
-                app:navigationIcon="@drawable/ic_folder_grey"
-                app:navigationExpand="true"
-                android:layout_marginLeft="20dp" />
+                app:navigationIcon="@drawable/ic_all_tags"
+                app:navigationExpand="true" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_tags"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/lightgray"/>
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"/>
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_manage_project"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/manage_projects"
-                app:navigationIcon="@drawable/ic_pen"
-                android:layout_marginLeft="20dp" />
+                app:navigationIcon="@drawable/ic_pen" />
 
             <com.pfh.promiselist.widget.NavigationItem
                 android:id="@+id/nav_manage_tag"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/nav_item_height"
                 app:navigationName="@string/manage_tags"
-                app:navigationIcon="@drawable/ic_pen"
-                android:layout_marginLeft="20dp" />
+                app:navigationIcon="@drawable/ic_pen" />
 
         </LinearLayout>
     </ScrollView>

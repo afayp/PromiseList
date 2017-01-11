@@ -10,6 +10,13 @@
     <dimen name="toolbar_left_space">10dp</dimen><!--最左边图标离屏幕左边缘的距离-->
     <dimen name="toolbar_right_space">10dp</dimen>
     <dimen name="toolbar_title_left_space">10dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="task_corner_radius">1dp</dimen>
+    <dimen name="task_elevation">1dp</dimen>
+    <dimen name="selected_task_stroke_width">1.5dp</dimen>
+    <dimen name="tag_left_padding">0dp</dimen>
+    <dimen name="fab_elevation">4dp</dimen>
+    <dimen name="nav_item_height">50dp</dimen>
 
     <!--图标-->
     <dimen name="toolbar_icon_width">30dp</dimen>
@@ -20,6 +27,10 @@
 
     <!--字体-->
     <dimen name="toolbar_title_text_size">20dp</dimen>
+    <dimen name="task_label_text_size">16sp</dimen>
+    <dimen name="task_title_text_size">16sp</dimen>
+
+
 
 
 

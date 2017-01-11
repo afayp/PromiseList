@@ -17,6 +17,7 @@ import com.pfh.promiselist.R;
 public class TaskListToolbar extends LinearLayout {
     private boolean select; // 是否选择状态
     private boolean fixedActive;// 固定按钮是否亮起
+    private boolean sortByTime = true;
 
     private ImageView iv_projects;
     private ImageView iv_sort;
@@ -100,6 +101,15 @@ public class TaskListToolbar extends LinearLayout {
 
     public ImageView getIvSort(){
         return iv_sort;
+    }
+
+    public void toggleSort(){
+        sortByTime = !sortByTime;
+        iv_sort.setImageResource(sortByTime ? R.drawable.ic_sort_by_time : R.drawable.ic_sort_by_project);
+    }
+
+    public boolean sortByTime(){
+        return sortByTime;
     }
 
     public ImageView getIvSearch(){

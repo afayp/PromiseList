@@ -10,7 +10,7 @@
     <string name="new_project">新建清单</string>
     <string name="new_tag">新建标签</string>
     <string name="new_tag_name">标签名称</string>
-    <string name="label_fixed">固定</string>
+    <string name="label_fixed">已固定</string>
     <string name="label_others">其他</string>
     <string name="choose_color">颜色选择</string>
     <string name="tag_choose_dialog_label">设置标签</string>

@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@color/ivory"
-    android:elevation="5dp">
+    android:layout_height="@dimen/toolbar_height"
+    android:background="@color/main_toolbar_bg"
+    android:elevation="@dimen/toolbar_elevation">
 
     <LinearLayout
         android:id="@+id/ll_normal"
@@ -16,18 +16,16 @@
 
         <ImageView
             android:id="@+id/iv_projects"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
             android:src="@drawable/ic_menu_grey"
-            android:background="@drawable/icon_default_selector"
-            android:layout_marginLeft="10dp" />
+            style="@style/btnStyle"
+            android:layout_marginLeft="@dimen/toolbar_left_space" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/toolbar_title_text_size"/>
 
         <View
             android:layout_width="0dp"
@@ -36,29 +34,19 @@
 
         <ImageView
             android:id="@+id/iv_search"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_search"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            android:src="@drawable/ic_search_grey"
+            style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_sort"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_sort"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
-
+            style="@style/btnStyle"
+            android:src="@drawable/ic_sort_by_time" />
 
         <ImageView
             android:id="@+id/iv_more"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_more"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            android:src="@drawable/ic_more_grey"
+            style="@style/btnStyle"
+            android:layout_marginRight="10dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -71,18 +59,16 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_blue_left_arrow"
-            android:background="@drawable/icon_default_selector"
-            android:layout_marginLeft="10dp"/>
+            style="@style/btnStyle"
+            android:src="@drawable/ic_arrow_left"
+            android:layout_marginLeft="@dimen/toolbar_left_space"/>
 
         <TextView
             android:id="@+id/tv_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:textSize="20sp"
+            tools:text="1"
+            android:textSize="@dimen/toolbar_title_text_size"
             android:layout_marginLeft="10dp"/>
 
         <View
@@ -92,56 +78,36 @@
 
         <ImageView
             android:id="@+id/iv_palette"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
             android:src="@drawable/ic_palette"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_tag"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
             android:src="@drawable/ic_tag_grey"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_fixed"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
             android:src="@drawable/ic_fixed"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_project"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_folder_grey"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            android:src="@drawable/ic_package_grey"
+            style="@style/btnStyle"/>
 
 
-         <ImageView
+        <ImageView
             android:id="@+id/iv_date"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_date"
-             android:layout_marginLeft="20dp"
-             android:background="@drawable/icon_default_selector"/>
+            android:src="@drawable/ic_calendar_grey"
+            style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_more_select"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_more"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/icon_default_selector"/>
+            android:src="@drawable/ic_more_grey"
+            style="@style/btnStyle"
+            android:layout_marginRight="10dp" />
 
     </LinearLayout>
-
-
 
 </FrameLayout>

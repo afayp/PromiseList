@@ -26,6 +26,8 @@ public class NavigationItem extends LinearLayout {
     private boolean expand;
     private ImageView iv_icon;
     private TextView tv_name;
+    private boolean selected;
+    private LinearLayout ll_root;
 
     public NavigationItem(Context context) {
         this(context,null);
@@ -38,15 +40,16 @@ public class NavigationItem extends LinearLayout {
     public NavigationItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.NavigationItem, defStyleAttr, 0);
-        int iconId = typedArray.getResourceId(R.styleable.NavigationItem_navigationIcon, R.drawable.ic_menu_black);
+        int iconId = typedArray.getResourceId(R.styleable.NavigationItem_navigationIcon, R.drawable.ic_menu_grey);
         String name = typedArray.getString(R.styleable.NavigationItem_navigationName);
-        boolean showExpand = typedArray.getBoolean(R.styleable.NavigationItem_navigationExpand,false);
+        boolean showExpand = typedArray.getBoolean(R.styleable.NavigationItem_navigationExpand,false); // 是否显示右边箭头
 
         View view = LayoutInflater.from(context).inflate(R.layout.layout_navigation_item, this, true);
         iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
         tv_name = (TextView) view.findViewById(R.id.tv_name);
         iv_expand = (ImageView) view.findViewById(R.id.iv_expand);
         tv_count = (TextView) view.findViewById(R.id.tv_count);
+        ll_root = (LinearLayout) view.findViewById(R.id.ll_root);
 
         iv_icon.setImageResource(iconId);
         tv_name.setText(name);
@@ -54,6 +57,7 @@ public class NavigationItem extends LinearLayout {
     }
 
     public void setCount(String count){
+        iv_expand.setVisibility(GONE);
         tv_count.setVisibility(VISIBLE);
         tv_count.setText(count);
     }
@@ -84,6 +88,11 @@ public class NavigationItem extends LinearLayout {
 
     public void setName(String name){
         tv_name.setText(name);
+    }
+
+    public void setSelected(boolean selected){
+        this.selected = selected;
+        ll_root.setBackgroundResource(selected ? R.color.nav_item_selected_bg : R.color.white);
     }
 
 

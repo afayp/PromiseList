@@ -6,15 +6,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="@dimen/task_corner_radius"
+    app:cardElevation="@dimen/task_elevation">
 
     <RelativeLayout
         android:id="@+id/rl_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp">
 
@@ -32,86 +32,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Email jack back"
-            android:textSize="18sp"
-            android:paddingLeft="10dp"/>
+            android:textSize="@dimen/task_title_text_size"
+            android:layout_marginBottom="5dp"/>
 
         <com.pfh.promiselist.widget.FlowLayout
             android:id="@+id/flow_tag_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
             android:layout_below="@+id/tv_title">
 
         </com.pfh.promiselist.widget.FlowLayout>
-
-
-        <!--<TextView
-            android:id="@+id/tv_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="#work | 13:55"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:visibility="gone"/>-->
-
-        <!--<LinearLayout
-            android:id="@+id/ll_setting"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:elevation="3dp"
-            android:paddingTop="3dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/iv_palette"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_palette"
-                android:layout_marginBottom="5dp"/>
-
-            <ImageView
-                android:id="@+id/iv_date"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_date"
-                android:layout_marginBottom="5dp"/>
-
-            <ImageView
-                android:id="@+id/iv_tag"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_tag"
-                android:layout_marginBottom="5dp"/>
-
-            <ImageView
-                android:id="@+id/iv_bell"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_bell"
-                android:layout_marginBottom="5dp"/>
-
-            <ImageView
-                android:id="@+id/iv_fixed"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_fixed"
-                android:layout_marginBottom="5dp"/>
-
-            <ImageView
-                android:id="@+id/iv_remark"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_remark"
-                android:layout_marginBottom="5dp"/>
-        </LinearLayout>-->
 
     </RelativeLayout>
 

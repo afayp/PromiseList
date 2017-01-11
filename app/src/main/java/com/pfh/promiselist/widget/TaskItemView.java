@@ -34,20 +34,10 @@ public class TaskItemView extends LinearLayout {
     private int animationTime = 150;
 
     private TextView tv_title;
-//    private LinearLayout ll_root;
     private RelativeLayout rl_root;
     private FlowLayout flow_tag_container;
     private CardView cardview;
     private ImageView iv_fixed;
-
-//    private TextView tv_info;
-//    private LinearLayout ll_setting;
-//    private ImageView iv_palette;
-//    private ImageView iv_date;
-//    private ImageView iv_tag;
-//    private ImageView iv_bell;
-//    private ImageView iv_fixed;
-//    private ImageView iv_remark;
 
     public TaskItemView(Context context) {
         this(context,null);
@@ -72,17 +62,6 @@ public class TaskItemView extends LinearLayout {
         flow_tag_container = (FlowLayout) view.findViewById(R.id.flow_tag_container);
         flow_tag_container.setHorizontalSpacing(8);
         flow_tag_container.setVerticalSpacing(5);
-
-//        tv_info = (TextView) view.findViewById(R.id.tv_info);
-//        ll_setting = (LinearLayout) view.findViewById(R.id.ll_setting);
-//        iv_palette = (ImageView) view.findViewById(R.id.iv_palette);
-//        iv_date = (ImageView) view.findViewById(R.id.iv_date);
-//        iv_tag = (ImageView) view.findViewById(R.id.iv_tag);
-//        iv_bell = (ImageView) view.findViewById(R.id.iv_bell);
-//        iv_fixed = (ImageView) view.findViewById(R.id.iv_fixed);
-//        iv_remark = (ImageView) view.findViewById(R.id.iv_remark);
-//        ll_tag_container = (LinearLayout) view.findViewById(R.id.ll_tag_container);
-
     }
 
     public void setData(Task task,int orderMode){
@@ -131,7 +110,6 @@ public class TaskItemView extends LinearLayout {
         if (select) {
             rl_root.setBackgroundResource(R.drawable.item_selected_bg);
         }else {
-//            rl_root.setBackgroundColor(0);
             rl_root.setBackgroundResource(R.color.transparent);
         }
     }

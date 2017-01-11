@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.transition.Explode;
+import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.jaeger.library.StatusBarUtil;
+import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.MsgEvent;
 import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.ScreenUtil;
@@ -53,12 +55,13 @@ public class BaseActivity extends AppCompatActivity {
         mRealm = Realm.getDefaultInstance();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-            getWindow().setEnterTransition(new Explode());
-//            getWindow().setEnterTransition(new Slide());
-//            getWindow().setEnterTransition(new Fade());
-            getWindow().setExitTransition(new Explode());
-//            getWindow().setExitTransition(new Slide());
-//            getWindow().setExitTransition(new Fade());
+            //getWindow().setEnterTransition(new Explode());
+            getWindow().setEnterTransition(new Slide());
+            //getWindow().setEnterTransition(new Fade());
+            //getWindow().setExitTransition(new Explode());
+            getWindow().setExitTransition(new Slide());
+            //getWindow().setExitTransition(new Fade());
+            StatusBarUtil.setColor(this, getResources().getColor(R.color.default_blue),0);
         }
 
     }

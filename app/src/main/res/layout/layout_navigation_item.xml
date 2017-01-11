@@ -3,15 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="@dimen/nav_item_height"
     android:gravity="center_vertical"
-    android:padding="5dp">
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:id="@+id/ll_root"
+    android:background="@drawable/nav_item_selector">
 
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        tools:src="@drawable/ic_menu_black"/>
+        tools:src="@drawable/ic_menu_grey"/>
 
     <TextView
         android:id="@+id/tv_name"

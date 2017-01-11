@@ -143,7 +143,7 @@ public class MainActivity extends BaseActivity implements
         ButterKnife.bind(this);
 //        setStatusBarColor(ColorsUtil.TRANSPARENT);
 //        initStatusBar();
-//        StatusBarUtil.setColor(this, getResources().getColor(R.color.importance_normal),0);
+
         initSimulatedData();// todo
         initSymbol();
         modelList = loadData();
@@ -573,29 +573,37 @@ public class MainActivity extends BaseActivity implements
         toolbar.getIvSort().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final CustomPopupWindow sort = new CustomPopupWindow(mContext, R.layout.popup_sort_menu);
-                sort.showAsDropDown(v, -DensityUtil.dp2px(mContext, 30), 0);
-                LinearLayout ll_date_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_date_sort);
-                LinearLayout ll_project_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_project_sort);
-                LinearLayout ll_importance_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_importance_sort);
-                ll_date_sort.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sort.dismiss();
-                        orderMode = Constant.ORDER_BY_DATE;
-                        refreshTaskListUseDiffUtil();
-//                        refreshByMode();
-                    }
-                });
-                ll_project_sort.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sort.dismiss();
-                        orderMode = Constant.ORDER_BY_PROJECT;
-                        refreshTaskListUseDiffUtil();
-//                        refreshByMode();
-                    }
-                });
+                toolbar.toggleSort();
+                if (toolbar.sortByTime()) {
+                    orderMode = Constant.ORDER_BY_DATE;
+                }else {
+                    orderMode = Constant.ORDER_BY_PROJECT;
+                }
+                refreshTaskListUseDiffUtil();
+
+//                final CustomPopupWindow sort = new CustomPopupWindow(mContext, R.layout.popup_sort_menu);
+//                sort.showAsDropDown(v, -DensityUtil.dp2px(mContext, 30), 0);
+//                LinearLayout ll_date_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_date_sort);
+//                LinearLayout ll_project_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_project_sort);
+//                LinearLayout ll_importance_sort = (LinearLayout) sort.getContentView().findViewById(R.id.ll_importance_sort);
+//                ll_date_sort.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        sort.dismiss();
+//                        orderMode = Constant.ORDER_BY_DATE;
+//                        refreshTaskListUseDiffUtil();
+////                        refreshByMode();
+//                    }
+//                });
+//                ll_project_sort.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        sort.dismiss();
+//                        orderMode = Constant.ORDER_BY_PROJECT;
+//                        refreshTaskListUseDiffUtil();
+////                        refreshByMode();
+//                    }
+//                });
             }
         });
 

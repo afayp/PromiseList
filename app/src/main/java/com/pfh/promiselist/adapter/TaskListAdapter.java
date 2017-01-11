@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.MultiItemModel;
@@ -268,11 +267,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
 
         TaskItemView taskItem;
-        LinearLayout ll_root;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
-            ll_root = (LinearLayout) itemView.findViewById(R.id.ll_root);
             taskItem = (TaskItemView) itemView.findViewById(R.id.task_item);
         }
     }

@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#FAFAFA</color>
     <color name="colorAccent">#FF4081</color>
 
 
     <color name="window_background">#FAFAFA</color><!--默认背景颜色-->
     <color name="text_color_primary">#212121</color>
     <color name="text_second_color_primary">#727272</color>
+    <color name="status_bar_color">#FAFAFA</color>
+    <color name="main_toolbar_bg">#FFFFFF</color>
+    <color name="main_activity_bg">#EAEAEA</color>
+    <color name="fab_bg">#33B5FF</color>
+    <color name="fab_pressed_bg">#2DA9EF</color>
+    <color name="nav_item_selected_bg">#502DA9EF</color>
+
 
     <color name="icon_color">#757575</color>
-    <color name="default_blue">#6EC9FD</color>
+    <color name="default_blue">#33B5FF</color>
     <color name="btn_pressed_bg">#EBEBEB</color>
-    <color name="tag_bg">#E0E0E0</color>
+    <color name="tag_bg">#00E0E0E0</color>
+    <color name="task_selected_stroke_bg">#737373</color>
+    <color name="task_selected_cover_bg">#00000000</color>
 
 
     <color name="importance_high">#FFE1D2C8</color>
