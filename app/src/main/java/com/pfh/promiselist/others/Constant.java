@@ -39,9 +39,12 @@ public class Constant {
     public static final int MANAGE_TYPE_NEW_TAG = 4;
 
 
-
     //----------------preference key-----------------//
 
+    public static final String CURRENT_USER_ID_KEY = "current_user_id_key";
+    public static final String IS_FIRST_START_UP_KEY = "is_first_start_up_key"; // 是否是第一次进入应用，如果是要有引导页和预置数据。
+    public static final String USER_AVATAR_KEY = "user_avatar_key"; // 用户头像,相册中的文件地址，如果没有没用默认的
+    public static final String USER_BG_KEY = "user_bg_key"; // 用户界面背景
     public static final String DISPLAY_INDEX_KEY = "display_index_key"; // 用户上次选择的展示模式
     public static final String LAST_SELECTED_PROJECT_KEY = "last_selected_project_key";// 用户上次选择的在主界面展示的projectId
     public static final String LAST_SELECTED_TAG_KEY = "last_selected_tag_key";// 用户上次选择的在主界面展示的projectId

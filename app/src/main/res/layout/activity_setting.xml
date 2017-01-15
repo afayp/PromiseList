@@ -4,128 +4,165 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgray">
+    android:background="@color/main_activity_bg">
 
     <!--toolbar-->
-
     <LinearLayout
-        android:id="@+id/ll_user"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
         android:orientation="horizontal"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:padding="5dp">
+        android:elevation="@dimen/toolbar_elevation"
+        android:background="@color/setting_toolbar_bg"
+        android:gravity="center_vertical">
 
-        <com.pfh.promiselist.widget.CircleImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/avatar"
-            android:layout_marginLeft="10dp"/>
+        <ImageView
+            android:id="@+id/iv_back"
+            style="@style/btnStyle"
+            android:src="@drawable/ic_arrow_left"
+            android:layout_marginLeft="@dimen/toolbar_left_space"/>
 
         <TextView
-            android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="你爸爸"
-            android:textSize="20sp"
-            android:paddingLeft="20dp"/>
-
+            android:textSize="@dimen/toolbar_title_text_size"
+            android:layout_marginLeft="@dimen/toolbar_title_left_space"
+            android:text="@string/setting"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/application"
-            android:textSize="16sp"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"/>
-
-        <com.pfh.promiselist.widget.SettingItemIconView
-            android:id="@+id/setting_preferences"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_icon="@drawable/ic_setting_grey"
-            app:settingItem_name="@string/setting_preferences"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <com.pfh.promiselist.widget.SettingItemIconView
-            android:id="@+id/setting_remind"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_icon="@drawable/ic_alarm_grey"
-            app:settingItem_name="@string/setting_remind"/>
+            <LinearLayout
+                android:id="@+id/ll_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:padding="10dp">
 
-        <com.pfh.promiselist.widget.SettingItemSwitchView
-            android:id="@+id/setting_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_title="@string/notification_bar"
-            app:settingItem_desc="在通知栏显示快速添加及未完成任务"/>
+                <com.pfh.promiselist.widget.CircleImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/avatar"
+                    android:layout_marginLeft="10dp"/>
 
-        <com.pfh.promiselist.widget.SettingItemSwitchView
-            android:id="@+id/setting_task_remind"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_title="提醒"
-            app:settingItem_desc="在任务指定的截止日期发出提醒" />
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="你爸爸"
+                    android:textSize="20sp"
+                    android:paddingLeft="20dp"/>
 
-        <com.pfh.promiselist.widget.SettingItemSwitchView
-            android:id="@+id/setting_gesture_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_title="手势密码" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/other"
-            android:textSize="16sp"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"/>
-
-        <com.pfh.promiselist.widget.SettingItemIconView
-            android:id="@+id/setting_help"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_icon="@drawable/ic_help_grey"
-            app:settingItem_name="@string/help"
-            app:settingItem_icon_underline="false"/>
-
-        <com.pfh.promiselist.widget.SettingItemIconView
-            android:id="@+id/setting_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_icon="@drawable/ic_feedback_grey"
-            app:settingItem_name="@string/feedback"
-            app:settingItem_icon_underline="false"/>
-
-        <com.pfh.promiselist.widget.SettingItemIconView
-            android:id="@+id/setting_about"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingItem_icon="@drawable/ic_about_grey"
-            app:settingItem_name="@string/about"
-            app:settingItem_icon_underline="false"/>
+            </LinearLayout>
 
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/application"
+                    android:textSize="16sp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"/>
+
+                <com.pfh.promiselist.widget.SettingItemIconView
+                    android:id="@+id/setting_preferences"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_icon="@drawable/ic_setting_grey"
+                    app:settingItem_name="@string/setting_preferences"
+                    android:visibility="gone"/>
+
+                <com.pfh.promiselist.widget.SettingItemIconView
+                    android:id="@+id/setting_remind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_icon="@drawable/ic_alarm_grey"
+                    app:settingItem_name="@string/setting_remind"
+                    android:visibility="gone"/>
+
+                <com.pfh.promiselist.widget.SettingItemSwitchView
+                    android:id="@+id/setting_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_title="@string/notification_bar"
+                    app:settingItem_desc="在通知栏显示快速添加及未完成任务"/>
+
+                <com.pfh.promiselist.widget.SettingItemSwitchView
+                    android:id="@+id/setting_task_remind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_title="提醒"
+                    app:settingItem_desc="在任务指定的截止日期发出提醒" />
+
+                <com.pfh.promiselist.widget.SettingItemSwitchView
+                    android:id="@+id/setting_gesture_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_title="手势密码"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/other"
+                    android:textSize="16sp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"/>
+
+                <com.pfh.promiselist.widget.SettingItemIconView
+                    android:id="@+id/setting_help"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_icon="@drawable/ic_help_grey"
+                    app:settingItem_name="@string/help"
+                    app:settingItem_icon_underline="false"/>
+
+                <com.pfh.promiselist.widget.SettingItemIconView
+                    android:id="@+id/setting_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_icon="@drawable/ic_feedback_grey"
+                    app:settingItem_name="@string/feedback"
+                    app:settingItem_icon_underline="false"/>
+
+                <com.pfh.promiselist.widget.SettingItemIconView
+                    android:id="@+id/setting_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:settingItem_icon="@drawable/ic_about_grey"
+                    app:settingItem_name="@string/about"
+                    app:settingItem_icon_underline="false"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

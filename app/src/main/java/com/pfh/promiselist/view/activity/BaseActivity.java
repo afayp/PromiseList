@@ -1,11 +1,18 @@
 package com.pfh.promiselist.view.activity;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.transition.Slide;
@@ -27,6 +34,9 @@ import com.pfh.promiselist.utils.SnackbarUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import io.realm.Realm;
 
@@ -126,6 +136,10 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    protected void startActivity(Intent intent, Activity srcActivity){
+        startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(srcActivity).toBundle());
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -171,6 +185,45 @@ public class BaseActivity extends AppCompatActivity {
         mSnackbar = SnackbarUtil.IndefiniteSnackbar(view,message,SHORT_SNACKBAR_DURATION, Color.WHITE,CONFIRM_SNACKBAR_TYPE_COLOR);
         mSnackbar.setAction(actionName,action);
         mSnackbar.show();
+    }
+
+    /**
+     * 根据Uri获取图片文件的绝对路径
+     */
+    protected String getRealFilePath(final Uri uri) {
+        if (null == uri) {
+            return null;
+        }
+
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = getContentResolver().query(uri,
+                    new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 用当前时间给取得的图片命名
+     */
+    protected String getPhotoFileName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(date) + ".jpg";
     }
 
 

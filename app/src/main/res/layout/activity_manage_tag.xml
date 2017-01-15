@@ -8,30 +8,40 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
         android:orientation="horizontal"
-        android:background="@color/skyblue"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:background="@color/manage_toolbar_bg"
+        android:gravity="center_vertical"
+        android:elevation="@dimen/toolbar_elevation">
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_delete"
-            android:layout_marginLeft="10dp"/>
+            style="@style/btnStyle"
+            android:src="@drawable/ic_arrow_left"
+            android:layout_marginLeft="@dimen/toolbar_left_space"/>
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="管理标签"
-            android:textSize="18sp"
-            android:paddingLeft="20dp" />
+            android:textSize="@dimen/toolbar_title_text_size"
+            android:layout_marginLeft="10dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/iv_plus"
+            style="@style/btnStyle"
+            android:src="@drawable/ic_plus_grey"
+            android:layout_marginRight="@dimen/toolbar_right_space"/>
 
     </LinearLayout>
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/rl_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +67,7 @@
             android:gravity="bottom"
             android:textColor="@color/lightgray"/>
 
-        <!--<ImageView
+        &lt;!&ndash;<ImageView
             android:id="@+id/iv_edit_ok"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -65,13 +75,14 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
-            android:visibility="gone"/>-->
+            android:visibility="gone"/>&ndash;&gt;
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:overScrollMode="never"/>
 
 </LinearLayout>

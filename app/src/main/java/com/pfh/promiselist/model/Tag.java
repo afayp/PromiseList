@@ -1,5 +1,7 @@
 package com.pfh.promiselist.model;
 
+import com.pfh.promiselist.utils.UuidUtils;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -35,6 +37,10 @@ public class Tag extends RealmObject{
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public Tag() {
+        tagId = UuidUtils.getShortUuid();
     }
 
     @Override

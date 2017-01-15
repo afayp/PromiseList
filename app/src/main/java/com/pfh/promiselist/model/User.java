@@ -1,6 +1,9 @@
 package com.pfh.promiselist.model;
 
+import com.pfh.promiselist.utils.UuidUtils;
+
 import java.io.Serializable;
+import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -28,6 +31,11 @@ public class User extends RealmObject implements Serializable{
     private RealmList<Project> projects;// 所有项目
     private RealmList<Task> tasks; // 所有任务
     private RealmList<Tag> tags;// 所有标签
+
+    public User() {
+        uid = UuidUtils.getShortUuid();
+        registerTime = new Date().getTime();
+    }
 
     public String getUid() {
         return uid;

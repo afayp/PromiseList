@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -42,7 +41,6 @@ public class ManageProjectTagActivity extends BaseActivity {
     private List<Project> allActiveProjects;
     private List<Tag> allTags;
     private ManageItemAdapter manageItemAdapter;
-    private ImageView iv_plus;
     private String label;
 
 
@@ -61,17 +59,14 @@ public class ManageProjectTagActivity extends BaseActivity {
     }
 
     private void initViews() {
-//        ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
+
         final TextView tv_title = (TextView) findViewById(R.id.tv_title);
-        iv_plus = (ImageView) findViewById(R.id.iv_plus);
-//        rv_content = (RecyclerView) findViewById(R.id.rv_content);
-        TextView tv_name = (TextView) findViewById(R.id.tv_name);
-        tv_name.setText(type == Constant.MANAGE_TYPE_PROJECT ? "创建新清单" : "创建新标签");
         tv_title.setText(type == Constant.MANAGE_TYPE_PROJECT ? "管理清单" : "管理标签");
-        RelativeLayout rl_new = (RelativeLayout) findViewById(R.id.rl_new);
-        rl_new.setOnClickListener(new View.OnClickListener() {
+        ImageView iv_plus = (ImageView) findViewById(R.id.iv_plus);
+        iv_plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 new MaterialDialog.Builder(mContext)
                         .title("新建" + label)
                         .positiveText("确认")

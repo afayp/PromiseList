@@ -18,11 +18,12 @@ public class TaskListToolbar extends LinearLayout {
     private boolean select; // 是否选择状态
     private boolean fixedActive;// 固定按钮是否亮起
     private boolean sortByTime = true;
+    private boolean streamLayout = true; //linear or stagger
 
-    private ImageView iv_projects;
+    private ImageView iv_menu;
     private ImageView iv_sort;
-    private ImageView iv_search;
-    private ImageView iv_more;
+    private ImageView iv_layout;
+//    private ImageView iv_more;
     private LinearLayout ll_normal;
     private LinearLayout ll_select;
     private ImageView iv_back;
@@ -50,10 +51,10 @@ public class TaskListToolbar extends LinearLayout {
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_task_list_toolbar, this, true);
         ll_normal = (LinearLayout) view.findViewById(R.id.ll_normal);
-        iv_projects = (ImageView) view.findViewById(R.id.iv_projects);
+        iv_menu = (ImageView) view.findViewById(R.id.iv_menu);
         iv_sort = (ImageView) view.findViewById(R.id.iv_sort);
-        iv_search = (ImageView) view.findViewById(R.id.iv_search);
-        iv_more = (ImageView) view.findViewById(R.id.iv_more);
+        iv_layout = (ImageView) view.findViewById(R.id.iv_layout);
+//        iv_more = (ImageView) view.findViewById(R.id.iv_more);
         tv_title = (TextView) view.findViewById(R.id.tv_title);
 
         ll_select = (LinearLayout) view.findViewById(R.id.ll_select);
@@ -95,8 +96,8 @@ public class TaskListToolbar extends LinearLayout {
         tv_num.setText(count+"");
     }
 
-    public ImageView getIvProjects(){
-        return iv_projects;
+    public ImageView getIvMenu(){
+        return iv_menu;
     }
 
     public ImageView getIvSort(){
@@ -108,17 +109,26 @@ public class TaskListToolbar extends LinearLayout {
         iv_sort.setImageResource(sortByTime ? R.drawable.ic_sort_by_time : R.drawable.ic_sort_by_project);
     }
 
+    public void toggleLayout(){
+        streamLayout = !streamLayout;
+        iv_layout.setImageResource(streamLayout ? R.drawable.ic_stream_layout : R.drawable.ic_stagger_layout);
+    }
+
+    public boolean isStreamLayout(){
+        return streamLayout;
+    }
+
     public boolean sortByTime(){
         return sortByTime;
     }
 
-    public ImageView getIvSearch(){
-        return iv_search;
+    public ImageView getIvLayout(){
+        return iv_layout;
     }
 
-    public ImageView getIvMore(){
-        return iv_more;
-    }
+//    public ImageView getIvMore(){
+//        return iv_more;
+//    }
 
     public ImageView getIvBack(){
         return iv_back;

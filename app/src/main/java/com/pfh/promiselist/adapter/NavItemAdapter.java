@@ -36,10 +36,6 @@ public class NavItemAdapter extends RecyclerView.Adapter<NavItemAdapter.MyViewHo
         originHeight =  DensityUtil.dp2px(Context,40);
     }
 
-    public int getTotalHeight(){
-        return getItemCount() * originHeight;
-    }
-
     public void refreshData(List<String> counts, List<String> names){
         this.counts = counts;
         this.names = names;
@@ -77,7 +73,7 @@ public class NavItemAdapter extends RecyclerView.Adapter<NavItemAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.item.setName(names.get(position));
-        holder.item.setIcon(type == Constant.NAV_TYPE_TAG ? R.drawable.ic_tag_grey : R.drawable.ic_menu_grey);
+        holder.item.setIcon(type == Constant.NAV_TYPE_TAG ? R.drawable.ic_tag_grey : R.drawable.ic_package_grey);
         holder.item.setCount(counts.get(position));
 //        holder.item.setVisibility(expand ? View.VISIBLE : View.GONE);
         expandAnim(holder.itemView,originHeight,expand);

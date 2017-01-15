@@ -4,11 +4,11 @@
     <string-array name="colors">
         <item>#FAFAFA</item>
         <item>#BBD9BD</item>
-        <item>#CDDC39</item>
-        <item>#6EC9FD</item>
-        <item>#FFEB3B</item>
-        <item>#FF9800</item>
-        <item>#607D8B</item>
-        <item>#F44336</item>
+        <item>#A5FFE9</item> <!--2ecc71 -->
+        <item>#7DD9FE</item>
+        <item>#FFD17F</item>
+        <item>#FFFF8D</item>
+        <item>#00BFA4 </item> <!--95a5a6 -->
+        <item>#FF8980</item>
     </string-array>
 </resources>

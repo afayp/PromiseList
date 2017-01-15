@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical"
-        android:background="@drawable/bg3">
+        android:background="@drawable/default_user_bg">
 
         <include layout="@layout/layout_new_project_task_toolbar"/>
 

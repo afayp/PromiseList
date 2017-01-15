@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +19,7 @@ import com.pfh.promiselist.R;
  * Created by Administrator on 2017/1/5 0005.
  */
 
-public class NavigationItem extends LinearLayout {
+public class NavigationItem extends FrameLayout {
 
     private ImageView iv_expand;
     private TextView tv_count;

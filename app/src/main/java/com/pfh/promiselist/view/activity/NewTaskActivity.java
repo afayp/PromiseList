@@ -1,8 +1,6 @@
 package com.pfh.promiselist.view.activity;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,7 +40,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -509,10 +506,9 @@ public class NewTaskActivity extends BaseActivity implements
         }else {
             finish();
         }
-
     }
 
-    private void openAlbum(){
+    protected void openAlbum(){
         // 打开系统相册
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");// 相片类型
@@ -530,17 +526,8 @@ public class NewTaskActivity extends BaseActivity implements
         }catch (Exception e) {
             Log.e("TAG","相机不可用");
         }
-
     }
 
-    /**
-     * 用当前时间给取得的图片命名
-     */
-    private String getPhotoFileName() {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(date) + ".jpg";
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -559,33 +546,4 @@ public class NewTaskActivity extends BaseActivity implements
         addPic();
     }
 
-    /**
-     * 根据Uri获取图片文件的绝对路径
-     */
-    public String getRealFilePath(final Uri uri) {
-        if (null == uri) {
-            return null;
-        }
-
-        final String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = getContentResolver().query(uri,
-                    new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return data;
-    }
 }

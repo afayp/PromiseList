@@ -1,5 +1,9 @@
 package com.pfh.promiselist.model;
 
+import com.pfh.promiselist.utils.UuidUtils;
+
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -19,13 +23,13 @@ public class Task extends RealmObject {
     private Project project; // 所属的project
 //    private boolean remindMode;// 是否开启提醒 废弃有了dueTime就不增加这个设置了
 //    private long remindTime;// 结束前几分钟提醒
-    private String colorValue; // 背景颜色
+    private String colorValue; // 背景颜色 #FAFAFA
     private String desc; // 文字明细
     private User owner;
     //    private int importance; // 低1、正常2、高3 默认正常2 取消 改成用颜色区分 更灵活更好看
     private RealmList<Tag> tags;
     private RealmList<User> cooperators;
-    private int state;//1表示未完成uncompleted，2表示已完成completed，3表示已删除(进回收站)deleted
+    private int state = 1;//1表示未完成uncompleted，2表示已完成completed，3表示已删除(进回收站)deleted
 
     private String repeatMode; // NOREPEAT、DAILY、WEEKLY、MONTHLY、YEARLY
     private long repeatTime; //一个确切的时间，在创建任务时确定，根据repeatMode和repeatTime算出某天是否符合
@@ -37,6 +41,12 @@ public class Task extends RealmObject {
     private String picUrls; // 本任务包含的图片地址 如有多个用英文逗号分隔
     private String recordingUrls; // 本任务包含的录音地址 如有多个用英文逗号分隔
     private String videoUrls; // 本任务包含的视频地址 如有多个用英文逗号分隔
+
+    public Task() {
+        taskId = UuidUtils.getShortUuid();
+        createdTime = new Date().getTime();
+        state = 1;
+    }
 
     public String getRecordingUrls() {
         return recordingUrls;
@@ -159,6 +169,9 @@ public class Task extends RealmObject {
 //    }
 
     public RealmList<Tag> getTags() {
+        if (tags == null) {
+            tags = new RealmList<>();
+        }
         return tags;
     }
 

@@ -2,9 +2,12 @@ package com.pfh.promiselist.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,6 +34,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<Integer> selectedPosition = new ArrayList<>(); // 选中的位置
 
     private ItemTouchHelper itemTouchHelper;
+    private int startX;
 
     public TaskListAdapter(Context mContext, List<MultiItemModel> mData, int mOrderMode) {
         this.mContext = mContext;
@@ -75,6 +79,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Log.e("TAG","onBindViewHolder: "+position);
+
         int type = getItemViewType(position);
         if (type == Constant.ITEM_TYPE_TASK){
             Task task = (Task) mData.get(position).getContent();
@@ -84,6 +89,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             taskItem.setSelectedBg(select && selectedPosition.contains((Integer)position));
 
         }else {
+//            setFullSpan(holder);
             ((TitleViewHolder)holder).task_title.setTitle((String) mData.get(position).getContent());
             ((TitleViewHolder)holder).task_title.setNum(getTypeCount(mData.get(position).getLabel())+"");
             ((TitleViewHolder)holder).task_title.toggle(mData.get(position).isExpand() ? true : false);
@@ -93,6 +99,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     expandOrFoldTitle(position);
                 }
             });
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder.getItemViewType() != Constant.ITEM_TYPE_TASK) {
+            setFullSpan(holder);
+        }
+    }
+
+    private void setFullSpan(RecyclerView.ViewHolder holder) {
+        if (holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+            params.setFullSpan(true);
         }
     }
 
@@ -116,26 +137,39 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void setupTaskItem(View taskItem, final TaskViewHolder taskViewHolder){
 
-//        taskItem.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (itemTouchHelper != null) {
-//                    int startX = 0;
-//                    int startY = 0;
-//                    switch (event.getAction()) {
-//                        case MotionEvent.ACTION_DOWN:
-//                            startX = (int) event.getX();
-//                            startY = (int) event.getY();
-//                            Log.e("TAG","startX: "+startX +" | startY: "+startY);
-//                            break;
-//                        case MotionEvent.ACTION_MOVE:
-//                            if (Math.abs(event.getY() - startY) < 100 && Math.abs(event.getX() - startX) > 200) itemTouchHelper.startSwipe(taskViewHolder);
-//                            break;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
+        taskItem.setOnTouchListener(new View.OnTouchListener() {
+
+            private int startY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (itemTouchHelper != null) {
+
+                    VelocityTracker velocityTracker = VelocityTracker.obtain();
+                    velocityTracker.addMovement(event);
+                    velocityTracker.computeCurrentVelocity(1000);
+                    float yVelocity = velocityTracker.getYVelocity();
+
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            startX = (int) event.getX();
+                            startY = (int) event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            if (startX > 30 && Math.abs(event.getX() - startX) / Math.abs(event.getY() - startY) > 1 && yVelocity < 50){
+                                itemTouchHelper.startSwipe(taskViewHolder);
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            //最后要记得回收
+                            velocityTracker.clear();
+                            velocityTracker.recycle();
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
         taskItem.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,7 +15,7 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/iv_projects"
+            android:id="@+id/iv_menu"
             android:src="@drawable/ic_menu_grey"
             style="@style/btnStyle"
             android:layout_marginLeft="@dimen/toolbar_left_space" />
@@ -33,20 +33,16 @@
             android:layout_weight="1"/>
 
         <ImageView
-            android:id="@+id/iv_search"
-            android:src="@drawable/ic_search_grey"
+            android:id="@+id/iv_layout"
+            android:src="@drawable/ic_stream_layout"
             style="@style/btnStyle"/>
 
         <ImageView
             android:id="@+id/iv_sort"
             style="@style/btnStyle"
-            android:src="@drawable/ic_sort_by_time" />
-
-        <ImageView
-            android:id="@+id/iv_more"
-            android:src="@drawable/ic_more_grey"
-            style="@style/btnStyle"
+            android:src="@drawable/ic_sort_by_time"
             android:layout_marginRight="10dp" />
+
     </LinearLayout>
 
     <LinearLayout

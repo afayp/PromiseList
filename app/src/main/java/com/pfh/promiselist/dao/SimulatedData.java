@@ -1,5 +1,7 @@
 package com.pfh.promiselist.dao;
 
+import com.pfh.promiselist.MyApplication;
+import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.Project;
 import com.pfh.promiselist.model.Tag;
 import com.pfh.promiselist.model.Task;
@@ -77,7 +79,7 @@ public class SimulatedData {
         Tag tag = new Tag();
         tag.setOwner(getCurrentUser());
         tag.setTagId("tag_id_1");
-        tag.setName("嘿嘿嘿");
+        tag.setName("千万不要忘了");
         return tag;
     }
 
@@ -85,7 +87,7 @@ public class SimulatedData {
         Tag tag = new Tag();
         tag.setOwner(getCurrentUser());
         tag.setTagId("tag_id_2");
-        tag.setName("啪啪啪");
+        tag.setName("要么瘦要么死");
         return tag;
     }
 
@@ -98,8 +100,8 @@ public class SimulatedData {
         task1.setState(1);
         task1.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task1.setCreatedTime(new Date().getTime());
-        task1.setColorValue(getLowBgColor());
-        task1.setDesc("desc /n desc \n desc");
+        task1.setColorValue(getSpecifyColor(0));
+        task1.setDesc("desc /n desc desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         tags.add(getTag2());
@@ -115,7 +117,7 @@ public class SimulatedData {
         task2.setState(1);
         task2.setDueTime(DateUtil.str2Date(FEATURE).getTime());
         task2.setCreatedTime(new Date().getTime());
-        task2.setColorValue(getNormalBgColor());
+        task2.setColorValue(getSpecifyColor(1));
         task2.setDesc("desc /n desc \n desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
@@ -131,7 +133,7 @@ public class SimulatedData {
         task3.setState(1);
         task3.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task3.setCreatedTime(new Date().getTime());
-        task3.setColorValue(getHighBgColor());
+        task3.setColorValue(getSpecifyColor(2));
         task3.setDesc("desc /n desc \n desc");
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
@@ -148,7 +150,7 @@ public class SimulatedData {
         task4.setState(1);
         task4.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task4.setCreatedTime(new Date().getTime());
-        task4.setColorValue(getLowBgColor());
+        task4.setColorValue(getSpecifyColor(3));
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag2());
         task4.setTags(tags);
@@ -162,7 +164,7 @@ public class SimulatedData {
         task5.setState(1);
         task5.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
         task5.setCreatedTime(new Date().getTime());
-        task5.setColorValue(getHighBgColor());
+        task5.setColorValue(getSpecifyColor(4));
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         task5.setTags(tags);
@@ -178,7 +180,7 @@ public class SimulatedData {
         task6.setState(1);
         task6.setDueTime(DateUtil.str2Date(TOMORROW).getTime());
         task6.setCreatedTime(new Date().getTime());
-        task6.setColorValue(getNormalBgColor());
+        task6.setColorValue(getSpecifyColor(5));
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         task6.setTags(tags);
@@ -193,7 +195,7 @@ public class SimulatedData {
         task7.setState(1);
         task7.setDueTime(DateUtil.str2Date(FEATURE).getTime());
         task7.setCreatedTime(new Date().getTime());
-        task7.setColorValue(getLowBgColor());
+        task7.setColorValue(getSpecifyColor(6));
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         task7.setTags(tags);
@@ -208,12 +210,24 @@ public class SimulatedData {
         task8.setState(1);
         task8.setDueTime(DateUtil.str2Date(TODAY).getTime());
         task8.setCreatedTime(new Date().getTime());
-        task8.setColorValue(getHighBgColor());
+        task8.setColorValue(getSpecifyColor(7));
         RealmList<Tag> tags = new RealmList<>();
         tags.add(getTag1());
         tags.add(getTag2());
         task8.setTags(tags);
         return task8;
+    }
+
+    public static String getSpecifyColor(int index){
+        String[] colorArray = MyApplication.getContext().getResources().getStringArray(R.array.colors);
+        return colorArray[index];
+    }
+
+    public static String getRandomColror(){
+        int random = 0 + (int)(Math.random() * 8);
+        String[] colorArray = MyApplication.getContext().getResources().getStringArray(R.array.colors);
+        return colorArray[random];
+        // int num = min + (int)(Math.random() * (max-min+1));
     }
 
     public static String getHighBgColor(){

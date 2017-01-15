@@ -43,6 +43,8 @@
             android:theme="@style/TransparentTheme"
             android:excludeFromRecents="true"/>
 
+        <activity android:name=".view.activity.AboutActivity"/>
+
 
         <service android:name=".service.NotificationService"/>
 

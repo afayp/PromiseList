@@ -2,8 +2,11 @@ package com.pfh.promiselist.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,21 +16,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.bumptech.glide.Glide;
 import com.pfh.promiselist.R;
 import com.pfh.promiselist.adapter.CustomItemTouchHelpCallback;
 import com.pfh.promiselist.adapter.NavItemAdapter;
 import com.pfh.promiselist.adapter.TaskListAdapter;
+import com.pfh.promiselist.dao.PresetData;
 import com.pfh.promiselist.dao.RealmDB;
 import com.pfh.promiselist.dao.SimulatedData;
 import com.pfh.promiselist.model.MultiItemModel;
@@ -37,10 +45,10 @@ import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.others.Constant;
 import com.pfh.promiselist.others.CustomItemAnimator;
 import com.pfh.promiselist.others.DiffCallback;
+import com.pfh.promiselist.others.SpacesItemDecoration;
 import com.pfh.promiselist.utils.DateUtil;
 import com.pfh.promiselist.utils.DensityUtil;
 import com.pfh.promiselist.utils.SPUtil;
-import com.pfh.promiselist.utils.ScreenUtil;
 import com.pfh.promiselist.widget.CircleImageView;
 import com.pfh.promiselist.widget.CustomPopupWindow;
 import com.pfh.promiselist.widget.NavigationItem;
@@ -50,6 +58,7 @@ import com.pfh.promiselist.widget.TaskListToolbar;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -61,6 +70,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.pfh.promiselist.utils.SPUtil.get;
+
 
 /**
  * 首页 展示当前筛选条件(时间、清单...)下的所有任务
@@ -70,10 +81,17 @@ public class MainActivity extends BaseActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 
-    public static final int REQUEST_NEW = 1; // 新建任务
-    public static final int REQUEST_EDIT = 2; // 修改任务
-    public static final int REQUEST_MANAGE = 3; // 管理清单或者标签
+    public static final int REQUEST_CODE_NEW_TASK = 1; // 新建任务
+    public static final int REQUEST_CODE_EDIT_TASK = 2; // 修改任务
+    private static final int REQUEST_CODE_PICK_IMAGE_FOR_AVATAR = 3;
+    private static final int REQUEST_CODE_PICK_IMAGE_FOR_USER_BG = 4;
+    private static final int REQUEST_CODE_CAPTURE_CAMEIA_FOR_AVATAR = 5;
+    private static final int REQUEST_CODE_CAPTURE_CAMEIA_FOR_USER_BG = 6;
+
+    public static final int REQUEST_CODE_MANAGE = 7; // 管理清单或者标签
     public static final String EDIT_TASK_ID = "edit_task_id"; // 修改的任务
+
+    public static final int space = 2;// dp
 
 
     //--------------data-------------------//
@@ -86,6 +104,7 @@ public class MainActivity extends BaseActivity implements
     private List<Task> searchResultTasks = new ArrayList<>();
     private TaskListAdapter mTaskListAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private List<Task> selectedTasks = new ArrayList<>();//所有选中的task
     private Calendar targetCalendar; // 选择的日期
     private Task deletedTask;
@@ -130,10 +149,11 @@ public class MainActivity extends BaseActivity implements
     NavigationItem nav_manage_tag;
     @BindView(R.id.nav_sv)
     ScrollView nav_sv;
-
+    @BindView(R.id.rl_user_bg)
+    RelativeLayout rl_user_bg;
     @BindView(R.id.ll_empty_view)
     LinearLayout ll_empty_view;
-
+    private File mCurrentPhotoFile;
 
 
     @Override
@@ -141,25 +161,18 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-//        setStatusBarColor(ColorsUtil.TRANSPARENT);
-//        initStatusBar();
-
-        initSimulatedData();// todo
+//        initSimulatedData();// todo
+        PresetData.createSimulatedData(mContext,mRealm);
         initSymbol();
         modelList = loadData();
         initViews();
-
-        Log.e("666","width: "+ ScreenUtil.getScreenWidth(mContext));
-        Log.e("666","height: "+ ScreenUtil.getScreenHeight(mContext));
-        Log.e("666","dpi: "+ ScreenUtil.getDeviceDensityDpi(mContext));
-
     }
 
     private void initSymbol() {
-        display = (int) SPUtil.get(mContext, Constant.DISPLAY_INDEX_KEY,Constant.DISPLAY_TODAY);
-        orderMode = (int) SPUtil.get(mContext, Constant.lAST_ORDER_MODE_KEY, Constant.ORDER_BY_DATE);
-        selectedProjectId = (String) SPUtil.get(mContext, Constant.LAST_SELECTED_PROJECT_KEY, "");
-        selectedTagId = (String) SPUtil.get(mContext, Constant.LAST_SELECTED_TAG_KEY,"");
+        display = (int) get(mContext, Constant.DISPLAY_INDEX_KEY,Constant.DISPLAY_TODAY);
+        orderMode = (int) get(mContext, Constant.lAST_ORDER_MODE_KEY, Constant.ORDER_BY_DATE);
+        selectedProjectId = (String) get(mContext, Constant.LAST_SELECTED_PROJECT_KEY, "");
+        selectedTagId = (String) get(mContext, Constant.LAST_SELECTED_TAG_KEY,"");
 
         Log.e("TAG","display: " +display);
         Log.e("TAG","orderMode: " +orderMode);
@@ -376,7 +389,6 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initViews() {
-//        recyclerview.setItemAnimator(new DefaultItemAnimator());
         linearLayoutManager = new LinearLayoutManager(mContext) {
             @Override
             protected int getExtraLayoutSpace(RecyclerView.State state) {
@@ -386,6 +398,7 @@ public class MainActivity extends BaseActivity implements
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setItemAnimator(new CustomItemAnimator());
+        recyclerview.addItemDecoration(new SpacesItemDecoration(DensityUtil.dp2px(this,space)));
         mTaskListAdapter = new TaskListAdapter(mContext, modelList, orderMode);
         mTaskListAdapter.setOnItemClickListener(new TaskListAdapter.onItemClickListener() {
             @Override
@@ -395,9 +408,9 @@ public class MainActivity extends BaseActivity implements
                 Task task = (Task) modelList.get(position).getContent();
                 intent.putExtra(EDIT_TASK_ID, task.getTaskId());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivityForResult(intent, REQUEST_EDIT, ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, fb_add, "add").toBundle());
+                    startActivityForResult(intent, REQUEST_CODE_EDIT_TASK, ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, fb_add, "add").toBundle());
                 } else {
-                    startActivityForResult(intent, REQUEST_EDIT);
+                    startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
                 }
             }
 
@@ -542,33 +555,47 @@ public class MainActivity extends BaseActivity implements
         mTaskListAdapter.setItemTouchHelper(itemTouchHelper);
         recyclerview.setAdapter(mTaskListAdapter);
 
-        toolbar.getIvProjects().setOnClickListener(new View.OnClickListener() {
+        toolbar.getIvMenu().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProjectListActivity.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this).toBundle());
-                } else {
-                    startActivity(intent);
+                drawerlayout.openDrawer(Gravity.LEFT,true);
+            }
+        });
+
+        toolbar.getIvLayout().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toolbar.toggleLayout();
+                if (toolbar.isStreamLayout()) {
+                    if (linearLayoutManager == null) {
+                        linearLayoutManager = new LinearLayoutManager(mContext);
+                        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    }
+                    recyclerview.setLayoutManager(linearLayoutManager);
+                }else {
+                    if (staggeredGridLayoutManager == null) {
+                        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+                    }
+                    recyclerview.setLayoutManager(staggeredGridLayoutManager);
                 }
             }
         });
 
-        toolbar.getIvMore().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomPopupWindow more = new CustomPopupWindow(mContext, R.layout.popup_more_menu);
-                TextView tv_setting = (TextView) more.getContentView().findViewById(R.id.tv_setting);
-                tv_setting.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                more.showAsDropDown(v);
-            }
-        });
+//        toolbar.getIvMore().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                CustomPopupWindow more = new CustomPopupWindow(mContext, R.layout.popup_more_menu);
+//                TextView tv_setting = (TextView) more.getContentView().findViewById(R.id.tv_setting);
+//                tv_setting.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+//                        startActivity(intent);
+//                    }
+//                });
+//                more.showAsDropDown(v);
+//            }
+//        });
 
         toolbar.getIvSort().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -740,6 +767,9 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initNav(){
+        loadAvatar();
+        loadUserBg();
+
         List<String> projectNames = new ArrayList<>();
         List<String> projectCounts = new ArrayList<>();
         List<String> tagNames = new ArrayList<>();
@@ -773,17 +803,14 @@ public class MainActivity extends BaseActivity implements
 
         navProjectAdapter.setOnClickNavItemListener(onClickNavItemListener);
         navTagAdapter.setOnClickNavItemListener(onClickNavItemListener);
-
-        rv_projects.getItemAnimator().setAddDuration(300);
-        rv_projects.getItemAnimator().setRemoveDuration(300);
-        rv_projects.getItemAnimator().setChangeDuration(300);
-        rv_projects.getItemAnimator().setMoveDuration(300);
         rv_projects.setAdapter(navProjectAdapter);
         rv_tags.setAdapter(navTagAdapter);
         refreshNavData();
     }
 
     private void refreshNavData(){
+        nav_today.setCount(RealmDB.getAllTodayUncompletedTasksByUserId(mRealm,RealmDB.getCurrentUserId()).size()+"");
+        nav_all_task.setCount(RealmDB.getAllUncompletedTasksByUserId(mRealm,RealmDB.getCurrentUserId()).size()+"");
         navActiveProjects = RealmDB.getAllActiveProjectsByUserId(mRealm, RealmDB.getCurrentUserId());
         navTags = RealmDB.getAllTagsByUserId(mRealm, RealmDB.getCurrentUserId());
         List<String> projectNames = new ArrayList<>();
@@ -808,10 +835,10 @@ public class MainActivity extends BaseActivity implements
         Intent intent = new Intent(MainActivity.this, NewTaskActivity.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             //startActivity(intent,ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,fb_add,"add").toBundle());
-            startActivityForResult(intent, REQUEST_NEW, ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, fb_add, "add").toBundle());
+            startActivityForResult(intent, REQUEST_CODE_NEW_TASK, ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, fb_add, "add").toBundle());
         } else {
             //startActivity(intent);
-            startActivityForResult(intent, REQUEST_NEW);
+            startActivityForResult(intent, REQUEST_CODE_NEW_TASK);
         }
     }
 
@@ -829,15 +856,42 @@ public class MainActivity extends BaseActivity implements
         drawerlayout.closeDrawer(Gravity.LEFT,true);
     }
 
+    @OnClick(R.id.rl_user_bg)
+    public void changeUserBg(){
+        new MaterialDialog.Builder(this)
+                .items("选择本地图片","拍照")
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                        if (position == 0) {
+                            openAlbum(REQUEST_CODE_PICK_IMAGE_FOR_USER_BG);
+                        }else {
+                            openCamera(REQUEST_CODE_CAPTURE_CAMEIA_FOR_USER_BG);
+                        }
+                    }
+                })
+                .show();
+    }
+
+    @OnClick(R.id.iv_setting)
+    public void setting(){
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent,this);
+    }
+
+    @OnClick(R.id.iv_search)
+    public void search(){
+
+    }
+
     @OnClick(R.id.nav_avatar)
     public void clickAvatar() {
         Intent intent = new Intent(MainActivity.this, UserActivity.class);
-        startActivity(intent);
+        startActivity(intent,this);
     }
 
     @OnClick(R.id.nav_all_projects)
     public void toggleProjects(){
-        Log.e("TAG","height: "+rv_projects.getHeight());
         nav_all_projects.setExpand(!nav_all_projects.isExpand());
         navProjectAdapter.expand(nav_all_projects.isExpand());
     }
@@ -852,8 +906,7 @@ public class MainActivity extends BaseActivity implements
     public void manageProject(){
         Intent intent = new Intent(MainActivity.this, ManageProjectTagActivity.class);
         intent.putExtra(ManageProjectTagActivity.MANAGE_TYPE, Constant.MANAGE_TYPE_PROJECT);
-//        startActivity(intent);
-        startActivityForResult(intent,REQUEST_MANAGE);
+        startActivityForResult(intent, REQUEST_CODE_MANAGE);
     }
 
     @OnClick(R.id.nav_manage_tag)
@@ -861,22 +914,87 @@ public class MainActivity extends BaseActivity implements
         Intent intent = new Intent(MainActivity.this, ManageProjectTagActivity.class);
         intent.putExtra(ManageProjectTagActivity.MANAGE_TYPE, Constant.MANAGE_TYPE_TAG);
 //        startActivity(intent);
-        startActivityForResult(intent,REQUEST_MANAGE);
+        startActivityForResult(intent, REQUEST_CODE_MANAGE);
     }
 
+    private void openAlbum(int requestCode){
+        // 打开系统相册
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");// 相片类型
+        startActivityForResult(intent, requestCode);
+    }
+
+    private void openCamera(int requestCode){
+        try {
+            File PHOTO_DIR = new File(Environment.getExternalStorageDirectory() + "/DCIM/Camera");
+            PHOTO_DIR.mkdirs();
+            mCurrentPhotoFile = new File(PHOTO_DIR, getPhotoFileName());
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE, null);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCurrentPhotoFile));
+            startActivityForResult(intent, requestCode);
+        }catch (Exception e) {
+            Log.e("TAG","相机不可用");
+        }
+    }
+
+    private void loadAvatar(){
+        // 头像
+        String avatarUrl = (String) SPUtil.get(mContext,Constant.USER_AVATAR_KEY,"");
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            Glide.with(mContext).load(new File(avatarUrl)).into(nav_avatar);
+        }else {
+            nav_avatar.setBackgroundResource(R.drawable.ic_default_avatar);
+        }
+
+    }
+
+    private void loadUserBg(){
+        // 背景
+        String userBgUrl = (String) SPUtil.get(mContext,Constant.USER_BG_KEY,"");
+        if (!TextUtils.isEmpty(userBgUrl)) {
+            Glide.with(mContext).load(new File(userBgUrl)).into(nav_avatar);
+        }else {
+            rl_user_bg.setBackgroundResource(R.drawable.default_user_bg);
+        }
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_NEW || requestCode == REQUEST_EDIT) {
-            if (resultCode == RESULT_OK) {
-                refreshTaskListUseDiffUtil();
-            }
-        }else if (requestCode == REQUEST_MANAGE) {
-            refreshNavData();
-            displayChange = true;
-            display = Constant.DISPLAY_TODAY; // 可能删除以打开的project，简单处理直接跳到today
+        if (resultCode != RESULT_OK) {
+            return;
         }
 
+        switch (requestCode) {
+            case REQUEST_CODE_NEW_TASK:
+            case REQUEST_CODE_EDIT_TASK:
+                refreshTaskListUseDiffUtil();
+                break;
+            case REQUEST_CODE_MANAGE:
+                refreshNavData();
+                displayChange = true;
+                display = Constant.DISPLAY_TODAY; // 可能删除以打开的project，简单处理直接跳到today
+                break;
+            case REQUEST_CODE_PICK_IMAGE_FOR_AVATAR:
+                String avatarUri= getRealFilePath(data.getData());
+                SPUtil.put(mContext,Constant.USER_AVATAR_KEY,avatarUri);
+                loadAvatar();
+                break;
+            case REQUEST_CODE_PICK_IMAGE_FOR_USER_BG:
+                String userBgUri= getRealFilePath(data.getData());
+                SPUtil.put(mContext,Constant.USER_BG_KEY,userBgUri);
+                loadUserBg();
+                break;
+            case REQUEST_CODE_CAPTURE_CAMEIA_FOR_AVATAR:
+                SPUtil.put(mContext,Constant.USER_AVATAR_KEY,mCurrentPhotoFile.getAbsolutePath());
+                loadAvatar();
+                break;
+            case REQUEST_CODE_CAPTURE_CAMEIA_FOR_USER_BG:
+                SPUtil.put(mContext,Constant.USER_BG_KEY,mCurrentPhotoFile.getAbsolutePath());
+                loadUserBg();
+                break;
+
+        }
     }
 
     private void refreshTaskListUseDiffUtil() {
@@ -936,9 +1054,6 @@ public class MainActivity extends BaseActivity implements
         }
         RealmDB.refreshTasks(mRealm, selectedTasks);
         refreshTaskListUseDiffUtil();
-//        mTaskListAdapter.setSelectState(false);
-//        toolbar.setSelect(false);
-//        mTaskListAdapter.notifySelectedItem();//不刷新位置吗？TODO
     }
 
     private void showProjectChooseDialog() {
@@ -1002,12 +1117,9 @@ public class MainActivity extends BaseActivity implements
         String color_hex = String.format("#%06X", (0xFFFFFFFF & selectedColor));
         Log.e("TAG", "selectedColor" + color_hex);
         RealmDB.refreshTasksColor(mRealm, selectedTasks, color_hex);
-//        mTaskListAdapter.notifyItemChanged();
         toolbar.setSelect(false);
         mTaskListAdapter.setSelectState(false);
         mTaskListAdapter.notifySelectedItem();
-
-
     }
 
     private void refreshByMode() {

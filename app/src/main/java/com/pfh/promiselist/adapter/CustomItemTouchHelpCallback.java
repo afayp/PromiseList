@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 /**
@@ -19,7 +20,7 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
     /**
      * 是否可以被滑动,默认false,原因同上
      */
-    private boolean isCanSwipe = true;
+    private boolean isCanSwipe = false;
     /**
      * Item操作的回调
      */
@@ -108,6 +109,10 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
                 dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
                 swipeFlag = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
             }
+            return makeMovementFlags(dragFlag, swipeFlag);
+        }else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            int dragFlag = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlag = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
             return makeMovementFlags(dragFlag, swipeFlag);
         }
         return 0;

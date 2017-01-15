@@ -48,7 +48,7 @@ public class RealmDB {
      * @return
      */
     public static String getCurrentUserId(){
-        return (String) SPUtil.get(MyApplication.getContext(),Constant.CURRENT_USERId,"");
+        return (String) SPUtil.get(MyApplication.getContext(),Constant.CURRENT_USER_ID_KEY,"");
     }
 
     /**
@@ -453,20 +453,6 @@ public class RealmDB {
     public static void refreshTask(Realm realm,Task newTask){
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(newTask);
-//        oldTask.setName(newTask.getName());
-//        oldTask.setDueTime(newTask.getDueTime());
-//        oldTask.setRemindMode(newTask.isRemindMode());
-//        oldTask.setRemindTime(newTask.getRemindTime());
-//        oldTask.setDesc(newTask.getDesc());
-//        oldTask.setState(newTask.getState());
-//        oldTask.setRepeatMode(newTask.getRepeatMode());
-//        oldTask.setRepeatTime(newTask.getRepeatTime());
-//
-//        oldTask.setProject(newTask.getProject());// todo
-//        oldTask.setTags(newTask.getTags());// todo
-//        oldTask.setBgColor(newTask.getBgColor());// todo
-//        oldTask.setOwner(newTask.getOwner());//todo
-//        oldTask.setCooperators(newTask.getCooperators()); // todo
         realm.commitTransaction();
     }
 
@@ -619,6 +605,7 @@ public class RealmDB {
         }
         return temp;
     }
+
 
     /**
      * 筛选出明天的任务

@@ -10,6 +10,9 @@
     <color name="text_second_color_primary">#727272</color>
     <color name="status_bar_color">#FAFAFA</color>
     <color name="main_toolbar_bg">#FFFFFF</color>
+    <color name="manage_toolbar_bg">#33B5FF</color>
+    <color name="setting_toolbar_bg">#33B5FF</color>
+    <color name="about_toolbar_bg">#33B5FF</color>
     <color name="main_activity_bg">#EAEAEA</color>
     <color name="fab_bg">#33B5FF</color>
     <color name="fab_pressed_bg">#2DA9EF</color>

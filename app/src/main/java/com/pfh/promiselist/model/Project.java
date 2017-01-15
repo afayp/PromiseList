@@ -1,5 +1,9 @@
 package com.pfh.promiselist.model;
 
+import com.pfh.promiselist.utils.UuidUtils;
+
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -22,6 +26,12 @@ public class Project extends RealmObject {
     private int state;// 1表示激活active,2表示已删除deleted(进回收站)
     private int completion;// 0表示一项都没完成，1表示全部完成，2表示部分完成
     private long createdTime;// 创建时间
+
+    public Project() {
+        projectId = UuidUtils.getShortUuid();
+        state = 1;
+        createdTime = new Date().getTime();
+    }
 
     public String getProjectId() {
         return projectId;
@@ -64,6 +74,9 @@ public class Project extends RealmObject {
     }
 
     public RealmList<Task> getTasks() {
+        if (tasks == null) {
+            tasks = new RealmList<>();
+        }
         return tasks;
     }
 

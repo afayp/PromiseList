@@ -3,6 +3,9 @@ package com.pfh.promiselist.widget;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -16,7 +19,9 @@ import com.pfh.promiselist.R;
 import com.pfh.promiselist.model.Tag;
 import com.pfh.promiselist.model.Task;
 import com.pfh.promiselist.others.Constant;
+import com.pfh.promiselist.utils.ColorsUtil;
 import com.pfh.promiselist.utils.DateUtil;
+import com.pfh.promiselist.utils.DensityUtil;
 
 import io.realm.RealmList;
 
@@ -32,6 +37,8 @@ public class TaskItemView extends LinearLayout {
     private int parentHeightMeasureSpec;
     private boolean expand;
     private int animationTime = 150;
+    private float selectedStrokeWidth = 1.5f; // 选中是边框宽度 dp
+    private int taskCornerRadius = 2; //dp
 
     private TextView tv_title;
     private RelativeLayout rl_root;
@@ -71,7 +78,6 @@ public class TaskItemView extends LinearLayout {
     }
 
     private void initView() {
-        //todo tag以动画形式向下展开
         flow_tag_container.removeAllViews();
         tv_title.setText(mTask.getName());
 
@@ -101,6 +107,7 @@ public class TaskItemView extends LinearLayout {
         //其他设置...
         if (mTask.getColorValue() != null) {
             cardview.setCardBackgroundColor(Color.parseColor(mTask.getColorValue()));
+            rl_root.setBackground(createStateListDrawable(Color.parseColor(mTask.getColorValue())));
         }
         iv_fixed.setVisibility(mTask.isFixed() ? VISIBLE : GONE);
         setListener();
@@ -108,10 +115,29 @@ public class TaskItemView extends LinearLayout {
 
     public void setSelectedBg(boolean select){
         if (select) {
-            rl_root.setBackgroundResource(R.drawable.item_selected_bg);
+            rl_root.setBackground(createSelectedDrawable(Color.parseColor(mTask.getColorValue())));
         }else {
-            rl_root.setBackgroundResource(R.color.transparent);
+            rl_root.setBackground(createStateListDrawable(Color.parseColor(mTask.getColorValue())));
         }
+    }
+
+    private StateListDrawable createStateListDrawable(int normalColor){
+        GradientDrawable pressedShape = new GradientDrawable();
+        pressedShape.setShape(GradientDrawable.RECTANGLE);
+        pressedShape.setColor(ColorsUtil.colorBurn(normalColor));
+        pressedShape.setCornerRadius(DensityUtil.dp2px(mContext,taskCornerRadius));
+        StateListDrawable states = new StateListDrawable();
+        states.addState(new int[]{-android.R.attr.state_pressed}, new ColorDrawable(normalColor));
+        states.addState(new int[]{android.R.attr.state_pressed}, pressedShape);
+        return states;
+    }
+
+    private GradientDrawable createSelectedDrawable(int normalColor){
+        GradientDrawable selectedShape = new GradientDrawable();
+        selectedShape.setShape(GradientDrawable.RECTANGLE);
+        selectedShape.setColor(ColorsUtil.colorBurn(normalColor));
+        selectedShape.setStroke(DensityUtil.dp2px(mContext, selectedStrokeWidth),getResources().getColor(R.color.task_selected_stroke_bg));
+        return selectedShape;
     }
 
     private void setListener() {
