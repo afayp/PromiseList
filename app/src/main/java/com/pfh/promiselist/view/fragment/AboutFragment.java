@@ -1,14 +1,16 @@
 package com.pfh.promiselist.view.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
+import com.github.florent37.materialviewpager.MaterialViewPagerHelper;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.pfh.promiselist.R;
 
 /**
@@ -22,11 +24,29 @@ public class AboutFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_about, container, false);
-        RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        recyclerview.addItemDecoration(new MaterialViewPagerHeaderDecorator());
+        ObservableScrollView scrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
+
+        MaterialViewPagerHelper.registerScrollView(getActivity(), scrollView, null);
+
+        LinearLayout ll_github = (LinearLayout) view.findViewById(R.id.ll_github);
+        LinearLayout ll_blog = (LinearLayout) view.findViewById(R.id.ll_blog);
+
+        ll_github.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/afayp")));
+            }
+        });
+
+        ll_blog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://afayp.me")));
+
+            }
+        });
+
+
 
         return view;
 

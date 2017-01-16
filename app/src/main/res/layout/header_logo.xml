@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
+    android:layout_width="@dimen/about_logon_size"
+    android:layout_height="@dimen/about_logon_size"
     android:layout_centerInParent="true">
 
     <com.pfh.promiselist.widget.CircleImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/avatar"/>
+        android:layout_width="@dimen/about_logon_size"
+        android:layout_height="@dimen/about_logon_size"
+        android:src="@drawable/avatar"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/white"/>
 
 </FrameLayout>

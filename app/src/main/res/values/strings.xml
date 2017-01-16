@@ -42,4 +42,7 @@
     <string name="title">标题</string>
     <string name="detail">详细</string>
     <string name="set_due_time">设置完成时间</string>
+    <string name="about_me">关于我</string>
+    <string name="update_log">更新日志</string>
+    <string name="thank">感谢</string>
 </resources>

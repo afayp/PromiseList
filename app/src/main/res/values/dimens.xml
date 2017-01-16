@@ -29,8 +29,11 @@
     <dimen name="toolbar_title_text_size">20dp</dimen>
     <dimen name="task_label_text_size">16sp</dimen>
     <dimen name="task_title_text_size">16sp</dimen>
-    <dimen name="material_viewpager_logo_margin_top">100dp</dimen>
-    <dimen name="material_viewpager_head_height">200dp</dimen>
+
+
+    <dimen name="about_head_height">180dp</dimen>
+    <dimen name="about_logo_margin_top">50dp</dimen>
+    <dimen name="about_logon_size">90dp</dimen>
 
 
 </resources>

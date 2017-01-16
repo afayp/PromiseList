@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     app:viewpager_logo="@layout/header_logo"
     app:viewpager_pagerTitleStrip="@layout/material_view_pager_pagertitlestrip_newstand"
-    app:viewpager_logoMarginTop="@dimen/material_viewpager_logo_margin_top"
+    app:viewpager_logoMarginTop="@dimen/about_logo_margin_top"
     app:viewpager_color="@color/colorPrimary"
-    app:viewpager_headerHeight="@dimen/material_viewpager_head_height"
+    app:viewpager_headerHeight="@dimen/about_head_height"
     app:viewpager_headerAlpha="1.0"
     app:viewpager_imageHeaderDarkLayerAlpha="0.2"
     app:viewpager_hideLogoWithFade="true"
@@ -19,4 +19,4 @@
     app:viewpager_headerAdditionalHeight="20dp"
     app:viewpager_displayToolbarWhenSwipe="false"
     app:viewpager_transparentToolbar="true"
-    app:viewpager_animatedHeaderImage="true" />
+    app:viewpager_animatedHeaderImage="true"/>

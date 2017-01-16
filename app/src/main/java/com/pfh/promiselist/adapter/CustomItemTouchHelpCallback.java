@@ -74,8 +74,8 @@ public class CustomItemTouchHelpCallback extends ItemTouchHelper.Callback {
      */
     @Override
     public boolean isItemViewSwipeEnabled() {
-        return onItemTouchCallbackListener.canSwipe();
-//        return isCanSwipe;
+//        return onItemTouchCallbackListener.canSwipe();
+        return isCanSwipe;
     }
 
     /**
